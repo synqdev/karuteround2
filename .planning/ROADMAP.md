@@ -105,12 +105,12 @@ Plans:
   1. Admin can create and edit staff profiles (name, display info) in the Settings page
   2. User can switch the active staff member from the header switcher without logging out
   3. Every saved karute record displays the name of the staff member who created it
-**Plans**: TBD
+**Plans:** 3 plans
 
 Plans:
-- [ ] 05-01: Staff data layer — CRUD operations for staff profiles table, TypeScript types
-- [ ] 05-02: Staff management UI — list and edit staff profiles in Settings page
-- [ ] 05-03: Header staff switcher — active staff state (session-scoped), switcher dropdown, propagate active staff to recording and save flows
+- [ ] 05-01-PLAN.md — Staff data layer: Server Actions (CRUD + setActiveStaff), helpers, Zod schema, RLS policies
+- [ ] 05-02-PLAN.md — Staff management UI: Settings page with StaffList and StaffForm (create/edit/delete)
+- [ ] 05-03-PLAN.md — Header staff switcher: StaffSwitcher dropdown, layout integration, cookie-backed persistence
 
 ### Phase 6: UI/UX Polish
 **Goal**: The full app is visually consistent with the mockup aesthetic, fully bilingual, navigable via sidebar, and comfortable on a tablet.
@@ -167,7 +167,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 2. AI Pipeline | 0/5 | Not started | - |
 | 3. Customer Management | 0/3 | Not started | - |
 | 4. Karute Records | 0/4 | Not started | - |
-| 5. Staff Profiles | 0/3 | Not started | - |
+| 5. Staff Profiles | 0/3 | Planned | - |
 | 6. UI/UX Polish | 0/4 | Not started | - |
 | 7. Export | 0/2 | Not started | - |
 | 8. Integration Testing | 0/3 | Not started | - |
