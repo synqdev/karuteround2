@@ -55,14 +55,13 @@ Plans:
   4. AI outputs (entry titles, summary text) respect the active language toggle (EN or JP)
   5. No audio file is ever written to Supabase Storage — only transcript text and extracted entries are persisted
   6. User sees a human review screen where they can edit, add, or remove AI-extracted entries before saving
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 02-01: Whisper transcription API route — receive audio blob, call OpenAI Whisper, return transcript text, discard audio (never write to storage)
-- [ ] 02-02: GPT structured extraction API route — take transcript, return entries array (category, title, source_quote, confidence_score) respecting locale
-- [ ] 02-03: GPT session summary API route — generate prose summary from transcript respecting locale
-- [ ] 02-04: AI pipeline orchestration — chain transcription → extraction → summary after recording stops, loading states, error handling
-- [ ] 02-05: Human review screen — display AI entries with edit/remove controls, + Add Entry button, entry category color tags, confidence score display, Confirm to proceed
+- [ ] 02-01-PLAN.md — Shared AI types/Zod schemas, OpenAI client singleton, locale-aware prompts, Whisper transcription API route
+- [ ] 02-02-PLAN.md — GPT structured extraction API route + GPT session summary API route
+- [ ] 02-03-PLAN.md — Human review screen UI with EntryCard, ReviewHeader, two-column layout, useFieldArray
+- [ ] 02-04-PLAN.md — Pipeline orchestration (transcribe → parallel extract + summarize), processing modal, PipelineContainer
 
 ### Phase 3: Customer Management
 **Goal**: Staff can create customers, find existing customers, and view a customer's complete session history at a glance.
@@ -164,7 +163,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation + Recording | 0/7 | Planned | - |
-| 2. AI Pipeline | 0/5 | Not started | - |
+| 2. AI Pipeline | 0/4 | Planned | - |
 | 3. Customer Management | 0/3 | Not started | - |
 | 4. Karute Records | 0/4 | Not started | - |
 | 5. Staff Profiles | 0/3 | Planned | - |
