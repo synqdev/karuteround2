@@ -33,16 +33,16 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. User can log in with business email/password and be redirected to the app
   4. User can open the recording modal, select a staff member, press record, see a live waveform and timer, and stop to produce an audio blob
   5. CI runs on pull requests, integration branch workflow is configured, and PRs use @claude tag convention
-**Plans**: TBD
+**Plans**: 7 plans
 
 Plans:
-- [ ] 01-01: Next.js scaffold with TypeScript, Tailwind v4, shadcn, dark theme shell, and sidebar navigation structure
-- [ ] 01-02: Supabase schema creation (customers, karute_records, entries, profiles tables) with RLS policies, prod + dev environments, env config
-- [ ] 01-03: Supabase Auth integration — business email/password login, session persistence, protected routes
-- [ ] 01-04: i18n scaffolding with next-intl (EN/JP) — translation file structure, locale switching plumbing
-- [ ] 01-05: GitHub Actions CI/CD setup — lint, type-check, test pipeline; integration branch workflow documentation
-- [ ] 01-06: Browser mic recording — MediaRecorder API, iOS Safari mp4 / Chrome webm format handling, waveform visualization, timer, stop/discard controls
-- [ ] 01-07: Recording modal UI — dark theme centered mic button matching mockup, staff profile selector, state machine (idle → recording → recorded)
+- [ ] 01-01-PLAN.md — Next.js 16 scaffold with Tailwind v4 CSS-first config, shadcn, dark theme shell, collapsible sidebar
+- [ ] 01-02-PLAN.md — Supabase schema (4 tables + RLS policies), browser/server clients, TypeScript types, dev/prod env config
+- [ ] 01-03-PLAN.md — Supabase Auth email/password login, protected route group, proxy.ts token refresh
+- [ ] 01-04-PLAN.md — next-intl v4 i18n routing (EN/JP), locale layout with NextIntlClientProvider, proxy.ts composition
+- [ ] 01-05-PLAN.md — GitHub Actions CI (lint + type-check + test), integration branch workflow CONTRIBUTING.md
+- [ ] 01-06-PLAN.md — MediaRecorder hooks with format negotiation, waveform visualization, recording timer
+- [ ] 01-07-PLAN.md — Recording modal UI with staff selector, state machine (idle → recording → recorded)
 
 ### Phase 2: AI Pipeline
 **Goal**: A recorded audio blob flows through Whisper transcription and GPT extraction, producing a transcript, categorized entries with confidence scores, and a session summary — all in the user's chosen language — before the audio is discarded.
@@ -163,7 +163,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation + Recording | 0/7 | Not started | - |
+| 1. Foundation + Recording | 0/7 | Planned | - |
 | 2. AI Pipeline | 0/5 | Not started | - |
 | 3. Customer Management | 0/3 | Not started | - |
 | 4. Karute Records | 0/4 | Not started | - |
