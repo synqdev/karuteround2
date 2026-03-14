@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { createQuickCustomer } from '@/actions/customers'
@@ -21,6 +22,7 @@ type QuickCreateCustomerProps = {
  * On cancel (Escape or Cancel button), calls onCancel so the parent can show the combobox again.
  */
 export function QuickCreateCustomer({ onCreated, onCancel }: QuickCreateCustomerProps) {
+  const t = useTranslations('customers')
   const [name, setName] = useState('')
   const [isPending, setIsPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,7 +39,7 @@ export function QuickCreateCustomer({ onCreated, onCancel }: QuickCreateCustomer
 
     const trimmed = name.trim()
     if (!trimmed) {
-      setError('Name is required')
+      setError(t('form.name') + ' is required')
       return
     }
 
@@ -50,7 +52,7 @@ export function QuickCreateCustomer({ onCreated, onCancel }: QuickCreateCustomer
         setError(result.error)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unexpected error')
+      setError(err instanceof Error ? err.message : t('toast.error'))
     } finally {
       setIsPending(false)
     }
@@ -70,18 +72,18 @@ export function QuickCreateCustomer({ onCreated, onCancel }: QuickCreateCustomer
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Customer name"
+          placeholder={t('form.namePlaceholder')}
           disabled={isPending}
           maxLength={100}
-          aria-label="New customer name"
+          aria-label={t('form.name')}
           aria-invalid={!!error}
           aria-describedby={error ? 'quick-create-error' : undefined}
         />
         <Button type="submit" disabled={isPending || !name.trim()} size="default">
-          {isPending ? 'Creating...' : 'Create'}
+          {isPending ? t('form.saving') : t('form.create')}
         </Button>
         <Button type="button" variant="ghost" onClick={onCancel} disabled={isPending}>
-          Cancel
+          {t('form.cancel')}
         </Button>
       </div>
       {error && (

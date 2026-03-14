@@ -2,6 +2,7 @@
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -11,6 +12,7 @@ interface PaginationProps {
 }
 
 export function Pagination({ currentPage, totalPages }: PaginationProps) {
+  const t = useTranslations('common')
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -49,10 +51,10 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
         size="sm"
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage <= 1}
-        aria-label="Previous page"
+        aria-label={t('previousPage')}
       >
         <ChevronLeft className="size-4" />
-        <span>Previous</span>
+        <span>{t('previous')}</span>
       </Button>
 
       {/* Page numbers */}
@@ -62,7 +64,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
           variant={page === currentPage ? 'default' : 'outline'}
           size="icon"
           onClick={() => goToPage(page)}
-          aria-label={`Page ${page}`}
+          aria-label={t('pageN', { n: page })}
           aria-current={page === currentPage ? 'page' : undefined}
           className={cn(
             'size-8',
@@ -79,9 +81,9 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
         size="sm"
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        aria-label="Next page"
+        aria-label={t('nextPage')}
       >
-        <span>Next</span>
+        <span>{t('next')}</span>
         <ChevronRight className="size-4" />
       </Button>
     </div>

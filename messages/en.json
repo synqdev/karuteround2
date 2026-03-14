@@ -1,9 +1,49 @@
 {
+  "common": {
+    "appName": "Karute",
+    "loading": "Loading...",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "confirm": "Confirm",
+    "back": "Back",
+    "search": "Search",
+    "noResults": "No results found",
+    "previous": "Previous",
+    "next": "Next",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageN": "Page {n}"
+  },
+  "auth": {
+    "title": "Sign in to Karute",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "error_invalid": "Invalid email or password"
+  },
   "sidebar": {
     "recording": "Recording",
     "customers": "Customers",
     "karute": "Karute",
     "settings": "Settings"
+  },
+  "recording": {
+    "title": "Recording",
+    "selectStaff": "Select staff",
+    "start": "Start recording",
+    "stop": "Stop recording",
+    "discard": "Discard",
+    "useRecording": "Use recording",
+    "recordingInProgress": "Recording in progress...",
+    "idle": "Ready to record",
+    "newSession": "New session",
+    "recordDescription": "Record a session to generate a karute automatically"
   },
   "customers": {
     "title": "Customers",
@@ -42,7 +82,8 @@
       "lastVisit": "Last visit: {date}",
       "noVisits": "No visits yet",
       "karuteHistory": "Session History",
-      "back": "Back"
+      "back": "Back",
+      "staff": "Staff"
     },
     "toast": {
       "created": "Customer created",
@@ -53,5 +94,44 @@
       "title": "No customers yet",
       "description": "Create your first customer to get started"
     }
+  },
+  "karute": {
+    "title": "Karute",
+    "summary": "AI Summary",
+    "transcript": "Transcript",
+    "entries": "Entries",
+    "addEntry": "Add entry",
+    "noEntries": "No entries yet",
+    "confidence": "Confidence",
+    "staff": "Staff",
+    "date": "Date",
+    "customer": "Customer",
+    "exportPdf": "Export PDF",
+    "noKarute": "No karute records yet",
+    "saveKarute": "Save karute",
+    "saving": "Saving...",
+    "selectCustomerFirst": "Please select a customer before saving",
+    "noDraftFound": "No draft data found. Please go back and complete the AI review step before saving.",
+    "categories": {
+      "symptom": "Symptom",
+      "treatment": "Treatment",
+      "body_area": "Body Area",
+      "preference": "Preference",
+      "lifestyle": "Lifestyle",
+      "next_visit": "Next Visit",
+      "product": "Product",
+      "other": "Other"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "staffManagement": "Staff Management",
+    "addStaff": "Add staff",
+    "editStaff": "Edit staff",
+    "deleteStaff": "Delete staff",
+    "deleteConfirm": "Are you sure you want to delete this staff member?",
+    "name": "Name",
+    "active": "Active",
+    "noStaff": "No staff members yet"
   }
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
@@ -32,9 +33,10 @@ export function CustomerCombobox({
   selectedId,
   onSelect,
   onCreateNew,
-  placeholder = 'Search customers...',
+  placeholder,
   disabled = false,
 }: CustomerComboboxProps) {
+  const t = useTranslations('customers')
   const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null
 
   const [query, setQuery] = useState(selectedCustomer?.name ?? '')
@@ -42,6 +44,7 @@ export function CustomerCombobox({
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Sync query when selection changes externally (e.g. after quick-create)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (selectedCustomer) {
       setQuery(selectedCustomer.name)
@@ -98,7 +101,7 @@ export function CustomerCombobox({
         value={query}
         onChange={(e) => handleInputChange(e.target.value)}
         onFocus={handleInputFocus}
-        placeholder={placeholder}
+        placeholder={placeholder ?? t('search.placeholder')}
         disabled={disabled}
         autoComplete="off"
         aria-expanded={showDropdown}
@@ -115,7 +118,7 @@ export function CustomerCombobox({
           <ul className="max-h-60 overflow-y-auto py-1">
             {filtered.length === 0 && query.trim().length > 0 ? (
               <li className="px-3 py-2 text-sm text-muted-foreground">
-                No customers found
+                {t('table.noResults')}
               </li>
             ) : (
               filtered.map((customer) => (
@@ -150,7 +153,7 @@ export function CustomerCombobox({
             className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-sm text-primary hover:bg-muted"
           >
             <span aria-hidden="true">+</span>
-            New customer
+            {t('newCustomer')}
           </button>
         </div>
       )}

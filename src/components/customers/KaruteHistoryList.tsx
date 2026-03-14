@@ -78,7 +78,7 @@ export function KaruteHistoryList({ records, currentPage, totalPages }: KaruteHi
                 </span>
 
                 {/* Staff name placeholder — Phase 5 will add actual staff attribution */}
-                <span className="text-sm text-muted-foreground shrink-0 w-20">Staff</span>
+                <span className="text-sm text-muted-foreground shrink-0 w-20">{t('profile.staff')}</span>
 
                 {/* AI summary snippet */}
                 <span className="text-sm text-muted-foreground flex-1 min-w-0 truncate">

@@ -1,9 +1,49 @@
 {
+  "common": {
+    "appName": "カルテ",
+    "loading": "読み込み中...",
+    "save": "保存",
+    "saving": "保存中...",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "confirm": "確認",
+    "back": "戻る",
+    "search": "検索",
+    "noResults": "結果が見つかりません",
+    "previous": "前へ",
+    "next": "次へ",
+    "previousPage": "前のページ",
+    "nextPage": "次のページ",
+    "pageN": "{n}ページ"
+  },
+  "auth": {
+    "title": "カルテにサインイン",
+    "email": "メールアドレス",
+    "emailPlaceholder": "you@example.com",
+    "password": "パスワード",
+    "passwordPlaceholder": "••••••••",
+    "submit": "サインイン",
+    "submitting": "サインイン中...",
+    "error_invalid": "メールアドレスまたはパスワードが無効です"
+  },
   "sidebar": {
     "recording": "録音",
     "customers": "顧客",
     "karute": "カルテ",
     "settings": "設定"
+  },
+  "recording": {
+    "title": "録音",
+    "selectStaff": "スタッフを選択",
+    "start": "録音開始",
+    "stop": "録音停止",
+    "discard": "破棄",
+    "useRecording": "録音を使用",
+    "recordingInProgress": "録音中...",
+    "idle": "録音待機中",
+    "newSession": "新しいセッション",
+    "recordDescription": "セッションを録音してカルテを自動生成します"
   },
   "customers": {
     "title": "顧客",
@@ -42,7 +82,8 @@
       "lastVisit": "最終来店: {date}",
       "noVisits": "まだ来店がありません",
       "karuteHistory": "施術履歴",
-      "back": "戻る"
+      "back": "戻る",
+      "staff": "スタッフ"
     },
     "toast": {
       "created": "顧客を作成しました",
@@ -53,5 +94,44 @@
       "title": "顧客がまだいません",
       "description": "最初の顧客を作成しましょう"
     }
+  },
+  "karute": {
+    "title": "カルテ",
+    "summary": "AIサマリー",
+    "transcript": "トランスクリプト",
+    "entries": "エントリー",
+    "addEntry": "エントリーを追加",
+    "noEntries": "エントリーがまだありません",
+    "confidence": "確信度",
+    "staff": "スタッフ",
+    "date": "日付",
+    "customer": "顧客",
+    "exportPdf": "PDFエクスポート",
+    "noKarute": "カルテがまだありません",
+    "saveKarute": "カルテを保存",
+    "saving": "保存中...",
+    "selectCustomerFirst": "保存前に顧客を選択してください",
+    "noDraftFound": "下書きデータが見つかりません。保存前にAIレビュー手順を完了してください。",
+    "categories": {
+      "symptom": "症状",
+      "treatment": "トリートメント",
+      "body_area": "部位",
+      "preference": "好み",
+      "lifestyle": "ライフスタイル",
+      "next_visit": "次回来店",
+      "product": "製品",
+      "other": "その他"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "staffManagement": "スタッフ管理",
+    "addStaff": "スタッフを追加",
+    "editStaff": "スタッフを編集",
+    "deleteStaff": "スタッフを削除",
+    "deleteConfirm": "このスタッフを削除してもよろしいですか？",
+    "name": "名前",
+    "active": "有効",
+    "noStaff": "スタッフがまだいません"
   }
 }

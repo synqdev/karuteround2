@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { CustomerCombobox } from './CustomerCombobox'
 import { QuickCreateCustomer } from './QuickCreateCustomer'
@@ -33,6 +34,7 @@ type FlowState = 'combobox' | 'quick-create'
  *   5. clearDraft() is called to clean up sessionStorage
  */
 export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
+  const t = useTranslations('karute')
   const [draft, setDraft] = useState<ReturnType<typeof loadDraft>>(null)
   const [hasMounted, setHasMounted] = useState(false)
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null)
@@ -41,6 +43,7 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
   const [isSaving, setIsSaving] = useState(false)
 
   // Load draft from sessionStorage (client-side only)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     setDraft(loadDraft())
     setHasMounted(true)
@@ -56,7 +59,7 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
   async function handleSave() {
     if (!draft) return
     if (!selectedCustomerId) {
-      toast.error('Please select a customer before saving')
+      toast.error(t('selectCustomerFirst'))
       return
     }
 
@@ -94,7 +97,7 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
       if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) {
         throw err
       }
-      toast.error(err instanceof Error ? err.message : 'Failed to save karute record')
+      toast.error(err instanceof Error ? err.message : t('saving'))
       setIsSaving(false)
     }
   }
@@ -112,7 +115,7 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
   if (!draft) {
     return (
       <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-        No draft data found. Please go back and complete the AI review step before saving.
+        {t('noDraftFound')}
       </div>
     )
   }
@@ -121,7 +124,7 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <label className="text-sm font-medium text-foreground">
-          Customer
+          {t('customer')}
         </label>
 
         {flowState === 'quick-create' ? (
@@ -147,7 +150,7 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
           size="default"
           className="self-start"
         >
-          {isSaving ? 'Saving...' : 'Save karute'}
+          {isSaving ? t('saving') : t('saveKarute')}
         </Button>
       )}
     </div>
