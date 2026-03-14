@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 8 of 8 (Integration Testing)
-Plan: 0 of 3 in current phase
-Status: Ready for planning
-Last activity: 2026-03-14 — Completed Phase 7 (Export: PDF + plain text export with ExportButtons)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-03-14 — Completed 08-01: Jest integration test infrastructure (config, helpers, mocks)
 
-Progress: [████████░░] ~88%
+Progress: [████████░░] ~90%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [████████░░] ~88%
 | Phase 03-customer-management P04 | 5 min | 2 tasks | 3 files |
 | Phase 01-foundation-recording P05 | 15 | 2 tasks | 8 files |
 | Phase 01-foundation-recording P07 | 12 | 2 tasks | 2 files |
+| Phase 08-integration-testing P01 | 4 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -122,6 +123,9 @@ Recent decisions affecting current work:
 - [Phase 03-04]: Link from @/i18n/navigation is a named export — import syntax is { Link } not the default import from next/link
 - [Phase 01-05]: react-hooks/set-state-in-effect disabled globally in eslint.config.mjs — fires false positives on async useCallback mount, timer reset on transition, waveform bar flatten
 - [Phase 01-07]: Sessions page superseded by RecordingFlow (Phase 2 evolution) — RecordingPanel exists as Phase 1 standalone artifact; Sheet side=left pattern established for panel overlays
+- [Phase 08-01]: test:integration uses --passWithNoTests so script exits 0 before test files exist
+- [Phase 08-01]: jest.mock patterns documented as JSDoc copy-paste reference (not callable functions) due to Jest hoisting
+- [Phase 08-01]: Service role key used for testSupabase to bypass RLS in teardown; FK-safe teardown order: entries -> karute_records -> customers -> profiles
 
 ### Pending Todos
 
@@ -134,5 +138,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 01-05-PLAN.md (CI workflow + CONTRIBUTING.md; lint fixed by disabling react-hooks/set-state-in-effect globally)
+Stopped at: Completed 08-01-PLAN.md (Jest integration test infrastructure: config, Supabase helpers, OpenAI mocks, server action mocks)
 Resume file: None
