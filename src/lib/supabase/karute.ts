@@ -1,12 +1,17 @@
 import { createClient } from '@/lib/supabase/server'
 import type { QueryData } from '@supabase/supabase-js'
+import { createServerClient } from '@supabase/ssr'
+import type { Database } from '@/types/database'
+
+/** Synchronous Supabase client type for QueryData inference (not called at runtime) */
+type SyncSupabaseClient = ReturnType<typeof createServerClient<Database>>
 
 /**
  * Reference query used to derive the KaruteWithRelations type.
+ * Uses the synchronous client type for QueryData inference.
  * Not called directly — createClient() is called per-request inside getKaruteRecord().
- * This pattern satisfies QueryData<> inference without a module-level client.
  */
-const _karuteWithRelationsQuery = (supabase: ReturnType<typeof createClient>) =>
+const _karuteWithRelationsQuery = (supabase: SyncSupabaseClient) =>
   supabase
     .from('karute_records')
     .select(
@@ -49,7 +54,7 @@ export type KaruteWithRelations = QueryData<
 export async function getKaruteRecord(
   id: string,
 ): Promise<KaruteWithRelations | null> {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data, error } = await supabase
     .from('karute_records')

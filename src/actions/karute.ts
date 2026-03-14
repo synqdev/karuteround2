@@ -20,7 +20,7 @@ import type { SaveKaruteInput } from '@/types/karute'
 export async function saveKaruteRecord(
   input: SaveKaruteInput,
 ): Promise<{ error: string } | void> {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   let recordId: string
 

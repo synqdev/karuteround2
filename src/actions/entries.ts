@@ -12,7 +12,7 @@ import type { AddEntryInput } from '@/types/karute'
 export async function addManualEntry(
   input: AddEntryInput,
 ): Promise<{ error?: string }> {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { error } = await supabase.from('entries').insert({
     karute_record_id: input.karuteRecordId,
@@ -39,7 +39,7 @@ export async function deleteEntry(
   entryId: string,
   karuteRecordId: string,
 ): Promise<{ error?: string }> {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { error } = await supabase
     .from('entries')
