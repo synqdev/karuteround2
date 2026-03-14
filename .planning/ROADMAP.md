@@ -72,12 +72,13 @@ Plans:
   2. User can edit an existing customer's name and contact info
   3. User can view a paginated/searchable customer list and find a customer by name
   4. User can open a customer profile and see all past karute sessions in reverse-chronological order
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
 - [ ] 03-01-PLAN.md — Schema migration (furigana, phone, email columns), updated types, Server Actions, query helpers, avatar utils, i18n strings
 - [ ] 03-02-PLAN.md — Customer list page with searchable/sortable table, pagination, new customer sheet with creation form
 - [ ] 03-03-PLAN.md — Customer profile page with inline editing, visit stats, karute history list (scaffolded for Phase 4)
+- [ ] 03-04-PLAN.md — Gap closure: locale-aware navigation imports in customer components
 
 ### Phase 4: Karute Records
 **Goal**: After reviewing AI-extracted entries, a staff member can save a complete karute record linked to a customer and view the full detail of any past session.
