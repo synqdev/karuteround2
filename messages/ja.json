@@ -1,4 +1,10 @@
 {
+  "sidebar": {
+    "recording": "録音",
+    "customers": "顧客",
+    "karute": "カルテ",
+    "settings": "設定"
+  },
   "customers": {
     "title": "顧客",
     "newCustomer": "+ 新規顧客",

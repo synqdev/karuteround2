@@ -1,4 +1,10 @@
 {
+  "sidebar": {
+    "recording": "Recording",
+    "customers": "Customers",
+    "karute": "Karute",
+    "settings": "Settings"
+  },
   "customers": {
     "title": "Customers",
     "newCustomer": "+ New Customer",
