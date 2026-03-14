@@ -135,11 +135,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. User can click Export PDF on a karute detail view and receive a downloadable PDF with AI summary, entries, and transcript — Japanese characters render correctly using Noto Sans JP
   2. User can click Export Text and receive a plain text file containing the karute record contents
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 07-01: PDF export — server-side PDF generation (react-pdf or puppeteer), Noto Sans JP font embedding, karute record layout, download response
-- [ ] 07-02: Plain text export — format karute record as structured plain text, download as .txt file
+- [ ] 07-01-PLAN.md — PDF export: @react-pdf/renderer with Noto Sans JP font embedding, KarutePdfDocument component, PDF route handler with auth and streaming
+- [ ] 07-02-PLAN.md — Plain text export: formatKaruteAsText formatter, text route handler, ExportButtons client component for karute detail view
 
 ### Phase 8: Integration Testing
 **Goal**: The core end-to-end flow (record → transcribe → extract → review → save → view) is covered by automated integration tests that clean up after themselves, giving confidence in future changes.
@@ -168,5 +168,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 4. Karute Records | 0/4 | Planned | - |
 | 5. Staff Profiles | 0/3 | Planned | - |
 | 6. UI/UX Polish | 0/4 | Not started | - |
-| 7. Export | 0/2 | Not started | - |
+| 7. Export | 0/2 | Planned | - |
 | 8. Integration Testing | 0/3 | Not started | - |
