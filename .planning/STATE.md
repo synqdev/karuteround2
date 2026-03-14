@@ -38,6 +38,7 @@ Progress: [█░░░░░░░░░] ~3%
 | Phase 03-customer-management P02 | 2 min | 2 tasks | 9 files |
 | Phase 05-staff-profiles P01 | 14 | 2 tasks | 4 files |
 | Phase 04-karute-records P03 | 3 | 2 tasks | 5 files |
+| Phase 02 P01 | 17 | 3 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 04-03]: onMouseDown+e.preventDefault() in dropdown items prevents blur-before-select race condition
 - [Phase 04-03]: hasMounted guard in SaveKaruteFlow: render skeleton server-side, load sessionStorage after mount
 - [Phase 04-03]: NEXT_REDIRECT re-throw: catch block re-throws redirect() exceptions so Next.js navigation works from client components
+- [Phase 02-01]: ENTRY_CATEGORIES for AI extraction: Preference, Treatment, Lifestyle, Health, Allergy, Style (6 categories per CONTEXT.md decision)
+- [Phase 02-01]: Audio never persisted: Buffer held in memory only, discarded after transcription (AI-05 compliance)
 
 ### Pending Todos
 
@@ -81,6 +84,6 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 
 ## Session Continuity
 
-Last session: 2026-03-14
-Stopped at: Completed 05-01-PLAN.md (staff data layer: createStaff, updateStaff, deleteStaff, setActiveStaff, RLS migration)
+Last session: 2026-03-13
+Stopped at: Completed 02-01-PLAN.md (shared AI types, OpenAI client, locale-aware prompts, Whisper transcription route)
 Resume file: None
