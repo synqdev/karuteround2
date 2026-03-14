@@ -46,8 +46,8 @@ describe('Core flow: create customer -> save karute -> verify -> teardown', () =
   it('creates a customer via createCustomer server action', async () => {
     const result = await createCustomer({ name: 'Integration Test Customer' })
 
+    if (!result.success) throw new Error(`Expected success but got: ${result.error}`)
     expect(result.success).toBe(true)
-    if (!result.success) throw new Error('Expected success')
 
     customerId = result.id
     created.customerIds.push(customerId)

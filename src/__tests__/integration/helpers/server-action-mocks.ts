@@ -14,7 +14,7 @@ import { testSupabase } from './supabase'
  * The staff profile ID used by server action mocks.
  * This profile must be created in the test DB via createTestProfile() before tests run.
  */
-export const TEST_STAFF_PROFILE_ID = '00000000-test-0000-0000-000000000001'
+export const TEST_STAFF_PROFILE_ID = '28318e68-6b73-46ed-a1a2-c21299deee3f'
 
 /**
  * REFERENCE: Copy these jest.mock blocks to the top level of your test file.
@@ -26,7 +26,7 @@ export const TEST_STAFF_PROFILE_ID = '00000000-test-0000-0000-000000000001'
  * jest.mock('next/headers', () => ({
  *   cookies: jest.fn(() => ({
  *     get: jest.fn((name: string) => {
- *       if (name === 'active_staff_id') return { value: '00000000-test-0000-0000-000000000001' }
+ *       if (name === 'active_staff_id') return { value: '28318e68-6b73-46ed-a1a2-c21299deee3f' }
  *       return undefined
  *     }),
  *     getAll: jest.fn(() => []),
