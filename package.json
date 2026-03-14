@@ -1,17 +1,20 @@
 {
-  "name": "karuteround2-scaffold",
+  "name": "karute",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint src",
+    "type-check": "tsc --noEmit",
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
     "@fontsource/noto-sans-jp": "^5.2.9",
     "@hookform/resolvers": "^5.2.2",
+    "@react-pdf/renderer": "^4.3.2",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.99.1",
     "class-variance-authority": "^0.7.1",
