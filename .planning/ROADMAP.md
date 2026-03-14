@@ -72,12 +72,12 @@ Plans:
   2. User can edit an existing customer's name and contact info
   3. User can view a paginated/searchable customer list and find a customer by name
   4. User can open a customer profile and see all past karute sessions in reverse-chronological order
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Customer data layer — Supabase client helpers (create, read, update, list with search), TypeScript types
-- [ ] 03-02: Customers list page — searchable table/card list, new customer button, links to profiles
-- [ ] 03-03: Customer profile page — customer info display, edit form, karute history list (populated in Phase 4)
+- [ ] 03-01-PLAN.md — Schema migration (furigana, phone, email columns), updated types, Server Actions, query helpers, avatar utils, i18n strings
+- [ ] 03-02-PLAN.md — Customer list page with searchable/sortable table, pagination, new customer sheet with creation form
+- [ ] 03-03-PLAN.md — Customer profile page with inline editing, visit stats, karute history list (scaffolded for Phase 4)
 
 ### Phase 4: Karute Records
 **Goal**: After reviewing AI-extracted entries, a staff member can save a complete karute record linked to a customer and view the full detail of any past session.
@@ -164,7 +164,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 |-------|----------------|--------|-----------|
 | 1. Foundation + Recording | 0/7 | Planned | - |
 | 2. AI Pipeline | 0/4 | Planned | - |
-| 3. Customer Management | 0/3 | Not started | - |
+| 3. Customer Management | 0/3 | Planned | - |
 | 4. Karute Records | 0/4 | Planned | - |
 | 5. Staff Profiles | 0/3 | Planned | - |
 | 6. UI/UX Polish | 0/4 | Not started | - |
