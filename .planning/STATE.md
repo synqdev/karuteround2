@@ -48,6 +48,7 @@ Progress: [████████░░] ~88%
 | Phase 07-export P02 | 7 | 2 tasks | 4 files |
 | Phase 04-karute-records P04 | 3 | 2 tasks | 4 files |
 | Phase 05-staff-profiles P04 | 5 | 1 tasks | 4 files |
+| Phase 01-foundation-recording P06 | 8 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,9 @@ Recent decisions affecting current work:
 - [Phase 07-02]: ExportButtons placed between KaruteHeader and two-column layout in KaruteDetailView
 - [Phase 04-karute-records]: ReviewConfirmStep uses useRef draftSavedRef guard — prevents saveDraft() from being called multiple times on re-renders
 - [Phase 05-staff-profiles]: 05-04: PostgREST profiles:staff_profile_id join wired into getKaruteRecord and customer history queries — staff name displayed in KaruteHeader and KaruteHistoryList
+- [Phase 01-06]: Format negotiation via isTypeSupported(): webm;codecs=opus → webm → mp4 (iOS Safari) → ogg → wav
+- [Phase 01-06]: AudioContext created inside useEffect (not module load) — browser requires user gesture; stream arrival IS the gesture
+- [Phase 01-06]: useRecordingTimer FREEZES (not resets) on pause — paused state preserves elapsed display
 
 ### Pending Todos
 
@@ -118,5 +122,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 01-02-PLAN.md (retroactive verification: Supabase schema, RLS, browser/server clients, TypeScript types)
+Stopped at: Completed 01-06-PLAN.md (recording hooks: useMediaRecorder, useWaveformBars, useRecordingTimer)
 Resume file: None
