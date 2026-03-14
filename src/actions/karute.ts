@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { getActiveStaffId } from '@/lib/staff'
 import type { SaveKaruteInput } from '@/types/karute'
 
 /**
@@ -30,22 +31,15 @@ export async function saveKaruteRecord(
   let recordId: string
 
   try {
-    // Resolve staff profile: use provided staffId or fall back to first profile row.
-    // TODO (Phase 5): Wire up the real staff switcher — remove this fallback.
-    let staffProfileId = input.staffId ?? null
+    // Read staff_id from the active-staff cookie — never accept it from client.
+    const staffProfileId = await getActiveStaffId()
 
     if (!staffProfileId) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .limit(1)
-        .single()
-
-      staffProfileId = profile?.id ?? null
+      return { error: 'No active staff member selected. Please select a staff member from the header.' }
     }
 
     // Step 1: Insert the karute record and get its generated ID.
-    // customer_id = business tenant UUID (for RLS) — use input.customerId as proxy until Phase 5.
+    // customer_id = business tenant UUID (for RLS) — use input.customerId as proxy.
     // client_id   = FK → customers.id (the individual salon client).
     const { data: record, error: recordError } = await supabase
       .from('karute_records')

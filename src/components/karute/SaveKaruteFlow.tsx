@@ -43,9 +43,10 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
   const [isSaving, setIsSaving] = useState(false)
 
   // Load draft from sessionStorage (client-side only)
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDraft(loadDraft())
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasMounted(true)
   }, [])
 
@@ -72,7 +73,6 @@ export function SaveKaruteFlow({ customers }: SaveKaruteFlowProps) {
 
       const result = await saveKaruteRecord({
         customerId: selectedCustomerId,
-        staffId: draft.staffId,
         transcript: draft.transcript,
         summary: draft.summary,
         entries: draft.entries.map((e) => ({
