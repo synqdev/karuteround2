@@ -36,6 +36,8 @@ Progress: [█░░░░░░░░░] ~3%
 
 *Updated after each plan completion*
 | Phase 03-customer-management P02 | 2 min | 2 tasks | 9 files |
+| Phase 05-staff-profiles P01 | 14 | 2 tasks | 4 files |
+| Phase 04-karute-records P03 | 3 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -62,6 +64,12 @@ Recent decisions affecting current work:
 - 04-01: getKaruteRecord returns null (not throws) on PGRST116 so page can call notFound() cleanly
 - [Phase 03-customer-management]: No cursor-pointer on table rows — hover highlight only (hover:bg-muted/50) per user decision
 - [Phase 03-customer-management]: Visits column shows 0 placeholder — real count deferred to Phase 4 when karute_records are linked
+- [Phase 05-staff-profiles]: Active staff stored in httpOnly:false cookie for both server-side attribution and client-side UI reads
+- [Phase 05-staff-profiles]: RLS policies use 'using (true)' — single business auth means any authenticated user IS the business; Phase 1 restrictive policies dropped
+- [Phase 04-03]: Simple input+dropdown for CustomerCombobox (no cmdk/radix) — neither library installed
+- [Phase 04-03]: onMouseDown+e.preventDefault() in dropdown items prevents blur-before-select race condition
+- [Phase 04-03]: hasMounted guard in SaveKaruteFlow: render skeleton server-side, load sessionStorage after mount
+- [Phase 04-03]: NEXT_REDIRECT re-throw: catch block re-throws redirect() exceptions so Next.js navigation works from client components
 
 ### Pending Todos
 
@@ -74,5 +82,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 03-02-PLAN.md (customer list page: paginated table, debounced search, sheet + form for creation)
+Stopped at: Completed 04-03-PLAN.md (save flow: draft helpers, customer combobox, SaveKaruteFlow)
 Resume file: None
