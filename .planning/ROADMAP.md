@@ -104,12 +104,13 @@ Plans:
   1. Admin can create and edit staff profiles (name, display info) in the Settings page
   2. User can switch the active staff member from the header switcher without logging out
   3. Every saved karute record displays the name of the staff member who created it
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
 - [ ] 05-01-PLAN.md — Staff data layer: Server Actions (CRUD + setActiveStaff), helpers, Zod schema, RLS policies
 - [ ] 05-02-PLAN.md — Staff management UI: Settings page with StaffList and StaffForm (create/edit/delete)
 - [ ] 05-03-PLAN.md — Header staff switcher: StaffSwitcher dropdown, layout integration, cookie-backed persistence
+- [ ] 05-04-PLAN.md — Gap closure: staff name display on karute detail view and history list (profiles join + render)
 
 ### Phase 6: UI/UX Polish
 **Goal**: The full app is visually consistent with the mockup aesthetic, fully bilingual, navigable via sidebar, and comfortable on a tablet.
