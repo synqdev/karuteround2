@@ -93,6 +93,10 @@ Recent decisions affecting current work:
 - 07-01: customers:client_id PostgREST alias needed — karute_records.client_id is FK to customers; bare "customers" causes ambiguity
 - 07-01: export const runtime = 'nodejs' in PDF route — Edge Runtime lacks file system access for font loading
 - [Phase 02-02]: zodResponseFormat used (not JSON mode) — schema-guaranteed structured output for both extraction and summary routes
+- [Phase 02-04]: fetchWithRetry retries any API call exactly once with 1.5s delay — second failure throws to caller for error UI
+- [Phase 02-04]: Blocking modal enforced with full-screen fixed overlay and no dismiss — user cannot leave during AI processing
+- [Phase 02-04]: extract+summarize run in parallel via Promise.all; onProgress uses 'extracting' label for both overlapping steps
+- [Phase 02-04]: PipelineContainer does not persist to Supabase — onConfirm delegates to Phase 4 parent
 - [Phase 05-staff-profiles]: StaffList manages StaffForm open state via local useState — parent mounts/unmounts form for clean state reset
 - [Phase 05-staff-profiles]: window.confirm() for delete confirmation in StaffList — v1 acceptable; server-side guards enforce safety via deleteStaff throwing errors shown as toasts
 - [Phase 07-02]: ExportButtons uses buttonVariants applied directly to <a> tags — Button component uses @base-ui/react/button which has no asChild prop
@@ -110,5 +114,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 04-04-PLAN.md (AI review→save integration + karute list page)
+Stopped at: Completed 02-04-PLAN.md (AI pipeline end-to-end wiring: runAIPipeline + ProcessingModal + PipelineContainer)
 Resume file: None
