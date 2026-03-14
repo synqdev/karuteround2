@@ -29,12 +29,13 @@ export default async function CustomerProfilePage({
 
   const [customerResult, karuteResult] = await Promise.all([
     supabase.from('customers').select('*').eq('id', id).single(),
-    // Use fields that match the karute_records schema: customer_id, created_at (not session_date)
+    // client_id is the FK → customers.id (001_initial_schema.sql line 54)
+    // Filters karute records for this specific client's sessions
     supabase
       .from('karute_records')
-      .select('id, created_at, summary', { count: 'exact' })
-      .eq('customer_id', id)
-      .order('created_at', { ascending: false })
+      .select('id, created_at, summary, staff_profile_id, session_date', { count: 'exact' })
+      .eq('client_id', id)
+      .order('session_date', { ascending: false })
       .range((historyPage - 1) * HISTORY_PAGE_SIZE, historyPage * HISTORY_PAGE_SIZE - 1),
   ])
 
@@ -47,12 +48,14 @@ export default async function CustomerProfilePage({
     id: string
     created_at: string
     summary: string | null
+    staff_profile_id: string | null
+    session_date: string
   }>
   const totalKaruteCount = karuteResult.count ?? 0
   const totalPages = Math.max(1, Math.ceil(totalKaruteCount / HISTORY_PAGE_SIZE))
 
   const visitCount = totalKaruteCount
-  const lastVisit: string | null = karuteRecords[0]?.created_at ?? null
+  const lastVisit: string | null = karuteRecords[0]?.session_date ?? null
 
   return (
     <div className="space-y-6">

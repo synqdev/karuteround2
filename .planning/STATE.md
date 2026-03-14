@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 Phase: 6 of 8 (UI/UX Polish)
 Plan: 2 of 4 in current phase (06-01, 06-02 complete)
 Status: In progress
-Last activity: 2026-03-14 — Completed 06-02 (custom sidebar + TopBar with locale/theme toggles)
+Last activity: 2026-03-14 — Completed 05-01 (staff data layer: Server Actions, helpers, Zod schema, RLS migration)
 
 Progress: [█░░░░░░░░░] ~3%
 
@@ -82,5 +82,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 04-03-PLAN.md (save flow: draft helpers, customer combobox, SaveKaruteFlow)
+Stopped at: Completed 05-01-PLAN.md (staff data layer: createStaff, updateStaff, deleteStaff, setActiveStaff, RLS migration)
 Resume file: None
