@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Staff Profiles** - Staff profile CRUD, header switcher, and record attribution
 - [ ] **Phase 6: UI/UX Polish** - Dark theme, bilingual toggle, sidebar navigation, tablet-responsive layout
 - [x] **Phase 7: Export** - PDF export with Japanese fonts and plain text export
-- [ ] **Phase 8: Integration Testing** - End-to-end integration tests for main flows and test data cleanup
+- [x] **Phase 8: Integration Testing** - End-to-end integration tests for main flows and test data cleanup
 
 ## Phase Details
 
@@ -154,9 +154,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 08-01-PLAN.md — Jest config with next/jest, test helpers (Supabase test client, OpenAI mock factory, server action mocks), npm scripts
-- [ ] 08-02-PLAN.md — API route integration tests for transcribe, extract, and summarize using NTARH with mocked OpenAI
-- [ ] 08-03-PLAN.md — Core flow integration test: create customer + save karute record against real Supabase + ID-tracked teardown
+- [x] 08-01-PLAN.md — Jest config with next/jest, test helpers (Supabase test client, OpenAI mock factory, server action mocks), npm scripts
+- [x] 08-02-PLAN.md — API route integration tests for transcribe, extract, and summarize using NTARH with mocked OpenAI
+- [x] 08-03-PLAN.md — Core flow integration test: create customer + save karute record against real Supabase + ID-tracked teardown
 
 ## Progress
 
@@ -172,4 +172,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 5. Staff Profiles | 4/4 | ✓ Complete | 2026-03-14 |
 | 6. UI/UX Polish | 0/4 | Planned | - |
 | 7. Export | 2/2 | ✓ Complete | 2026-03-14 |
-| 8. Integration Testing | 0/3 | Not started | - |
+| 8. Integration Testing | 3/3 | ✓ Complete | 2026-03-14 |

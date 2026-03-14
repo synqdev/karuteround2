@@ -151,8 +151,8 @@
 | UI-02 | Phase 6 | Pending |
 | UI-03 | Phase 6 | Pending |
 | UI-04 | Phase 6 | Pending |
-| TEST-01 | Phase 8 | Pending |
-| TEST-02 | Phase 8 | Pending |
+| TEST-01 | Phase 8 | ✓ Done |
+| TEST-02 | Phase 8 | ✓ Done |
 
 **Coverage:**
 - v1 requirements: 31 total
