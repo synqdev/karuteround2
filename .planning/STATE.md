@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-03-13)
 
 **Core value:** Service providers can record a client session conversation and instantly get a structured, categorized digital karute without writing anything down.
-**Current focus:** Phase 7 — Export
+**Current focus:** Phase 8 — Integration Testing
 
 ## Current Position
 
-Phase: 7 of 8 (Export)
-Plan: 1 of 2 in current phase (07-01 complete)
-Status: In progress
-Last activity: 2026-03-14 — Completed 07-01 (PDF export with @react-pdf/renderer and Noto Sans JP fonts)
+Phase: 8 of 8 (Integration Testing)
+Plan: 0 of 3 in current phase
+Status: Ready for planning
+Last activity: 2026-03-14 — Completed Phase 7 (Export: PDF + plain text export with ExportButtons)
 
-Progress: [█░░░░░░░░░] ~3%
+Progress: [████████░░] ~88%
 
 ## Performance Metrics
 
@@ -42,6 +42,10 @@ Progress: [█░░░░░░░░░] ~3%
 | Phase 02 P01 | 17 | 3 tasks | 8 files |
 | Phase 02-ai-pipeline P02 | 1 | 2 tasks | 2 files |
 | Phase 05-staff-profiles P02 | 10 | 2 tasks | 3 files |
+| Phase 05-staff-profiles P03 | 2 | 2 tasks | 6 files |
+| Phase 07-export P01 | 17 min | 2 tasks | 4 files |
+| Phase 07-export P02 | 3 min | 2 tasks | 4 files |
+| Phase 07-export P02 | 7 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -90,6 +94,8 @@ Recent decisions affecting current work:
 - [Phase 02-02]: zodResponseFormat used (not JSON mode) — schema-guaranteed structured output for both extraction and summary routes
 - [Phase 05-staff-profiles]: StaffList manages StaffForm open state via local useState — parent mounts/unmounts form for clean state reset
 - [Phase 05-staff-profiles]: window.confirm() for delete confirmation in StaffList — v1 acceptable; server-side guards enforce safety via deleteStaff throwing errors shown as toasts
+- [Phase 07-02]: ExportButtons uses buttonVariants applied directly to <a> tags — Button component uses @base-ui/react/button which has no asChild prop
+- [Phase 07-02]: ExportButtons placed between KaruteHeader and two-column layout in KaruteDetailView
 
 ### Pending Todos
 
@@ -102,5 +108,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 05-02-PLAN.md (staff settings UI: Settings page, StaffList, StaffForm)
+Stopped at: Completed 07-02-PLAN.md (plain text export route + ExportButtons component)
 Resume file: None
