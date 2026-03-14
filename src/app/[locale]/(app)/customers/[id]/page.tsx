@@ -5,7 +5,6 @@ import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CustomerProfileHeader } from '@/components/customers/CustomerProfileHeader'
 import { KaruteHistoryList } from '@/components/customers/KaruteHistoryList'
-import type { Customer } from '@/types/database'
 
 const HISTORY_PAGE_SIZE = 10
 
@@ -31,9 +30,9 @@ export default async function CustomerProfilePage({
     supabase.from('customers').select('*').eq('id', id).single(),
     supabase
       .from('karute_records')
-      .select('id, created_at, summary, staff_profile_id, session_date', { count: 'exact' })
-      .eq('client_id', id)
-      .order('session_date', { ascending: false })
+      .select('id, created_at, summary', { count: 'exact' })
+      .eq('customer_id', id)
+      .order('created_at', { ascending: false })
       .range((historyPage - 1) * HISTORY_PAGE_SIZE, historyPage * HISTORY_PAGE_SIZE - 1),
   ])
 
@@ -41,22 +40,18 @@ export default async function CustomerProfilePage({
     notFound()
   }
 
-  const customer = customerResult.data as Customer
-
-  interface KaruteHistoryItem {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const customer = customerResult.data as any
+  const karuteRecords = (karuteResult.data ?? []) as Array<{
     id: string
     created_at: string
     summary: string | null
-    staff_profile_id: string | null
-    session_date: string
-  }
-
-  const karuteRecords = (karuteResult.data ?? []) as KaruteHistoryItem[]
+  }>
   const totalKaruteCount = karuteResult.count ?? 0
   const totalPages = Math.max(1, Math.ceil(totalKaruteCount / HISTORY_PAGE_SIZE))
 
   const visitCount = totalKaruteCount
-  const lastVisit = karuteRecords[0]?.session_date ?? null
+  const lastVisit: string | null = karuteRecords[0]?.created_at ?? null
 
   return (
     <div className="space-y-6">
