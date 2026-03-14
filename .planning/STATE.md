@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 6 of 8 (UI/UX Polish)
-Plan: 2 of 4 in current phase (06-01, 06-02 complete)
+Plan: 3 of 4 in current phase (06-01, 06-02, 06-03 complete)
 Status: In progress
-Last activity: 2026-03-14 — Completed 05-01 (staff data layer: Server Actions, helpers, Zod schema, RLS migration)
+Last activity: 2026-03-14 — Completed 03-03 (customer profile page, inline edit, karute history list)
 
 Progress: [█░░░░░░░░░] ~3%
 
@@ -73,6 +73,10 @@ Recent decisions affecting current work:
 - [Phase 04-03]: NEXT_REDIRECT re-throw: catch block re-throws redirect() exceptions so Next.js navigation works from client components
 - [Phase 02-01]: ENTRY_CATEGORIES for AI extraction: Preference, Treatment, Lifestyle, Health, Allergy, Style (6 categories per CONTEXT.md decision)
 - [Phase 02-01]: Audio never persisted: Buffer held in memory only, discarded after transcription (AI-05 compliance)
+- 06-03: Translation namespaces: common, auth, sidebar, recording, customers, karute, settings (107 keys total, fully mirrored EN/JP)
+- 06-03: Category translation keys use snake_case matching categories.ts values (symptom, body_area, next_visit) not UPPERCASE
+- 06-03: CategoryBadge converted to 'use client' to support useTranslations for runtime locale switching
+- 06-03: AI-generated content (transcript, summary, entry content) intentionally NOT wrapped in t() — database values displayed as-is
 
 ### Pending Todos
 
@@ -85,5 +89,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-13
-Stopped at: Completed 02-01-PLAN.md (shared AI types, OpenAI client, locale-aware prompts, Whisper transcription route)
+Stopped at: Completed 06-03-PLAN.md (dashboard layout integration + complete EN/JP translations, 107 keys across 7 namespaces)
 Resume file: None
