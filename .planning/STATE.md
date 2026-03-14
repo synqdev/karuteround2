@@ -56,6 +56,7 @@ Progress: [████████░░] ~88%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- 01-01: Next.js 16 scaffold with Tailwind v4 CSS-first (@import "tailwindcss" in globals.css, no tailwind.config.js), shadcn sidebar + header — verified as pre-existing
 - Phase 1 scope: User preference — recording feature belongs in Phase 1 alongside foundation and DB, not deferred to a later phase
 - Recording format: iOS Safari uses mp4, Chrome uses webm — REC-02 requires both are handled at the API route level
 - Audio privacy: Audio is never written to Supabase Storage — only transcript text is persisted (AI-05)
@@ -116,5 +117,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 05-04-PLAN.md (Staff attribution display: profiles join + KaruteHeader + KaruteHistoryList)
+Stopped at: Completed 01-01-PLAN.md (retroactive verification: Next.js 16 scaffold, Tailwind v4, shadcn, dark theme shell, sidebar, header)
 Resume file: None
