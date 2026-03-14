@@ -9,6 +9,8 @@ interface KaruteRecord {
   id: string
   created_at: string
   summary: string | null
+  session_date?: string
+  staff_profile_id?: string | null
 }
 
 interface KaruteHistoryListProps {
@@ -70,9 +72,9 @@ export function KaruteHistoryList({ records, currentPage, totalPages }: KaruteHi
                   }
                 }}
               >
-                {/* Date — uses created_at as session date */}
+                {/* Date — uses session_date when available, falls back to created_at */}
                 <span className="text-sm font-medium shrink-0 w-28">
-                  {formatDate(record.created_at)}
+                  {formatDate(record.session_date ?? record.created_at)}
                 </span>
 
                 {/* Staff name placeholder (Phase 5 will add staff attribution) */}
