@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
 import { ChevronUp, ChevronDown } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
@@ -89,15 +90,15 @@ export function CustomerTable({ customers, currentSort, currentOrder }: Customer
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto rounded-lg border border-border">
+      <table className="w-full min-w-[600px] text-sm">
         {/* Header */}
         <thead>
           <tr className="border-b border-border bg-muted/50">
             {/* Name — sortable */}
             <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
               <button
-                className="inline-flex items-center hover:text-foreground transition-colors"
+                className="inline-flex min-h-[44px] items-center hover:text-foreground transition-colors"
                 onClick={() => handleSort('name')}
               >
                 {t('table.name')}
@@ -117,7 +118,7 @@ export function CustomerTable({ customers, currentSort, currentOrder }: Customer
             {/* Last Visit — sortable (via updated_at proxy) */}
             <th className="px-4 py-2.5 text-left font-medium text-muted-foreground">
               <button
-                className="inline-flex items-center hover:text-foreground transition-colors"
+                className="inline-flex min-h-[44px] items-center hover:text-foreground transition-colors"
                 onClick={() => handleSort('updated_at')}
               >
                 {t('table.lastVisit')}
@@ -152,7 +153,7 @@ export function CustomerTable({ customers, currentSort, currentOrder }: Customer
                 onClick={() => handleRowClick(customer.id)}
               >
                 {/* Name + avatar */}
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 min-h-[44px]">
                   <div className="flex items-center gap-3">
                     {/* Initials avatar */}
                     <div
