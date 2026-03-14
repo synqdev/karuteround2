@@ -41,6 +41,7 @@ Progress: [█░░░░░░░░░] ~3%
 | Phase 04-karute-records P03 | 3 | 2 tasks | 5 files |
 | Phase 02 P01 | 17 | 3 tasks | 8 files |
 | Phase 02-ai-pipeline P02 | 1 | 2 tasks | 2 files |
+| Phase 05-staff-profiles P02 | 10 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,8 @@ Recent decisions affecting current work:
 - 07-01: customers:client_id PostgREST alias needed — karute_records.client_id is FK to customers; bare "customers" causes ambiguity
 - 07-01: export const runtime = 'nodejs' in PDF route — Edge Runtime lacks file system access for font loading
 - [Phase 02-02]: zodResponseFormat used (not JSON mode) — schema-guaranteed structured output for both extraction and summary routes
+- [Phase 05-staff-profiles]: StaffList manages StaffForm open state via local useState — parent mounts/unmounts form for clean state reset
+- [Phase 05-staff-profiles]: window.confirm() for delete confirmation in StaffList — v1 acceptable; server-side guards enforce safety via deleteStaff throwing errors shown as toasts
 
 ### Pending Todos
 
@@ -99,5 +102,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 02-02-PLAN.md (GPT extraction and summary API routes)
+Stopped at: Completed 05-02-PLAN.md (staff settings UI: Settings page, StaffList, StaffForm)
 Resume file: None
