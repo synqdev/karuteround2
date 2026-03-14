@@ -13,7 +13,7 @@ import { getActiveStaffId } from '@/lib/staff'
 export async function createStaff(data: StaffProfileInput): Promise<void> {
   const parsed = staffProfileSchema.safeParse(data)
   if (!parsed.success) {
-    throw new Error(parsed.error.errors.map((e) => e.message).join(', '))
+    throw new Error(parsed.error.issues.map((e) => e.message).join(', '))
   }
 
   const supabase = await createClient()
@@ -33,7 +33,7 @@ export async function createStaff(data: StaffProfileInput): Promise<void> {
 export async function updateStaff(id: string, data: StaffProfileInput): Promise<void> {
   const parsed = staffProfileSchema.safeParse(data)
   if (!parsed.success) {
-    throw new Error(parsed.error.errors.map((e) => e.message).join(', '))
+    throw new Error(parsed.error.issues.map((e) => e.message).join(', '))
   }
 
   const supabase = await createClient()

@@ -68,9 +68,11 @@ export async function createCustomer(input: CustomerFormInput): Promise<ActionRe
           furigana: furigana || null,
           phone: phone || null,
           email: email || null,
+          contact_info: null,
+          notes: null,
         },
       ])
-      .select()
+      .select('id')
       .single()
 
     if (error) {
