@@ -120,13 +120,13 @@ Plans:
   2. User can toggle the language between EN and JP in the header and all UI text and AI outputs switch immediately
   3. Sidebar navigation links to Recording, Customers, Karute, and Settings pages and shows the active page
   4. App is fully usable on a tablet viewport (1024px) — no broken layouts, touch-friendly tap targets
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 06-01: Dark theme audit and polish — apply consistent design tokens across all pages built in Phases 1-5, match mockup colors and typography
-- [ ] 06-02: Bilingual toggle wiring — connect next-intl locale switch to header toggle, ensure all untranslated strings are captured in EN/JP translation files
-- [ ] 06-03: Sidebar navigation component — active state, icons, links to all pages, collapse behavior on tablet
-- [ ] 06-04: Tablet responsive pass — test and fix layouts at 768-1024px, touch-friendly controls, recording modal on touch devices
+- [ ] 06-01-PLAN.md — Dark theme infrastructure (ThemeProvider, OKLCH tokens, Inter + Noto Sans JP fonts) and dashboard layout shell matching reference app
+- [ ] 06-02-PLAN.md — Custom 90px sidebar with active state detection, TopBar with locale toggle and theme toggle
+- [ ] 06-03-PLAN.md — Wire sidebar and TopBar into dashboard layout, complete EN/JP translation files for all pages
+- [ ] 06-04-PLAN.md — Tablet responsive audit and fixes (touch targets, scrollable tables, stacked layouts), human verification
 
 ### Phase 7: Export
 **Goal**: A staff member can export any karute record as a formatted PDF (with Japanese character support) or as plain text for use outside the app.
@@ -167,6 +167,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 3. Customer Management | 0/3 | Planned | - |
 | 4. Karute Records | 0/4 | Planned | - |
 | 5. Staff Profiles | 0/3 | Planned | - |
-| 6. UI/UX Polish | 0/4 | Not started | - |
+| 6. UI/UX Polish | 0/4 | Planned | - |
 | 7. Export | 0/2 | Planned | - |
 | 8. Integration Testing | 0/3 | Not started | - |
