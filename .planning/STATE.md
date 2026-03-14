@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-13)
 ## Current Position
 
 Phase: 8 of 8 (Integration Testing)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: In progress
-Last activity: 2026-03-14 — Completed 08-01: Jest integration test infrastructure (config, helpers, mocks)
+Last activity: 2026-03-14 — Completed 08-02: AI route integration tests (transcribe, extract, summarize — 12 tests)
 
 Progress: [████████░░] ~90%
 
@@ -54,6 +54,7 @@ Progress: [████████░░] ~90%
 | Phase 01-foundation-recording P05 | 15 | 2 tasks | 8 files |
 | Phase 01-foundation-recording P07 | 12 | 2 tasks | 2 files |
 | Phase 08-integration-testing P01 | 4 min | 2 tasks | 9 files |
+| Phase 08-integration-testing P02 | 4 min | 2 tasks | 4 files |
 | Phase 01-foundation-recording P03 | 4 | 1 tasks | 6 files |
 
 ## Accumulated Context
@@ -127,6 +128,8 @@ Recent decisions affecting current work:
 - [Phase 08-01]: test:integration uses --passWithNoTests so script exits 0 before test files exist
 - [Phase 08-01]: jest.mock patterns documented as JSDoc copy-paste reference (not callable functions) due to Jest hoisting
 - [Phase 08-01]: Service role key used for testSupabase to bypass RLS in teardown; FK-safe teardown order: entries -> karute_records -> customers -> profiles
+- [Phase 08-02]: moduleNameMapper added explicitly to jest.config.ts — next/jest auto-detect of tsconfig @/* paths fails with moduleResolution: bundler
+- [Phase 08-02]: zodResponseFormat not mocked separately — mocking openai.chat.completions.parse at call level is sufficient for extract/summarize routes
 - [Phase 01-03]: (app)/layout.tsx auth guard uses getUser() server-side; middleware.ts rewired to proxy() activating getClaims() token refresh that was deferred in 01-04
 
 ### Pending Todos
@@ -140,5 +143,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 01-03-PLAN.md (login/signup forms, auth guard, proxy middleware wiring)
+Stopped at: Completed 08-02-PLAN.md (AI route integration tests: transcribe/extract/summarize, 12 tests)
 Resume file: None
