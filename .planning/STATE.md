@@ -35,6 +35,7 @@ Progress: [█░░░░░░░░░] ~3%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 03-customer-management P03 | 8 min | 2 tasks | 8 files |
 | Phase 03-customer-management P02 | 2 min | 2 tasks | 9 files |
 | Phase 05-staff-profiles P01 | 14 | 2 tasks | 4 files |
 | Phase 04-karute-records P03 | 3 | 2 tasks | 5 files |
@@ -73,6 +74,9 @@ Recent decisions affecting current work:
 - [Phase 04-03]: NEXT_REDIRECT re-throw: catch block re-throws redirect() exceptions so Next.js navigation works from client components
 - [Phase 02-01]: ENTRY_CATEGORIES for AI extraction: Preference, Treatment, Lifestyle, Health, Allergy, Style (6 categories per CONTEXT.md decision)
 - [Phase 02-01]: Audio never persisted: Buffer held in memory only, discarded after transcription (AI-05 compliance)
+- 03-03: Route path is [locale]/(app)/customers/[id] not (app)/customers/[id] — matches existing locale routing structure
+- 03-03: client_id (not customer_id) is FK from karute_records to customers.id — used for profile page history query
+- 03-03: database.ts types corrected to match SQL schema (client_id/staff_profile_id/session_date on karute_records; customer_id on profiles)
 - 06-03: Translation namespaces: common, auth, sidebar, recording, customers, karute, settings (107 keys total, fully mirrored EN/JP)
 - 06-03: Category translation keys use snake_case matching categories.ts values (symptom, body_area, next_visit) not UPPERCASE
 - 06-03: CategoryBadge converted to 'use client' to support useTranslations for runtime locale switching
@@ -88,6 +92,6 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 
 ## Session Continuity
 
-Last session: 2026-03-13
-Stopped at: Completed 06-03-PLAN.md (dashboard layout integration + complete EN/JP translations, 107 keys across 7 namespaces)
+Last session: 2026-03-14
+Stopped at: Completed 03-03-PLAN.md (customer profile page, inline edit, karute history list, corrected DB types)
 Resume file: None
