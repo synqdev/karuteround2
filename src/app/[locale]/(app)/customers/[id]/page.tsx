@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
