@@ -5,6 +5,7 @@ import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { CustomerProfileHeader } from '@/components/customers/CustomerProfileHeader'
 import { KaruteHistoryList } from '@/components/customers/KaruteHistoryList'
+import type { CustomerRow } from '@/types/database'
 
 const HISTORY_PAGE_SIZE = 10
 
@@ -28,6 +29,7 @@ export default async function CustomerProfilePage({
 
   const [customerResult, karuteResult] = await Promise.all([
     supabase.from('customers').select('*').eq('id', id).single(),
+    // Use fields that match the karute_records schema: customer_id, created_at (not session_date)
     supabase
       .from('karute_records')
       .select('id, created_at, summary', { count: 'exact' })
@@ -40,8 +42,7 @@ export default async function CustomerProfilePage({
     notFound()
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const customer = customerResult.data as any
+  const customer = customerResult.data as CustomerRow
   const karuteRecords = (karuteResult.data ?? []) as Array<{
     id: string
     created_at: string

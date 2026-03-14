@@ -6,9 +6,11 @@
  *   GenericTable constraint is satisfied and .insert()/.update() calls type-check.
  * - [_ in never]: never pattern for empty Views/Functions/Enums/CompositeTypes.
  *
- * Phase 4 data model:
- * - karute_records: customer_id (FK → customers.id), staff_id (FK → profiles.id), duration
- * - entries: content field, lowercase category values
+ * karute_records schema (001_initial_schema.sql):
+ * - customer_id: the business tenant UUID (for RLS, matches profiles.customer_id)
+ * - client_id: FK → customers.id (the individual salon client)
+ * - staff_profile_id: FK → profiles.id (the staff member who ran the session)
+ * - session_date: actual appointment date (timestamptz)
  */
 
 export type Database = {
@@ -73,9 +75,10 @@ export type Database = {
       karute_records: {
         Row: {
           id: string
-          customer_id: string
-          staff_id: string | null
-          duration: number | null
+          customer_id: string         // business tenant ID (for RLS)
+          client_id: string           // FK → customers.id
+          staff_profile_id: string | null  // FK → profiles.id
+          session_date: string        // actual appointment date (timestamptz)
           transcript: string | null
           summary: string | null
           created_at: string
@@ -84,8 +87,9 @@ export type Database = {
         Insert: {
           id?: string
           customer_id: string
-          staff_id?: string | null
-          duration?: number | null
+          client_id: string
+          staff_profile_id?: string | null
+          session_date?: string
           transcript?: string | null
           summary?: string | null
           created_at?: string
@@ -94,23 +98,24 @@ export type Database = {
         Update: {
           id?: string
           customer_id?: string
-          staff_id?: string | null
-          duration?: number | null
+          client_id?: string
+          staff_profile_id?: string | null
+          session_date?: string
           transcript?: string | null
           summary?: string | null
           updated_at?: string
         }
         Relationships: [
           {
-            foreignKeyName: 'karute_records_customer_id_fkey'
-            columns: ['customer_id']
+            foreignKeyName: 'karute_records_client_id_fkey'
+            columns: ['client_id']
             isOneToOne: false
             referencedRelation: 'customers'
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'karute_records_staff_id_fkey'
-            columns: ['staff_id']
+            foreignKeyName: 'karute_records_staff_profile_id_fkey'
+            columns: ['staff_profile_id']
             isOneToOne: false
             referencedRelation: 'profiles'
             referencedColumns: ['id']

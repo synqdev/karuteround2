@@ -77,7 +77,7 @@ export function KaruteHistoryList({ records, currentPage, totalPages }: KaruteHi
                   {formatDate(record.session_date ?? record.created_at)}
                 </span>
 
-                {/* Staff name placeholder (Phase 5 will add staff attribution) */}
+                {/* Staff name placeholder — Phase 5 will add actual staff attribution */}
                 <span className="text-sm text-muted-foreground shrink-0 w-20">Staff</span>
 
                 {/* AI summary snippet */}

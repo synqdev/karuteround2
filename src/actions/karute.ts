@@ -44,10 +44,10 @@ export async function saveKaruteRecord(
       .from('karute_records')
       .insert({
         customer_id: input.customerId,
-        staff_id: staffId,
+        client_id: input.customerId,
+        staff_profile_id: staffId,
         transcript: input.transcript,
         summary: input.summary,
-        duration: input.duration ?? null,
       })
       .select('id')
       .single()
