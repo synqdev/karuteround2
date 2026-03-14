@@ -35,6 +35,7 @@ Progress: [█░░░░░░░░░] ~3%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 03-customer-management P02 | 2 min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -59,6 +60,8 @@ Recent decisions affecting current work:
 - 04-01: Database type uses Supabase CLI format (explicit Insert/Update fields, not Omit<Row>) — Omit<> pattern caused GenericTable constraint to resolve Insert as never in Supabase 2.99+
 - 04-01: staffId falls back to first profiles row with TODO for Phase 5 staff switcher wiring
 - 04-01: getKaruteRecord returns null (not throws) on PGRST116 so page can call notFound() cleanly
+- [Phase 03-customer-management]: No cursor-pointer on table rows — hover highlight only (hover:bg-muted/50) per user decision
+- [Phase 03-customer-management]: Visits column shows 0 placeholder — real count deferred to Phase 4 when karute_records are linked
 
 ### Pending Todos
 
@@ -71,5 +74,5 @@ None. (Pre-existing TypeScript errors from Supabase 2.99 type format resolved in
 ## Session Continuity
 
 Last session: 2026-03-14
-Stopped at: Completed 04-01-PLAN.md (karute data layer: categories, types, Server Actions, query helpers)
+Stopped at: Completed 03-02-PLAN.md (customer list page: paginated table, debounced search, sheet + form for creation)
 Resume file: None
