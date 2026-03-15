@@ -188,7 +188,7 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
   const canClose = phase === 'record' && (recState === 'idle' || recState === 'recorded')
 
   return (
-    <div className="fixed left-[102px] top-[52px] bottom-[12px] z-50 w-[340px] flex flex-col rounded-2xl border border-white/20 bg-white/90 shadow-2xl backdrop-blur-md dark:bg-[#3a3a3a]/90 transition-transform duration-300 animate-in slide-in-from-left-4">
+    <div className="fixed left-[102px] top-[52px] bottom-[12px] z-50 w-[340px] flex flex-col rounded-2xl border border-white/20 bg-white/90 shadow-2xl backdrop-blur-md dark:bg-[#3a3a3a]/90 transition-all duration-500 ease-out animate-in slide-in-from-left-8 fade-in-0">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-3 dark:border-gray-700/60">
         <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">

@@ -7,7 +7,9 @@ import { useSearchParams } from 'next/navigation'
 import { TimetableWithTabs } from '@/components/calendar/prototype-calendar-view'
 import { RecordingPanel } from '@/components/dashboard/RecordingPanel'
 import { useTimetableStore } from '@/stores/timetable-store'
+import { getBarsByDate } from '@/actions/dashboard'
 import type { TimelineBarItem } from '@/components/calendar/prototype-calendar-view'
+import type { TimelineBar } from '@/stores/timetable-store'
 import type { CustomerOption } from '@/components/karute/CustomerCombobox'
 
 interface StaffItem {
@@ -56,9 +58,13 @@ export function DashboardClient({ staff, activeStaffId, customers, locale }: Das
     }
   }, [searchParams, recordingOpen, activeStaffId])
 
-  const bars = useTimetableStore((s) => s.bars)
+  // In-progress recording bars from zustand (temp rec_* bars)
+  const liveBars = useTimetableStore((s) => s.bars)
   const setBars = useTimetableStore((s) => s.setBars)
   const recordingBarId = useTimetableStore((s) => s.recordingBarId)
+
+  // Saved karute records as timeline bars (fetched from DB by date)
+  const [savedBars, setSavedBars] = useState<TimelineBar[]>([])
 
   const isToday = useMemo(() => {
     const now = new Date()
@@ -68,6 +74,33 @@ export function DashboardClient({ staff, activeStaffId, customers, locale }: Das
       selectedDate.getDate() === now.getDate()
     )
   }, [selectedDate])
+
+  // Fetch saved bars when date changes
+  useEffect(() => {
+    const dateStr = selectedDate.toISOString().split('T')[0]
+    getBarsByDate(dateStr).then((dbBars) => {
+      setSavedBars(
+        dbBars.map((b) => ({
+          id: b.id,
+          rowId: b.staffId,
+          startMinute: b.startMinute,
+          durationMinute: b.durationMinute,
+          title: b.title,
+          subtitle: b.subtitle,
+          type: 'booking' as const,
+        }))
+      )
+    })
+  }, [selectedDate])
+
+  // Merge saved bars with live recording bars (only show live bars on today)
+  const bars = useMemo(() => {
+    const savedIds = new Set(savedBars.map((b) => b.id))
+    const activeLiveBars = isToday
+      ? liveBars.filter((b) => !savedIds.has(b.id))
+      : []
+    return [...savedBars, ...activeLiveBars]
+  }, [savedBars, liveBars, isToday])
 
   const handlePrevDay = () => {
     setSelectedDate((d) => {
@@ -99,6 +132,21 @@ export function DashboardClient({ staff, activeStaffId, customers, locale }: Das
 
   const handleCloseRecording = () => {
     setRecordingOpen(false)
+    // Refresh saved bars in case a new karute was saved
+    const dateStr = selectedDate.toISOString().split('T')[0]
+    getBarsByDate(dateStr).then((dbBars) => {
+      setSavedBars(
+        dbBars.map((b) => ({
+          id: b.id,
+          rowId: b.staffId,
+          startMinute: b.startMinute,
+          durationMinute: b.durationMinute,
+          title: b.title,
+          subtitle: b.subtitle,
+          type: 'booking' as const,
+        }))
+      )
+    })
   }
 
   const timetableStaff = useMemo(
