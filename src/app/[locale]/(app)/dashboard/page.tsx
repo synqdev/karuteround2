@@ -11,6 +11,10 @@ export default async function DashboardPage({
   const { locale } = await params
   const supabase = await createClient()
 
+  // Get auth user ID — this matches the profile row for the logged-in user
+  const { data: { user } } = await supabase.auth.getUser()
+  const authProfileId = user?.id ?? null
+
   const staffList = await getStaffList()
   const activeStaffId = await getActiveStaffId()
 
@@ -34,6 +38,7 @@ export default async function DashboardPage({
     <DashboardClient
       staff={staff}
       activeStaffId={activeStaffId ?? staff[0]?.id ?? null}
+      authProfileId={authProfileId}
       customers={customers}
       locale={locale}
     />

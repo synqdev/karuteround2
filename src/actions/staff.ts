@@ -17,9 +17,26 @@ export async function createStaff(data: StaffProfileInput): Promise<void> {
   }
 
   const supabase = await createClient()
+
+  // Get the logged-in user's customer_id (business tenant) so the new staff
+  // profile belongs to the same business (Netflix model: 1 account → many staff)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const { data: ownerProfile } = await supabase
+    .from('profiles')
+    .select('customer_id')
+    .eq('id', user.id)
+    .single()
+
+  if (!ownerProfile) throw new Error('Business profile not found')
+
   const { error } = await supabase
     .from('profiles')
-    .insert([{ full_name: parsed.data.name }])
+    .insert([{
+      full_name: parsed.data.name,
+      customer_id: ownerProfile.customer_id,
+    }])
 
   if (error) throw new Error(error.message)
 

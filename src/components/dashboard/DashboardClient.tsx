@@ -21,6 +21,7 @@ interface StaffItem {
 interface DashboardClientProps {
   staff: StaffItem[]
   activeStaffId: string | null
+  authProfileId: string | null
   customers: CustomerOption[]
   locale: string
 }
@@ -40,7 +41,7 @@ function formatDate(date: Date, locale: string) {
   return date.toLocaleDateString(locale, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
 }
 
-export function DashboardClient({ staff, activeStaffId, customers, locale }: DashboardClientProps) {
+export function DashboardClient({ staff, activeStaffId, authProfileId, customers, locale }: DashboardClientProps) {
   const t = useTranslations('dashboard')
   const router = useRouter()
   const { minute: currentMinute, label: currentTimeLabel, date: today } = useCurrentTime()
@@ -203,7 +204,7 @@ export function DashboardClient({ staff, activeStaffId, customers, locale }: Das
           endHour={24}
           currentTimeLabel={isToday ? currentTimeLabel : ''}
           currentMinute={isToday ? currentMinute : 0}
-          activeRowId={activeStaffId ?? undefined}
+          activeRowId={authProfileId ?? activeStaffId ?? undefined}
         />
       </div>
 
