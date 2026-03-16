@@ -2,8 +2,7 @@
 
 import { useState } from 'react'
 import { createAppointment } from '@/actions/appointments'
-import { CustomerCombobox, type CustomerOption } from '@/components/karute/CustomerCombobox'
-import { QuickCreateCustomer } from '@/components/karute/QuickCreateCustomer'
+import type { CustomerOption } from '@/components/karute/CustomerCombobox'
 
 interface AppointmentPopoutProps {
   staffId: string
@@ -26,13 +25,12 @@ export function AppointmentPopout({
   staffName,
   startMinute,
   selectedDate,
-  customers: initialCustomers,
+  customers,
   onCreated,
   onClose,
 }: AppointmentPopoutProps) {
-  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null)
-  const [customerList, setCustomerList] = useState(initialCustomers)
-  const [showQuickCreate, setShowQuickCreate] = useState(false)
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string>('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [duration, setDuration] = useState(60)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -40,12 +38,15 @@ export function AppointmentPopout({
   const endMinute = startMinute + duration
   const timeLabel = `${formatTime(startMinute)} - ${formatTime(endMinute)}`
 
+  const filteredCustomers = searchQuery
+    ? customers.filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    : customers
+
   async function handleCreate() {
     if (!selectedCustomerId) return
     setSaving(true)
     setError(null)
 
-    // Build ISO start time from selectedDate + startMinute
     const startDate = new Date(selectedDate)
     startDate.setHours(Math.floor(startMinute / 60), startMinute % 60, 0, 0)
 
@@ -65,14 +66,10 @@ export function AppointmentPopout({
     onCreated()
   }
 
-  function handleCustomerCreated(newCustomer: CustomerOption) {
-    setCustomerList((prev) => [newCustomer, ...prev])
-    setSelectedCustomerId(newCustomer.id)
-    setShowQuickCreate(false)
-  }
+  const selectedCustomer = customers.find((c) => c.id === selectedCustomerId)
 
   return (
-    <div className="absolute z-50 w-72 rounded-xl border border-border/50 bg-card shadow-2xl backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-200">
+    <div className="absolute z-50 w-80 rounded-xl border border-border/50 bg-card shadow-2xl backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="border-b border-border/30 px-4 py-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold">New Appointment</h3>
         <button
@@ -111,38 +108,53 @@ export function AppointmentPopout({
           ))}
         </div>
 
-        {/* Customer selector */}
+        {/* Customer selector — search + list */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground mb-1 block">Customer</label>
-          {showQuickCreate ? (
-            <QuickCreateCustomer
-              onCreated={handleCustomerCreated}
-              onCancel={() => setShowQuickCreate(false)}
-            />
-          ) : (
-            <CustomerCombobox
-              customers={customerList}
-              selectedId={selectedCustomerId}
-              onSelect={setSelectedCustomerId}
-              onCreateNew={() => setShowQuickCreate(true)}
-              disabled={saving}
-            />
+          <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Customer</label>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search customers..."
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+          <div className="mt-1.5 max-h-32 overflow-y-auto rounded-lg border border-border/50">
+            {filteredCustomers.length === 0 ? (
+              <div className="px-3 py-2 text-xs text-muted-foreground">No customers found</div>
+            ) : (
+              filteredCustomers.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => { setSelectedCustomerId(c.id); setSearchQuery('') }}
+                  className={`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-muted/50 ${
+                    selectedCustomerId === c.id ? 'bg-muted font-medium' : ''
+                  }`}
+                >
+                  {c.name}
+                </button>
+              ))
+            )}
+          </div>
+          {selectedCustomer && (
+            <div className="mt-1.5 flex items-center gap-2 rounded-lg bg-muted/50 px-3 py-1.5 text-sm">
+              <span className="text-muted-foreground">Selected:</span>
+              <span className="font-medium">{selectedCustomer.name}</span>
+            </div>
           )}
         </div>
 
         {error && <p className="text-xs text-destructive">{error}</p>}
 
         {/* Create button */}
-        {!showQuickCreate && (
-          <button
-            type="button"
-            onClick={handleCreate}
-            disabled={saving || !selectedCustomerId}
-            className="w-full rounded-lg bg-primary py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {saving ? 'Creating...' : 'Create Appointment'}
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={handleCreate}
+          disabled={saving || !selectedCustomerId}
+          className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {saving ? 'Creating...' : 'Create Appointment'}
+        </button>
       </div>
     </div>
   )
