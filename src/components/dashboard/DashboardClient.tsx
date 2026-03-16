@@ -190,9 +190,11 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
 
   const handleTimeSlotClick = useCallback(
     (payload: { rowId: string; startMinute: number }) => {
+      // Only allow creating appointments for the active staff member
+      if (activeStaffId && payload.rowId !== activeStaffId) return
       setSlotClick(payload)
     },
-    []
+    [activeStaffId]
   )
 
   const handleCloseRecording = () => {
