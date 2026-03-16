@@ -74,15 +74,22 @@ export function useWaveformBars(
       animFrameRef.current = requestAnimationFrame(draw)
       analyser.getByteTimeDomainData(dataArray)
 
+      // Compute overall RMS for audio level (like reference app)
+      let totalSum = 0
+      for (let i = 0; i < bufferLength; i++) {
+        const val = (dataArray[i] - 128) / 128
+        totalSum += val * val
+      }
+      const audioLevel = Math.min(1, Math.sqrt(totalSum / bufferLength) * 4)
+
       const newBars = Array.from({ length: BAR_COUNT }, (_, i) => {
-        const start = i * bucketSize
-        const end = start + bucketSize
-        const amplitude = rms(dataArray, start, end)
         const envelope = cosineEnvelope(i, BAR_COUNT)
-        // Scale: 8px flat minimum, up to 100px at full amplitude
-        // Add small organic jitter (+/- 2px) for natural look
-        const height = 8 + amplitude * envelope * 92 + (Math.random() - 0.5) * 4
-        return Math.max(8, Math.min(100, height))
+        // Use audioLevel (amplified) + per-bar jitter for variation
+        const jitter = Math.sin(i * 2.1 + Date.now() * 0.003) * 0.15 +
+                       Math.cos(i * 3.7 + Date.now() * 0.002) * 0.1
+        const barLevel = audioLevel * envelope + jitter * audioLevel
+        const height = Math.max(6, barLevel * 96)
+        return Math.max(6, Math.min(100, height))
       })
 
       setBars(newBars)
