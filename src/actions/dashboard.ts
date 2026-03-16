@@ -13,21 +13,39 @@ export interface DashboardBar {
 }
 
 /**
- * Fetch saved karute records for a given date to display as timeline bars.
- * Returns bars with start time derived from created_at in the client's timezone.
+ * Convert a UTC Date to local hours+minutes using the client's timezone offset.
+ * On the server (Vercel UTC), Date.getHours() returns UTC hours.
+ * We subtract tzOffsetMinutes to get the client's local time.
  *
- * @param dateStr - YYYY-MM-DD in the client's local timezone
- * @param tzOffsetMinutes - client's timezone offset in minutes (e.g., -420 for PST)
+ * getTimezoneOffset() returns positive for west of UTC (e.g., 420 for PST).
+ * So local = UTC - offset.
  */
+function utcToLocalMinute(utcDate: Date, tzOffsetMinutes: number): number {
+  const utcMinutes = utcDate.getUTCHours() * 60 + utcDate.getUTCMinutes()
+  // tzOffsetMinutes is positive for west of UTC, so subtract to get local
+  let localMinutes = utcMinutes - tzOffsetMinutes
+  if (localMinutes < 0) localMinutes += 1440
+  if (localMinutes >= 1440) localMinutes -= 1440
+  return localMinutes
+}
+
+function formatTimeRange(startMin: number, endMin: number): string {
+  const h1 = Math.floor(startMin / 60)
+  const m1 = startMin % 60
+  const h2 = Math.floor(endMin / 60)
+  const m2 = endMin % 60
+  return `${h1}:${String(m1).padStart(2, '0')}-${h2}:${String(m2).padStart(2, '0')}`
+}
+
 export async function getBarsByDate(dateStr: string, tzOffsetMinutes: number = 0): Promise<DashboardBar[]> {
   const supabase = await createClient()
 
-  // Convert local date boundaries to UTC for the query
-  // tzOffsetMinutes is from Date.getTimezoneOffset() which is positive for west of UTC
-  const startLocal = new Date(`${dateStr}T00:00:00`)
-  startLocal.setMinutes(startLocal.getMinutes() + tzOffsetMinutes)
-  const endLocal = new Date(`${dateStr}T23:59:59`)
-  endLocal.setMinutes(endLocal.getMinutes() + tzOffsetMinutes)
+  // Build UTC boundaries for the client's local day
+  // Client's midnight = UTC midnight + offset
+  const dayStartUTC = new Date(`${dateStr}T00:00:00Z`)
+  dayStartUTC.setUTCMinutes(dayStartUTC.getUTCMinutes() + tzOffsetMinutes)
+  const dayEndUTC = new Date(`${dateStr}T23:59:59Z`)
+  dayEndUTC.setUTCMinutes(dayEndUTC.getUTCMinutes() + tzOffsetMinutes)
 
   const { data, error } = await supabase
     .from('karute_records')
@@ -38,30 +56,20 @@ export async function getBarsByDate(dateStr: string, tzOffsetMinutes: number = 0
       summary,
       customers:client_id ( name )
     `)
-    .gte('created_at', startLocal.toISOString())
-    .lte('created_at', endLocal.toISOString())
+    .gte('created_at', dayStartUTC.toISOString())
+    .lte('created_at', dayEndUTC.toISOString())
     .order('created_at', { ascending: true })
 
   if (error || !data) return []
 
   return data.map((record) => {
-    // created_at is UTC — convert to local time for timeline display
     const createdAt = new Date(record.created_at)
-    const localHours = createdAt.getHours()
-    const localMinutes = createdAt.getMinutes()
-    const startMinute = localHours * 60 + localMinutes
-
+    const startMinute = utcToLocalMinute(createdAt, tzOffsetMinutes)
     const durationMinute = 15
 
     const customer = (record as unknown as { customers: { name: string } | null }).customers
     const customerName = customer?.name ?? ''
-
-    const startH = Math.floor(startMinute / 60)
-    const startM = startMinute % 60
-    const endMin = startMinute + durationMinute
-    const endH = Math.floor(endMin / 60)
-    const endM = endMin % 60
-    const title = `${startH}:${String(startM).padStart(2, '0')}-${endH}:${String(endM).padStart(2, '0')}`
+    const title = formatTimeRange(startMinute, startMinute + durationMinute)
 
     return {
       id: record.id,

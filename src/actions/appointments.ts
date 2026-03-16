@@ -53,10 +53,10 @@ export async function createAppointment(input: AppointmentInput) {
 export async function getAppointmentsByDate(dateStr: string, tzOffsetMinutes: number = 0) {
   const supabase = await createClient()
 
-  const startLocal = new Date(`${dateStr}T00:00:00`)
-  startLocal.setMinutes(startLocal.getMinutes() + tzOffsetMinutes)
-  const endLocal = new Date(`${dateStr}T23:59:59`)
-  endLocal.setMinutes(endLocal.getMinutes() + tzOffsetMinutes)
+  const dayStartUTC = new Date(`${dateStr}T00:00:00Z`)
+  dayStartUTC.setUTCMinutes(dayStartUTC.getUTCMinutes() + tzOffsetMinutes)
+  const dayEndUTC = new Date(`${dateStr}T23:59:59Z`)
+  dayEndUTC.setUTCMinutes(dayEndUTC.getUTCMinutes() + tzOffsetMinutes)
 
   const { data, error } = await (supabase as SupabaseAny)
     .from('appointments')
@@ -72,8 +72,8 @@ export async function getAppointmentsByDate(dateStr: string, tzOffsetMinutes: nu
       created_at,
       customers:client_id ( name )
     `)
-    .gte('start_time', startLocal.toISOString())
-    .lte('start_time', endLocal.toISOString())
+    .gte('start_time', dayStartUTC.toISOString())
+    .lte('start_time', dayEndUTC.toISOString())
     .order('start_time', { ascending: true })
 
   if (error || !data) return []
