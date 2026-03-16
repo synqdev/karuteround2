@@ -221,43 +221,31 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
             </div>
           )}
 
-          {/* Waveform line */}
-          <div className="w-full px-6">
-            <svg viewBox="0 0 300 80" className="w-full h-20" preserveAspectRatio="none">
-              <polyline
-                fill="none"
-                stroke={recState === 'recording' ? '#f87171' : '#6b7280'}
-                strokeWidth={recState === 'recording' ? '2' : '1.5'}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                points={bars.map((h, i) => {
-                  const x = (i / (bars.length - 1)) * 300
-                  const amplitude = recState === 'recording' ? (h - 8) / 92 : 0
-                  const y = 40 - amplitude * 35
-                  return `${x},${y}`
-                }).join(' ')}
-              />
-              <polyline
-                fill="none"
-                stroke={recState === 'recording' ? '#f87171' : '#6b7280'}
-                strokeWidth={recState === 'recording' ? '2' : '1.5'}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                opacity="0.4"
-                points={bars.map((h, i) => {
-                  const x = (i / (bars.length - 1)) * 300
-                  const amplitude = recState === 'recording' ? (h - 8) / 92 : 0
-                  const y = 40 + amplitude * 35
-                  return `${x},${y}`
-                }).join(' ')}
-              />
-              {/* Center line */}
-              <line x1="0" y1="40" x2="300" y2="40" stroke={recState === 'recording' ? '#f8717140' : '#6b728040'} strokeWidth="1" />
-            </svg>
+          {/* Waveform — matching synqdev/karute style */}
+          <div className="flex h-24 items-center justify-center gap-[3px]">
+            {bars.map((h, i) => {
+              const isRecording = recState === 'recording'
+              // Cosine envelope centered on middle bars for natural wave shape
+              const center = (bars.length - 1) / 2
+              const dist = Math.abs(i - center) / center
+              const envelope = Math.cos(dist * Math.PI * 0.5) ** 2
+              // Jitter for organic feel
+              const jitter = Math.sin(i * 2.1) * 0.15 + Math.cos(i * 3.7) * 0.1
+              const amplitude = isRecording ? ((h - 8) / 92) : 0
+              const barHeight = Math.max(6, (amplitude * envelope + jitter * amplitude) * 96)
+
+              return (
+                <div
+                  key={i}
+                  className="w-1.5 rounded-full bg-primary/40 transition-all duration-150 ease-out"
+                  style={{ height: `${barHeight}px` }}
+                />
+              )
+            })}
           </div>
 
           {/* Timer */}
-          <div className="text-3xl font-mono font-semibold text-gray-700 dark:text-gray-300">
+          <div className="text-4xl font-light tracking-widest tabular-nums font-mono text-foreground">
             {timerFormatted}
           </div>
 
@@ -269,17 +257,18 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center gap-4">
             {recState === 'idle' && (
               <button
                 type="button"
                 onClick={handleStart}
-                className="flex items-center gap-2 rounded-full bg-red-500 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-red-600"
+                className="flex h-20 w-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 hover:shadow-xl active:scale-95"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <circle cx="12" cy="12" r="8" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                  <line x1="12" x2="12" y1="19" y2="22" />
                 </svg>
-                {t('start')}
               </button>
             )}
 
@@ -287,12 +276,11 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
               <button
                 type="button"
                 onClick={handleStop}
-                className="flex items-center gap-2 rounded-full bg-gray-700 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-gray-800"
+                className="flex h-14 w-14 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                   <rect x="6" y="6" width="12" height="12" rx="2" />
                 </svg>
-                {t('stop')}
               </button>
             )}
 
