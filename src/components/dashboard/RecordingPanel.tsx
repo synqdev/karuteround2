@@ -221,40 +221,39 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
             </div>
           )}
 
-          {/* Equalizer */}
-          <div className="flex h-28 items-center justify-center gap-[3px]">
-            {bars.map((h, i) => {
-              const isRecording = recState === 'recording'
-              // Mirror bars around center for equalizer look
-              const barHeight = isRecording ? h : 6
-              // Gradient colors based on amplitude
-              const intensity = h / 100
-              const color = isRecording
-                ? intensity > 0.6
-                  ? 'bg-red-400'
-                  : intensity > 0.3
-                    ? 'bg-orange-400'
-                    : 'bg-amber-400'
-                : 'bg-gray-400/40 dark:bg-gray-600/40'
-
-              return (
-                <div
-                  key={i}
-                  className="flex flex-col items-center gap-[2px]"
-                >
-                  {/* Top bar (mirrored) */}
-                  <div
-                    className={`w-[5px] rounded-full transition-all duration-[60ms] ease-out ${color}`}
-                    style={{ height: `${barHeight * 0.5}px`, opacity: isRecording ? 0.7 : 0.3 }}
-                  />
-                  {/* Bottom bar (main) */}
-                  <div
-                    className={`w-[5px] rounded-full transition-all duration-[60ms] ease-out ${color}`}
-                    style={{ height: `${barHeight * 0.5}px` }}
-                  />
-                </div>
-              )
-            })}
+          {/* Waveform line */}
+          <div className="w-full px-6">
+            <svg viewBox="0 0 300 80" className="w-full h-20" preserveAspectRatio="none">
+              <polyline
+                fill="none"
+                stroke={recState === 'recording' ? '#f87171' : '#6b7280'}
+                strokeWidth={recState === 'recording' ? '2' : '1.5'}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points={bars.map((h, i) => {
+                  const x = (i / (bars.length - 1)) * 300
+                  const amplitude = recState === 'recording' ? (h - 8) / 92 : 0
+                  const y = 40 - amplitude * 35
+                  return `${x},${y}`
+                }).join(' ')}
+              />
+              <polyline
+                fill="none"
+                stroke={recState === 'recording' ? '#f87171' : '#6b7280'}
+                strokeWidth={recState === 'recording' ? '2' : '1.5'}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.4"
+                points={bars.map((h, i) => {
+                  const x = (i / (bars.length - 1)) * 300
+                  const amplitude = recState === 'recording' ? (h - 8) / 92 : 0
+                  const y = 40 + amplitude * 35
+                  return `${x},${y}`
+                }).join(' ')}
+              />
+              {/* Center line */}
+              <line x1="0" y1="40" x2="300" y2="40" stroke={recState === 'recording' ? '#f8717140' : '#6b728040'} strokeWidth="1" />
+            </svg>
           </div>
 
           {/* Timer */}
