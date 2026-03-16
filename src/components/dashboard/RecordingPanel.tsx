@@ -188,7 +188,7 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
   const canClose = phase === 'record' && (recState === 'idle' || recState === 'recorded')
 
   return (
-    <div className="fixed left-[102px] top-[52px] bottom-[12px] z-50 w-[340px] flex flex-col rounded-2xl border border-white/20 bg-white/90 shadow-2xl backdrop-blur-md dark:bg-[#3a3a3a]/90 transition-all duration-500 ease-out animate-in slide-in-from-left-8 fade-in-0">
+    <div className="fixed left-[102px] top-[44px] bottom-[12px] z-50 w-[340px] flex flex-col rounded-2xl border border-white/20 bg-white/90 shadow-2xl backdrop-blur-md dark:bg-[#3a3a3a]/90 transition-all duration-500 ease-out animate-in slide-in-from-left-8 fade-in-0">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-gray-200/60 px-4 py-3 dark:border-gray-700/60">
         <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200">
@@ -221,17 +221,40 @@ export function RecordingPanel({ activeStaffId, customers: initialCustomers, loc
             </div>
           )}
 
-          {/* Waveform */}
-          <div className="flex h-24 items-end justify-center gap-[2px]">
-            {bars.map((h, i) => (
-              <div
-                key={i}
-                className={`w-[4px] rounded-full transition-all duration-75 ${
-                  recState === 'recording' ? 'bg-red-400' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-                style={{ height: `${h}px` }}
-              />
-            ))}
+          {/* Equalizer */}
+          <div className="flex h-28 items-center justify-center gap-[3px]">
+            {bars.map((h, i) => {
+              const isRecording = recState === 'recording'
+              // Mirror bars around center for equalizer look
+              const barHeight = isRecording ? h : 6
+              // Gradient colors based on amplitude
+              const intensity = h / 100
+              const color = isRecording
+                ? intensity > 0.6
+                  ? 'bg-red-400'
+                  : intensity > 0.3
+                    ? 'bg-orange-400'
+                    : 'bg-amber-400'
+                : 'bg-gray-400/40 dark:bg-gray-600/40'
+
+              return (
+                <div
+                  key={i}
+                  className="flex flex-col items-center gap-[2px]"
+                >
+                  {/* Top bar (mirrored) */}
+                  <div
+                    className={`w-[5px] rounded-full transition-all duration-[60ms] ease-out ${color}`}
+                    style={{ height: `${barHeight * 0.5}px`, opacity: isRecording ? 0.7 : 0.3 }}
+                  />
+                  {/* Bottom bar (main) */}
+                  <div
+                    className={`w-[5px] rounded-full transition-all duration-[60ms] ease-out ${color}`}
+                    style={{ height: `${barHeight * 0.5}px` }}
+                  />
+                </div>
+              )
+            })}
           </div>
 
           {/* Timer */}

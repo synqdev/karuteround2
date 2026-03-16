@@ -41,6 +41,14 @@ function formatDate(date: Date, locale: string) {
   return date.toLocaleDateString(locale, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })
 }
 
+/** Format date as YYYY-MM-DD in local timezone (not UTC) */
+function toLocalDateStr(date: Date): string {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
 export function DashboardClient({ staff, activeStaffId, authProfileId, customers, locale }: DashboardClientProps) {
   const t = useTranslations('dashboard')
   const router = useRouter()
@@ -79,8 +87,9 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
 
   // Fetch saved bars when date changes
   useEffect(() => {
-    const dateStr = selectedDate.toISOString().split('T')[0]
-    getBarsByDate(dateStr).then((dbBars) => {
+    const dateStr = toLocalDateStr(selectedDate)
+    const tzOffset = new Date().getTimezoneOffset()
+    getBarsByDate(dateStr, tzOffset).then((dbBars) => {
       setSavedBars(
         dbBars.map((b) => ({
           id: b.id,
@@ -135,8 +144,9 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
   const handleCloseRecording = () => {
     setRecordingOpen(false)
     // Refresh saved bars in case a new karute was saved
-    const dateStr = selectedDate.toISOString().split('T')[0]
-    getBarsByDate(dateStr).then((dbBars) => {
+    const dateStr = toLocalDateStr(selectedDate)
+    const tzOffset = new Date().getTimezoneOffset()
+    getBarsByDate(dateStr, tzOffset).then((dbBars) => {
       setSavedBars(
         dbBars.map((b) => ({
           id: b.id,

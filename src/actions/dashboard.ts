@@ -14,14 +14,20 @@ export interface DashboardBar {
 
 /**
  * Fetch saved karute records for a given date to display as timeline bars.
- * Returns bars with start time derived from created_at and a fixed duration.
+ * Returns bars with start time derived from created_at in the client's timezone.
+ *
+ * @param dateStr - YYYY-MM-DD in the client's local timezone
+ * @param tzOffsetMinutes - client's timezone offset in minutes (e.g., -420 for PST)
  */
-export async function getBarsByDate(dateStr: string): Promise<DashboardBar[]> {
+export async function getBarsByDate(dateStr: string, tzOffsetMinutes: number = 0): Promise<DashboardBar[]> {
   const supabase = await createClient()
 
-  // Query karute records created on the given date
-  const startOfDay = `${dateStr}T00:00:00`
-  const endOfDay = `${dateStr}T23:59:59`
+  // Convert local date boundaries to UTC for the query
+  // tzOffsetMinutes is from Date.getTimezoneOffset() which is positive for west of UTC
+  const startLocal = new Date(`${dateStr}T00:00:00`)
+  startLocal.setMinutes(startLocal.getMinutes() + tzOffsetMinutes)
+  const endLocal = new Date(`${dateStr}T23:59:59`)
+  endLocal.setMinutes(endLocal.getMinutes() + tzOffsetMinutes)
 
   const { data, error } = await supabase
     .from('karute_records')
@@ -32,23 +38,24 @@ export async function getBarsByDate(dateStr: string): Promise<DashboardBar[]> {
       summary,
       customers:client_id ( name )
     `)
-    .gte('created_at', startOfDay)
-    .lte('created_at', endOfDay)
+    .gte('created_at', startLocal.toISOString())
+    .lte('created_at', endLocal.toISOString())
     .order('created_at', { ascending: true })
 
   if (error || !data) return []
 
   return data.map((record) => {
+    // created_at is UTC — convert to local time for timeline display
     const createdAt = new Date(record.created_at)
-    const startMinute = createdAt.getHours() * 60 + createdAt.getMinutes()
+    const localHours = createdAt.getHours()
+    const localMinutes = createdAt.getMinutes()
+    const startMinute = localHours * 60 + localMinutes
 
-    // Use a default 15-minute duration for display
     const durationMinute = 15
 
     const customer = (record as unknown as { customers: { name: string } | null }).customers
     const customerName = customer?.name ?? ''
 
-    // Title: time range
     const startH = Math.floor(startMinute / 60)
     const startM = startMinute % 60
     const endMin = startMinute + durationMinute
