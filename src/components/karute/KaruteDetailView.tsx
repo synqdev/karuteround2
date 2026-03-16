@@ -1,10 +1,11 @@
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import type { KaruteWithRelations } from '@/lib/supabase/karute'
 import { KaruteHeader } from '@/components/karute/KaruteHeader'
 import { EntryCard } from '@/components/karute/EntryCard'
 import { AddEntryForm } from '@/components/karute/AddEntryForm'
 import { TranscriptSection } from '@/components/karute/TranscriptSection'
 import { ExportButtons } from '@/components/karute/ExportButtons'
+import { AIAdvice } from '@/components/karute/AIAdvice'
 
 interface KaruteDetailViewProps {
   karute: KaruteWithRelations
@@ -80,6 +81,16 @@ export function KaruteDetailView({ karute }: KaruteDetailViewProps) {
               <p className="text-sm text-muted-foreground italic">—</p>
             )}
           </div>
+
+          {/* AI Advice for Next Visit */}
+          <AIAdvice
+            summary={karute.summary}
+            entries={(entries as Array<{ category: string; title?: string; content: string }>).map((e) => ({
+              category: e.category,
+              title: e.title ?? e.content,
+            }))}
+            locale={useLocale()}
+          />
 
           {/* Collapsible transcript */}
           <TranscriptSection transcript={karute.transcript} />

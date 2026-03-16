@@ -6,6 +6,7 @@ import { useRouter } from '@/i18n/navigation'
 import { TimetableWithTabs } from '@/components/calendar/prototype-calendar-view'
 import { RecordingPanel, type ActiveAppointment } from '@/components/dashboard/RecordingPanel'
 import { AppointmentPopout } from '@/components/dashboard/AppointmentPopout'
+import { AIRecommendedActions } from '@/components/dashboard/AIRecommendedActions'
 import { useTimetableStore } from '@/stores/timetable-store'
 import { useRecordingUIStore } from '@/stores/recording-store'
 import { getBarsByDate } from '@/actions/dashboard'
@@ -289,6 +290,11 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
             />
           </div>
         )}
+      </div>
+
+      {/* AI Recommended Actions */}
+      <div className="mt-4">
+        <AIRecommendedActions locale={locale} />
       </div>
 
       {/* Stats cards */}
