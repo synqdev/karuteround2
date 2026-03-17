@@ -227,8 +227,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
     [staff]
   )
 
-  const dateLabel = formatDate(selectedDate, 'en')
-  const tabs = useMemo(() => [{ id: 'dashboard', label: dateLabel }], [dateLabel])
+  const tabs = useMemo(() => [] as { id: string; label: string }[], [])
 
   const slotClickStaff = slotClick ? staff.find((s) => s.id === slotClick.rowId) : null
 
@@ -275,14 +274,17 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
       </div>
 
 
-      {/* Date nav + Timetable */}
-      <div className="flex items-center gap-2 mb-1">
-        <button type="button" onClick={handlePrevDay} className="rounded-lg border border-gray-300 px-2.5 py-1.5 text-sm hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">&larr;</button>
-        <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{formatDate(selectedDate, 'en')}</span>
-        <button type="button" onClick={handleNextDay} className="rounded-lg border border-gray-300 px-2.5 py-1.5 text-sm hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">&rarr;</button>
-        {!isToday && (
-          <button type="button" onClick={handleToday} className="rounded-lg bg-[#84a2aa] px-2.5 py-1.5 text-xs font-medium text-white hover:bg-[#6d8d96]">{t('today')}</button>
-        )}
+      {/* Timetable header: Appointments left, date picker center */}
+      <div className="relative flex items-center rounded-t-[22px] bg-[#7d9ea7]/88 px-5 py-2.5">
+        <span className="text-sm font-semibold text-white/90">{t('title')}</span>
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+          <button type="button" onClick={handlePrevDay} className="rounded-md px-2 py-1 text-white/70 hover:text-white hover:bg-white/10 transition-colors">&larr;</button>
+          <span className="text-sm font-medium text-white">{formatDate(selectedDate, 'en')}</span>
+          <button type="button" onClick={handleNextDay} className="rounded-md px-2 py-1 text-white/70 hover:text-white hover:bg-white/10 transition-colors">&rarr;</button>
+          {!isToday && (
+            <button type="button" onClick={handleToday} className="rounded-md bg-white/20 px-2 py-1 text-xs font-medium text-white hover:bg-white/30 transition-colors">{t('today')}</button>
+          )}
+        </div>
       </div>
       <div className="relative min-h-0 flex-1" style={{ minHeight: `${staff.length * 84 + 100}px` }}>
         <TimetableWithTabs
