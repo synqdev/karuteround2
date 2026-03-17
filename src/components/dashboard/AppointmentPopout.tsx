@@ -81,8 +81,8 @@ export function AppointmentPopout({
       tzOffsetMinutes: startDate.getTimezoneOffset(),
     })
 
-    if ('error' in result) {
-      setError(result.error ?? 'Failed to create appointment')
+    if (result && 'error' in result) {
+      setError(String(result.error) || 'Failed to create appointment')
       setSaving(false)
       return
     }

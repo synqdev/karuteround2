@@ -35,7 +35,7 @@ export interface AppointmentRow {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseAny = any
 
-export function validateAppointmentTime(input: AppointmentInput, operatingHours: unknown): string | null {
+export async function validateAppointmentTime(input: AppointmentInput, operatingHours: unknown): Promise<string | null> {
   if (!Number.isInteger(input.durationMinutes) || input.durationMinutes <= 0) {
     return 'Duration must be a positive number of minutes.'
   }
