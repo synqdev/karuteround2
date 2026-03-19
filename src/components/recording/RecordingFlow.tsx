@@ -115,16 +115,15 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
 
   // --- Idle / Recording / Recorded phases ---
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh]">
-      <div className="w-full max-w-md rounded-2xl bg-gradient-to-b from-[#1a2332] to-[#0f1923] p-10 flex flex-col items-center gap-8 shadow-2xl">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8">
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight text-white">{t('title')}</h1>
-        <p className="text-sm text-white/40">{t('recordDescription')}</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('recordDescription')}</p>
       </div>
 
       {/* Microphone error */}
       {micError && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300 max-w-md text-center">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-500 dark:text-red-300 max-w-md text-center">
           {t('micError')}
         </div>
       )}
@@ -135,7 +134,7 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
           {bars.map((height, i) => (
             <div
               key={i}
-              className="w-[6px] rounded-full bg-[#5cbfcf] transition-[height] duration-75"
+              className="w-[6px] rounded-full bg-primary/60 transition-[height] duration-75"
               style={{ height: `${height}px` }}
             />
           ))}
@@ -147,23 +146,20 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
 
       {/* Status text */}
       {phase === 'recording' && recState === 'paused' && (
-        <p className="text-sm text-white/40">{t('paused')}</p>
+        <p className="text-sm text-muted-foreground">{t('paused')}</p>
       )}
 
       {/* Action buttons */}
-      <div className="flex items-center justify-center gap-5">
+      <div className="flex items-center gap-4">
         {phase === 'idle' && (
-          <div className="flex flex-col items-center gap-4">
-            <button
-              type="button"
-              onClick={startRecording}
-              className="flex h-[72px] w-[72px] items-center justify-center rounded-full bg-[#5cbfcf] text-white shadow-[0_0_30px_rgba(92,191,207,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(92,191,207,0.6)] active:scale-95"
-              aria-label={t('start')}
-            >
-              <MicIcon />
-            </button>
-            <span className="text-xs text-white/40">Tap to start recording</span>
-          </div>
+          <button
+            type="button"
+            onClick={startRecording}
+            className="flex items-center justify-center w-16 h-16 rounded-full bg-red-500 hover:bg-red-400 transition-colors shadow-lg shadow-red-500/25"
+            aria-label={t('start')}
+          >
+            <MicIcon />
+          </button>
         )}
 
         {phase === 'recording' && (
@@ -172,7 +168,7 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
               <button
                 type="button"
                 onClick={resumeRecording}
-                className="flex items-center justify-center w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-12 h-12 rounded-full bg-muted hover:bg-muted/80 transition-colors"
                 aria-label={t('resume')}
               >
                 <PlayIcon />
@@ -181,7 +177,7 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
               <button
                 type="button"
                 onClick={pauseRecording}
-                className="flex items-center justify-center w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                className="flex items-center justify-center w-12 h-12 rounded-full bg-muted hover:bg-muted/80 transition-colors"
                 aria-label={t('paused')}
               >
                 <PauseIcon />
@@ -190,7 +186,7 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
             <button
               type="button"
               onClick={stopRecording}
-              className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500 text-white shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-105 active:scale-95"
+              className="flex items-center justify-center w-16 h-16 rounded-full bg-red-500 hover:bg-red-400 transition-colors shadow-lg shadow-red-500/25"
               aria-label={t('stop')}
             >
               <StopIcon />
@@ -203,21 +199,24 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
             <button
               type="button"
               onClick={handleDiscard}
-              className="rounded-full border border-white/20 px-6 py-2.5 text-sm font-medium text-white/60 transition hover:bg-white/10 hover:text-white"
+              className="px-5 py-2.5 rounded-lg border border-border text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
             >
               {t('discard')}
             </button>
             <button
               type="button"
               onClick={handleUseRecording}
-              className="rounded-full bg-[#5cbfcf] px-6 py-2.5 text-sm font-semibold text-white shadow-[0_0_20px_rgba(92,191,207,0.3)] transition hover:bg-[#4db0c0]"
+              className="px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
             >
               {t('useRecording')}
             </button>
           </>
         )}
       </div>
-      </div>
+
+      {phase === 'idle' && (
+        <p className="text-xs text-muted-foreground">{t('idle')}</p>
+      )}
     </div>
   )
 }
@@ -242,7 +241,7 @@ function RecordingTimer({ paused }: { paused: boolean }) {
   const mins = Math.floor(seconds / 60)
   const secs = seconds % 60
   return (
-    <p className="text-5xl font-extralight tracking-[0.3em] font-mono text-white/70 tabular-nums">
+    <p className="text-2xl font-mono text-foreground/70 tabular-nums">
       {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
     </p>
   )
