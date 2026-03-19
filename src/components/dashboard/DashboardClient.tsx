@@ -309,13 +309,17 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
           activeRowId={authProfileId ?? activeStaffId ?? undefined}
         />
 
-        {/* Appointment creation popout — positioned at click location */}
+        {/* Click-outside overlay for appointment popout */}
+        {slotClick && slotClickStaff && (
+          <div className="fixed inset-0 z-[55]" onClick={() => setSlotClick(null)} />
+        )}
+        {/* Appointment creation popout — centered on click, clamped to viewport */}
         {slotClick && slotClickStaff && (
           <div
             className="fixed z-[60]"
             style={{
-              top: `${Math.min(slotClick.clickY, window.innerHeight - 400)}px`,
-              left: `${Math.min(slotClick.clickX, window.innerWidth - 340)}px`,
+              top: `${Math.max(12, Math.min(slotClick.clickY - 120, window.innerHeight - 460))}px`,
+              left: `${Math.max(120, Math.min(slotClick.clickX - 160, window.innerWidth - 340))}px`,
             }}
           >
             <AppointmentPopout
