@@ -30,8 +30,11 @@
   "sidebar": {
     "recording": "Recording",
     "dashboard": "Dashboard",
+    "appointments": "Appointments",
     "customers": "Customers",
     "karute": "Karute",
+    "askAi": "Ask AI",
+    "dataImport": "Import",
     "settings": "Settings"
   },
   "recording": {

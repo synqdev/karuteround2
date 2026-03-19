@@ -1,8 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { getStaffList, getActiveStaffId } from '@/lib/staff'
-import { DashboardClient } from '@/components/dashboard/DashboardClient'
-import type { CustomerOption } from '@/components/karute/CustomerCombobox'
-import { getOrgSettings } from '@/actions/org-settings'
+import { NewDashboard } from '@/components/dashboard/NewDashboard'
 
 export default async function DashboardPage({
   params,
@@ -12,40 +10,54 @@ export default async function DashboardPage({
   const { locale } = await params
   const supabase = await createClient()
 
-  // Get auth user ID — this matches the profile row for the logged-in user
   const { data: { user } } = await supabase.auth.getUser()
-  const authProfileId = user?.id ?? null
+  const staffList = await getStaffList()
+  const activeStaffId = await getActiveStaffId()
+  const activeStaff = staffList.find((s) => s.id === activeStaffId)
 
-  const [staffList, activeStaffId, orgSettings] = await Promise.all([
-    getStaffList(),
-    getActiveStaffId(),
-    getOrgSettings(),
+  // Stats: recordings this week
+  const startOfWeek = new Date()
+  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay())
+  startOfWeek.setHours(0, 0, 0, 0)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sb = supabase as any
+
+  const [recordingsRes, karuteRes, appointmentsRes, recentKaruteRes] = await Promise.all([
+    sb.from('karute_records').select('id', { count: 'exact', head: true }).gte('created_at', startOfWeek.toISOString()),
+    sb.from('karute_records').select('id', { count: 'exact', head: true }).gte('created_at', startOfWeek.toISOString()),
+    sb.from('appointments').select('id, start_time, duration_minutes, staff_profile_id, customers:client_id ( name )').gte('start_time', new Date().toISOString().split('T')[0] + 'T00:00:00Z').lte('start_time', new Date().toISOString().split('T')[0] + 'T23:59:59Z').order('start_time', { ascending: true }),
+    sb.from('karute_records').select('id, summary, created_at, customers:client_id ( name )').order('created_at', { ascending: false }).limit(5),
   ])
 
-  const staff = staffList.map((s) => ({
-    id: s.id,
-    name: s.full_name ?? 'Unknown',
-    avatarInitials: (s.full_name ?? 'U').slice(0, 2).toUpperCase(),
+  const stats = {
+    recordingsThisWeek: recordingsRes.count ?? 0,
+    karuteGenerated: karuteRes.count ?? 0,
+  }
+
+  const todayAppointments = (appointmentsRes.data ?? []).map((a: { id: string; start_time: string; duration_minutes: number; staff_profile_id: string; customers: { name: string } | null }) => ({
+    id: a.id,
+    startTime: a.start_time,
+    durationMinutes: a.duration_minutes,
+    staffId: a.staff_profile_id,
+    customerName: (a.customers as { name: string } | null)?.name ?? 'Unknown',
+    staffName: staffList.find((s) => s.id === a.staff_profile_id)?.full_name ?? 'Unknown',
   }))
 
-  const { data: customersData } = await supabase
-    .from('customers')
-    .select('id, name')
-    .order('name', { ascending: true })
-
-  const customers: CustomerOption[] = (customersData ?? []).map((c) => ({
-    id: c.id,
-    name: c.name,
+  const recentKarute = (recentKaruteRes.data ?? []).map((r: { id: string; summary: string | null; created_at: string; customers: { name: string } | null }) => ({
+    id: r.id,
+    summary: r.summary,
+    createdAt: r.created_at,
+    customerName: (r.customers as { name: string } | null)?.name ?? 'Unknown',
   }))
 
   return (
-    <DashboardClient
-      staff={staff}
-      activeStaffId={activeStaffId ?? staff[0]?.id ?? null}
-      authProfileId={authProfileId}
-      customers={customers}
+    <NewDashboard
+      staffName={activeStaff?.full_name ?? user?.email ?? 'User'}
+      stats={stats}
+      todayAppointments={todayAppointments}
+      recentKarute={recentKarute}
       locale={locale}
-      orgSettings={orgSettings}
     />
   )
 }
