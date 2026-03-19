@@ -186,3 +186,37 @@ export async function updateCustomer(id: string, input: CustomerFormInput): Prom
     return { success: false, error: message }
   }
 }
+
+/**
+ * Delete a customer by ID.
+ * Checks for linked karute records first.
+ */
+export async function deleteCustomer(id: string): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  // Check for linked karute records
+  const { count } = await supabase
+    .from('karute_records')
+    .select('id', { count: 'exact', head: true })
+    .eq('client_id', id)
+
+  if ((count ?? 0) > 0) {
+    return {
+      success: false,
+      error: `Cannot delete: this customer has ${count} karute record${count === 1 ? '' : 's'}. Delete them first.`,
+    }
+  }
+
+  // Delete appointments
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase as any).from('appointments').delete().eq('client_id', id)
+
+  // Delete customer
+  const { error } = await supabase.from('customers').delete().eq('id', id)
+  if (error) {
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/customers')
+  return { success: true, id }
+}

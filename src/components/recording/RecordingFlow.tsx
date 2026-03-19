@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
+import { Clock } from 'lucide-react'
 import { useMediaRecorder } from '@/hooks/use-media-recorder'
 import { useWaveformBars } from '@/hooks/use-waveform-bars'
 import { PipelineContainer } from '@/components/review/PipelineContainer'
@@ -11,9 +12,17 @@ import type { Entry } from '@/types/ai'
 
 type FlowPhase = 'idle' | 'recording' | 'recorded' | 'pipeline' | 'confirm'
 
+interface NextAppointment {
+  id: string
+  customerName: string
+  startTime: string
+  durationMinutes: number
+}
+
 interface RecordingFlowProps {
   customers: CustomerOption[]
   locale: string
+  nextAppointment?: NextAppointment | null
 }
 
 interface ConfirmData {
@@ -23,7 +32,7 @@ interface ConfirmData {
   duration: number
 }
 
-export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
+export function RecordingFlow({ customers, locale, nextAppointment }: RecordingFlowProps) {
   const t = useTranslations('recording')
   const [phase, setPhase] = useState<FlowPhase>('idle')
   const [confirmData, setConfirmData] = useState<ConfirmData | null>(null)
@@ -216,6 +225,27 @@ export function RecordingFlow({ customers, locale }: RecordingFlowProps) {
 
       {phase === 'idle' && (
         <p className="text-xs text-muted-foreground">{t('idle')}</p>
+      )}
+
+      {/* Next upcoming appointment */}
+      {phase === 'idle' && nextAppointment && (
+        <div className="w-full max-w-sm rounded-xl border border-border/30 bg-card p-4 mt-2">
+          <div className="flex items-center gap-2 mb-2">
+            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">Next Appointment</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-semibold">{nextAppointment.customerName}</p>
+              <p className="text-xs text-muted-foreground">
+                {new Date(nextAppointment.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                {' · '}
+                {nextAppointment.durationMinutes}min
+              </p>
+            </div>
+            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+          </div>
+        </div>
       )}
     </div>
   )

@@ -344,24 +344,29 @@ export function Timetable({
               {effectiveEmployees.map((member) => {
                 const isActiveRow = activeRowId === member.id
                 return (
-                <div key={member.id} className="relative border-b border-white/30 last:border-b-0" style={{ height: `${rowHeight}px` }}>
+                <div key={member.id} className="relative border-b border-white/20 last:border-b-0" style={{ height: `${rowHeight}px` }}>
                   <div className={`absolute inset-y-0 left-0 right-0 rounded-[24px] ${
-                    isActiveRow ? 'bg-[#d0dce0] ring-2 ring-[#84a2aa]/60' : 'bg-[#c3c9cd]'
+                    isActiveRow ? 'bg-[#d0dce0]' : 'bg-[#c3c9cd]'
                   }`} />
 
                   {slotStarts.map((slotStart) => {
                     const slotLeft = minutesToPercent(slotStart, startMinuteVal, totalMinutes)
                     const slotWidth = (snapMinutes / totalMinutes) * 100
 
+                    const slotTimeLabel = `${String(Math.floor(slotStart / 60)).padStart(2, '0')}:${String(slotStart % 60).padStart(2, '0')}`
                     return (
                       <button
                         key={`${member.id}-${slotStart}`}
                         type="button"
-                        aria-label={`Create at ${String(Math.floor(slotStart / 60)).padStart(2, '0')}:${String(slotStart % 60).padStart(2, '0')} for ${member.name}`}
-                        className="absolute inset-y-0 z-20 rounded-[20px] border border-transparent bg-transparent transition hover:border-white/20"
+                        aria-label={`Create at ${slotTimeLabel} for ${member.name}`}
+                        className="group absolute inset-y-0 z-20 rounded-[20px] border border-transparent bg-transparent transition-all hover:border-white/30 hover:bg-white/10"
                         style={{ left: `${slotLeft}%`, width: `${slotWidth}%` }}
                         onClick={() => handleSlotClick(member.id, slotStart, member.segments)}
-                      />
+                      >
+                        <span className="absolute top-1 left-1/2 -translate-x-1/2 text-[9px] font-medium text-white/0 group-hover:text-white/50 transition-colors">
+                          {slotTimeLabel}
+                        </span>
+                      </button>
                     )
                   })}
 
@@ -439,7 +444,7 @@ export function Timetable({
                 <div key={member.id} className="relative" style={{ height: `${rowHeight}px` }}>
                   <div className="absolute left-0 top-1/2 -translate-y-1/2">
                     <div className={`h-[78px] w-[78px] overflow-hidden rounded-[24px] border bg-[#f5f6f8] text-[#4f5962] ${
-                      isActiveRow ? 'border-[#84a2aa] ring-2 ring-[#84a2aa]/40' : 'border-white/70'
+                      isActiveRow ? 'border-gray-400' : 'border-white/70'
                     }`}>
                       <div className="h-[56px] bg-gradient-to-br from-[#f7f7f7] to-[#dadde3]">
                         {member.avatarSrc ? (

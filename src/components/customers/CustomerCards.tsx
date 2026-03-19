@@ -1,6 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
+import { Trash2 } from 'lucide-react'
+import { toast } from 'sonner'
+import { deleteCustomer } from '@/actions/customers'
 import type { Customer } from '@/types/database'
 
 interface CustomerCardsProps {
@@ -16,7 +20,19 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
-export function CustomerCards({ customers }: CustomerCardsProps) {
+export function CustomerCards({ customers: initialCustomers }: CustomerCardsProps) {
+  const [customers, setCustomers] = useState(initialCustomers)
+
+  async function handleDelete(id: string, name: string) {
+    if (!window.confirm(`Delete ${name}? This cannot be undone.`)) return
+    const result = await deleteCustomer(id)
+    if (result.success) {
+      setCustomers((prev) => prev.filter((c) => c.id !== id))
+      toast.success(`${name} deleted`)
+    } else {
+      toast.error(result.error)
+    }
+  }
   if (customers.length === 0) {
     return (
       <div className="rounded-lg border border-border py-12 text-center text-sm text-muted-foreground">
@@ -53,6 +69,16 @@ export function CustomerCards({ customers }: CustomerCardsProps) {
               Added {formatDate(c.created_at)}
             </p>
           </div>
+
+          {/* Delete */}
+          <button
+            type="button"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(c.id, c.name) }}
+            className="shrink-0 p-1.5 rounded-md text-muted-foreground/0 group-hover:text-muted-foreground hover:!text-red-500 hover:!bg-red-500/10 transition-all"
+            aria-label="Delete"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
         </Link>
       ))}
     </div>
