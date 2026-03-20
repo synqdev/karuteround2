@@ -396,6 +396,7 @@ export function Timetable({
                         {renderBarPopover && (item.type === 'booking' || item.type === 'open' || item.type === 'completed') && isPopoverOpen ? (
                           <div
                             className="absolute left-1/2 top-full z-[60] mt-2 w-64 -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-xl"
+                            onMouseDown={(e) => e.stopPropagation()}
                             onClick={(e) => e.stopPropagation()}
                           >
                             {renderBarPopover(item)}
