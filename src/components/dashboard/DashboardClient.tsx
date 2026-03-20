@@ -235,8 +235,6 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
       if (!isAppt) return
 
       const appointmentId = barId.replace('appt_', '')
-      if (!window.confirm('Delete this appointment?')) return
-
       const result = await deleteAppointment(appointmentId)
       if ('error' in result) {
         toast.error(result.error)
