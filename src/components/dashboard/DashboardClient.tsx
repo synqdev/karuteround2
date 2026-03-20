@@ -222,7 +222,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
   return (
     <>
       {/* Timetable header: Appointments left, date picker center */}
-      <div className="relative flex items-center rounded-t-[22px] bg-[#6b7280]/80 px-5 py-2.5">
+      <div className="relative flex items-center rounded-t-[22px] bg-gray-700 dark:bg-gray-600 px-5 py-2.5">
         <span className="text-sm font-semibold text-white/90">{t('title')}</span>
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
           <button type="button" onClick={handlePrevDay} className="rounded-md px-2 py-1 text-white/70 hover:text-white hover:bg-white/10 transition-colors">&larr;</button>
