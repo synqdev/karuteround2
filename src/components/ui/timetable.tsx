@@ -293,7 +293,7 @@ export function Timetable({
               type="button"
               onClick={() => onTabChange?.(tab.id)}
               className={`flex h-[44px] flex-1 items-center justify-center gap-2 rounded-t-2xl px-3 text-[16px] font-semibold transition ${
-                active ? 'bg-[#84a2aa] text-white' : 'bg-[#a4a3a3] text-white/95 hover:bg-[#9a9a9a]'
+                active ? 'bg-[#6b7280] text-white' : 'bg-[#a4a3a3] text-white/95 hover:bg-[#9a9a9a]'
               }`}
             >
               {tab.icon}
@@ -303,8 +303,8 @@ export function Timetable({
         })}
       </div>
 
-      <div className="relative min-h-0 flex-1 rounded-[22px] rounded-tl-none rounded-tr-none bg-[#7d9ea7]/88 p-3">
-        <div className="relative flex h-full min-h-0 flex-col rounded-[18px] rounded-tl-none rounded-tr-none border border-white/15 bg-[#78949c]/60 p-1">
+      <div className="relative min-h-0 flex-1 rounded-[22px] rounded-tl-none rounded-tr-none bg-[#8a8f95]/70 p-3">
+        <div className="relative flex h-full min-h-0 flex-col rounded-[18px] rounded-tl-none rounded-tr-none border border-white/15 bg-[#8a8f95]/50 p-1">
           {!customBody ? (
             <div className="relative h-[50px] border-b border-white/20">
               <div
