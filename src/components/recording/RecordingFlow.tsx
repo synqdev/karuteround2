@@ -234,9 +234,9 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
       </div>
 
       {/* Next appointment info */}
-      {nextAppointment && (
-        <div className="w-full max-w-sm rounded-xl border border-border bg-card p-4">
-          <p className="text-xs font-medium text-muted-foreground mb-2">Recording for</p>
+      <div className="w-full max-w-sm rounded-xl border border-border bg-card p-4">
+        <p className="text-xs font-medium text-muted-foreground mb-2">Recording for</p>
+        {nextAppointment ? (
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-semibold text-foreground">{nextAppointment.customerName}</p>
@@ -246,8 +246,10 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
             </div>
             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-muted-foreground">No upcoming appointment</p>
+        )}
+      </div>
     </div>
   )
 }
