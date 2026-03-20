@@ -101,10 +101,17 @@ export async function saveKaruteRecord(
   // Link karute to appointment if provided
   if (input.appointmentId) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    await (supabase as any)
+    const { error: linkError } = await (supabase as any)
       .from('appointments')
       .update({ karute_record_id: recordId })
       .eq('id', input.appointmentId)
+    if (linkError) {
+      console.error('[saveKaruteRecord] Failed to link appointment:', linkError.message)
+    } else {
+      console.log('[saveKaruteRecord] Linked karute', recordId, 'to appointment', input.appointmentId)
+    }
+  } else {
+    console.log('[saveKaruteRecord] No appointmentId provided')
   }
 
   // revalidate and redirect OUTSIDE try/catch — redirect() throws internally
