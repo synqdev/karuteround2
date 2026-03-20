@@ -160,3 +160,27 @@ export async function saveKaruteRecordInline(
   revalidatePath(`/customers/${input.customerId}`)
   return { id: record.id }
 }
+
+export async function deleteKaruteRecord(karuteId: string): Promise<{ success: true } | { error: string }> {
+  const supabase = await createClient()
+
+  // Unlink from any appointment first
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (supabase as any)
+    .from('appointments')
+    .update({ karute_record_id: null })
+    .eq('karute_record_id', karuteId)
+
+  // Entries have FK cascade or we delete manually
+  await supabase.from('entries').delete().eq('karute_record_id', karuteId)
+
+  const { error } = await supabase
+    .from('karute_records')
+    .delete()
+    .eq('id', karuteId)
+
+  if (error) return { error: error.message }
+
+  revalidatePath('/dashboard')
+  return { success: true }
+}

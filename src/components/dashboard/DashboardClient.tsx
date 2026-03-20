@@ -8,6 +8,7 @@ import { AppointmentPopout } from '@/components/dashboard/AppointmentPopout'
 import { useTimetableStore } from '@/stores/timetable-store'
 import { getBarsByDate } from '@/actions/dashboard'
 import { getAppointmentsByDate, updateAppointment, deleteAppointment, type AppointmentRow } from '@/actions/appointments'
+import { deleteKaruteRecord } from '@/actions/karute'
 import { toast } from 'sonner'
 import type { OrgSettings } from '@/actions/org-settings'
 import type { TimelineBarItem } from '@/components/calendar/prototype-calendar-view'
@@ -246,6 +247,19 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
     [refreshBars]
   )
 
+  const handleDeleteKarute = useCallback(
+    async (karuteId: string) => {
+      const result = await deleteKaruteRecord(karuteId)
+      if ('error' in result) {
+        toast.error(result.error)
+      } else {
+        toast.success('Karute deleted')
+      }
+      refreshBars()
+    },
+    [refreshBars]
+  )
+
   // Bar popover — show details + actions based on type
   const renderBarPopover = useCallback(
     (bar: TimelineBarItem) => {
@@ -282,21 +296,40 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 View Karute
               </button>
             )}
-            {/* Delete — for all appointment bars */}
+            {/* Delete karute — for standalone karute bars or completed appointments */}
+            {karuteId && (
+              <button
+                type="button"
+                onClick={() => handleDeleteKarute(karuteId)}
+                className="w-full rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
+              >
+                Delete Karute
+              </button>
+            )}
+            {!isAppt && (
+              <button
+                type="button"
+                onClick={() => handleDeleteKarute(bar.id)}
+                className="w-full rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
+              >
+                Delete Karute
+              </button>
+            )}
+            {/* Delete appointment */}
             {isAppt && (
               <button
                 type="button"
                 onClick={() => handleDeleteAppointment(bar.id)}
                 className="w-full rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
               >
-                Delete
+                Delete Appointment
               </button>
             )}
           </div>
         </div>
       )
     },
-    [router, handleDeleteAppointment, rawAppointments]
+    [router, handleDeleteAppointment, handleDeleteKarute, rawAppointments]
   )
 
   const timetableStaff = useMemo(
