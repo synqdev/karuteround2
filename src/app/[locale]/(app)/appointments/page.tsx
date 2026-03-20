@@ -39,6 +39,7 @@ export default async function AppointmentsPage({
   }))
 
   return (
+    <div className="-m-4 md:-m-6">
     <DashboardClient
       staff={staff}
       activeStaffId={activeStaffId ?? staff[0]?.id ?? null}
@@ -47,5 +48,6 @@ export default async function AppointmentsPage({
       locale={locale}
       orgSettings={orgSettings}
     />
+    </div>
   )
 }
