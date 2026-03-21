@@ -43,9 +43,12 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen flex-col overflow-hidden bg-[#e8e8e8] p-3 dark:bg-[#2a2a2a]">
-      <div className="flex items-center justify-end px-4 py-1">
-        <TopBar />
-        <StaffSwitcher staffList={staffItems} activeStaff={activeStaff} authProfileId={user.id} />
+      <div className="flex items-center px-4 py-1">
+        <img src="/karute_logo.png" alt="Karute" className="h-7 object-contain dark:invert" />
+        <div className="ml-auto flex items-center">
+          <TopBar />
+          <StaffSwitcher staffList={staffItems} activeStaff={activeStaff} authProfileId={user.id} />
+        </div>
       </div>
       <div className="flex flex-1 gap-3 min-h-0 overflow-hidden">
         <div className="relative">

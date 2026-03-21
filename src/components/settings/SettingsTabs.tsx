@@ -170,7 +170,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale }: 
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Salon Name</label>
+                <label className="text-sm font-medium mb-1.5 block">Business Name</label>
                 <input
                   type="text"
                   value={settings.salon_name}

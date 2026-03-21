@@ -90,6 +90,11 @@ export function StaffList({ staffList, activeStaffId }: StaffListProps) {
                     <span className="text-sm font-medium">
                       {staff.full_name ?? '(No name)'}
                     </span>
+                    {staff.display_role === 'owner' && (
+                      <span title="Account Owner" className="text-amber-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 18.5l2-8 4.5 3 3-5 3 5 4.5-3 2 8z"/><circle cx="12" cy="4" r="2"/><circle cx="4" cy="9" r="1.5"/><circle cx="20" cy="9" r="1.5"/></svg>
+                      </span>
+                    )}
                     {isActive && (
                       <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-600 dark:text-green-400">
                         Active
