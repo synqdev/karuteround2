@@ -18,10 +18,12 @@ export async function createStaff(data: StaffProfileInput): Promise<void> {
 
   const supabase = await createClient()
 
-  // Get the logged-in user's customer_id (business tenant) so the new staff
-  // profile belongs to the same business (Netflix model: 1 account → many staff)
+  // Get a customer_id (business tenant) so the new staff profile belongs
+  // to the same business. Try auth user's profile first, fall back to any profile.
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
+
+  let customerIdValue: string | null = null
 
   const { data: ownerProfile } = await supabase
     .from('profiles')
@@ -29,7 +31,21 @@ export async function createStaff(data: StaffProfileInput): Promise<void> {
     .eq('id', user.id)
     .single()
 
-  if (!ownerProfile) throw new Error('Business profile not found')
+  if (ownerProfile?.customer_id) {
+    customerIdValue = ownerProfile.customer_id
+  } else {
+    // Fallback: use any existing profile's customer_id
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: anyProfile } = await (supabase as any)
+      .from('profiles')
+      .select('customer_id')
+      .not('customer_id', 'is', null)
+      .limit(1)
+      .single()
+    customerIdValue = anyProfile?.customer_id ?? null
+  }
+
+  if (!customerIdValue) throw new Error('Business profile not found')
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { error } = await (supabase as any)
@@ -37,7 +53,7 @@ export async function createStaff(data: StaffProfileInput): Promise<void> {
     .insert([{
       id: crypto.randomUUID(),
       full_name: parsed.data.name,
-      customer_id: ownerProfile.customer_id,
+      customer_id: customerIdValue,
       position: parsed.data.position ?? '',
       email: parsed.data.email ?? '',
       phone: parsed.data.phone ?? '',
