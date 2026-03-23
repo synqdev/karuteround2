@@ -15,7 +15,11 @@
     "next": "次へ",
     "previousPage": "前のページ",
     "nextPage": "次のページ",
-    "pageN": "{n}ページ"
+    "pageN": "{n}ページ",
+    "retry": "再試行",
+    "close": "閉じる",
+    "custom": "カスタム",
+    "list": "リスト"
   },
   "auth": {
     "title": "カルテにサインイン",
@@ -50,7 +54,12 @@
     "idle": "録音待機中",
     "newSession": "新しいセッション",
     "recordDescription": "セッションを録音してカルテを自動生成します",
-    "micError": "マイクへのアクセスが拒否されました。マイクへのアクセスを許可してもう一度お試しください。"
+    "micError": "マイクへのアクセスが拒否されました。マイクへのアクセスを許可してもう一度お試しください。",
+    "recordingFor": "録音対象",
+    "noUpcomingAppointment": "予約がありません",
+    "noBookingTitle": "予約が見つかりません",
+    "noBookingDescription": "予約がありません。録音はカルテに保存されますが、予約にはリンクされません。",
+    "recordAnyway": "録音する"
   },
   "customers": {
     "title": "顧客",
@@ -90,16 +99,27 @@
       "noVisits": "まだ来店がありません",
       "karuteHistory": "施術履歴",
       "back": "戻る",
-      "staff": "スタッフ"
+      "staff": "スタッフ",
+      "registered": "{date}に登録",
+      "notes": "メモ",
+      "type": "タイプ",
+      "churnAlert": "最終来店から{days}日経過"
     },
     "toast": {
       "created": "顧客を作成しました",
       "updated": "顧客を更新しました",
-      "error": "エラーが発生しました"
+      "error": "エラーが発生しました",
+      "deleted": "顧客を削除しました"
     },
     "empty": {
       "title": "顧客がまだいません",
       "description": "最初の顧客を作成しましょう"
+    },
+    "filters": {
+      "all": "すべて",
+      "nominated": "指名",
+      "walkin": "フリー",
+      "sort": "並び替え"
     }
   },
   "karute": {
@@ -113,13 +133,15 @@
     "staff": "スタッフ",
     "date": "日付",
     "customer": "顧客",
-    "exportPdf": "PDFエクスポート",
-    "exportText": "テキストエクスポート",
+    "exportPdf": "PDF出力",
+    "exportText": "テキスト出力",
     "noKarute": "カルテがまだありません",
     "saveKarute": "カルテを保存",
     "saving": "保存中...",
     "selectCustomerFirst": "保存前に顧客を選択してください",
     "noDraftFound": "下書きデータが見つかりません。保存前にAIレビュー手順を完了してください。",
+    "deleted": "カルテを削除しました",
+    "deleteConfirm": "このカルテを削除しますか？元に戻せません。",
     "categories": {
       "symptom": "症状",
       "treatment": "トリートメント",
@@ -131,13 +153,39 @@
       "other": "その他"
     }
   },
+  "review": {
+    "saveKarute": "カルテを保存",
+    "transcript": "トランスクリプト",
+    "noTranscript": "トランスクリプトがありません。",
+    "aiSummary": "AIサマリー",
+    "aiSuggestions": "AI提案",
+    "addEntry": "エントリーを追加",
+    "customer": "顧客:",
+    "processingTitle": "録音を処理中",
+    "processingDescription": "AIがセッションを分析しています...",
+    "processingFailed": "処理に失敗しました",
+    "transcribing": "文字起こし中...",
+    "extracting": "エントリー抽出中...",
+    "summarizing": "サマリー生成中..."
+  },
   "dashboard": {
     "title": "予約",
     "today": "今日",
     "record": "録音",
     "customersServed": "対応済み顧客",
     "recordingsThisWeek": "今週の録音",
-    "karuteGenerated": "カルテ生成数"
+    "karuteGenerated": "カルテ生成数",
+    "newAppointment": "新しい予約",
+    "createAppointment": "予約を作成",
+    "appointmentMoved": "予約を移動しました",
+    "appointmentDeleted": "予約を削除しました",
+    "karuteDeleted": "カルテを削除しました",
+    "deleteAppointment": "予約を削除",
+    "deleteKarute": "カルテを削除",
+    "viewKarute": "カルテを見る",
+    "customer": "顧客",
+    "duration": "期間",
+    "creating": "作成中..."
   },
   "settings": {
     "title": "設定",
@@ -148,6 +196,44 @@
     "deleteConfirm": "このスタッフを削除してもよろしいですか？",
     "name": "名前",
     "active": "有効",
-    "noStaff": "スタッフがまだいません"
+    "noStaff": "スタッフがまだいません",
+    "organization": "組織",
+    "organizationDescription": "組織の詳細を表示",
+    "businessName": "事業名",
+    "businessType": "業種",
+    "hoursOfOperation": "営業時間",
+    "hoursDescription": "各曜日の開店・閉店時間を設定してください。",
+    "soloMode": "ソロモード",
+    "soloDescription": "スタッフが1人の場合に有効にします。スタッフ切替を非表示にしてUIを簡略化します。",
+    "webhookUrl": "Webhook URL",
+    "webhookDescription": "カルテ作成時にこのURLにPOSTします。",
+    "aiSettings": "AI設定",
+    "aiDescription": "AI処理の設定を管理",
+    "aiModel": "優先AIモデル",
+    "confidenceThreshold": "分類確信度閾値",
+    "recordingSettings": "録音設定",
+    "recordingDescription": "録音品質と動作を設定",
+    "audioQuality": "音声品質",
+    "autoStop": "自動停止タイマー（分）",
+    "settingsSaved": "設定を保存しました",
+    "staffMembers": "スタッフメンバー",
+    "addStaffMember": "スタッフを追加",
+    "editStaffMember": "スタッフを編集",
+    "staffAdded": "スタッフを追加しました",
+    "staffUpdated": "スタッフを更新しました",
+    "avatarUploaded": "アバターをアップロードしました",
+    "accountOwner": "アカウントオーナー",
+    "position": "役職",
+    "manageStaff": "スタッフ管理",
+    "selectPosition": "役職を選択..."
+  },
+  "staff": {
+    "switchStaff": "スタッフ切替",
+    "addStaff": "スタッフを追加",
+    "noStaff": "スタッフなし",
+    "selectStaff": "スタッフを選択",
+    "logOut": "ログアウト",
+    "owner": "オーナー",
+    "stylist": "スタイリスト"
   }
 }

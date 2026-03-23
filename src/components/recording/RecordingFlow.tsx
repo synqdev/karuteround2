@@ -244,7 +244,7 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
 
       {/* Appointment card with full details */}
       <div className="w-full max-w-sm rounded-xl border border-border bg-card p-4">
-        <p className="text-xs font-medium text-muted-foreground mb-2">Recording for</p>
+        <p className="text-xs font-medium text-muted-foreground mb-2">{t('recordingFor')}</p>
         {nextAppointment ? (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -264,7 +264,7 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
             )}
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground">No upcoming appointment</p>
+          <p className="text-sm text-muted-foreground">{t('noUpcomingAppointment')}</p>
         )}
       </div>
 
@@ -273,9 +273,9 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
         <>
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" onClick={() => setShowNoBookingPrompt(false)} />
           <div className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm rounded-xl border border-border bg-card p-6 shadow-xl space-y-4">
-            <h3 className="text-base font-semibold text-foreground">No booking found</h3>
+            <h3 className="text-base font-semibold text-foreground">{t('noBookingTitle')}</h3>
             <p className="text-sm text-muted-foreground">
-              You don&apos;t have an upcoming appointment. You can still record — it will be saved to your karute but won&apos;t be linked to any booking.
+              {t('noBookingDescription')}
             </p>
             <div className="flex gap-3">
               <button
@@ -290,7 +290,7 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
                 onClick={handleStartAnywayWithoutBooking}
                 className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                Record anyway
+                {t('recordAnyway')}
               </button>
             </div>
           </div>

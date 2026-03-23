@@ -15,7 +15,11 @@
     "next": "Next",
     "previousPage": "Previous page",
     "nextPage": "Next page",
-    "pageN": "Page {n}"
+    "pageN": "Page {n}",
+    "retry": "Retry",
+    "close": "Close",
+    "custom": "Custom",
+    "list": "List"
   },
   "auth": {
     "title": "Sign in to Karute",
@@ -50,7 +54,12 @@
     "idle": "Ready to record",
     "newSession": "New session",
     "recordDescription": "Record a session to generate a karute automatically",
-    "micError": "Microphone access denied. Please allow microphone access and try again."
+    "micError": "Microphone access denied. Please allow microphone access and try again.",
+    "recordingFor": "Recording for",
+    "noUpcomingAppointment": "No upcoming appointment",
+    "noBookingTitle": "No booking found",
+    "noBookingDescription": "You don't have an upcoming appointment. You can still record — it will be saved to your karute but won't be linked to any booking.",
+    "recordAnyway": "Record anyway"
   },
   "customers": {
     "title": "Customers",
@@ -90,16 +99,27 @@
       "noVisits": "No visits yet",
       "karuteHistory": "Session History",
       "back": "Back",
-      "staff": "Staff"
+      "staff": "Staff",
+      "registered": "Registered {date}",
+      "notes": "Notes",
+      "type": "Type",
+      "churnAlert": "Last visit was {days} days ago"
     },
     "toast": {
       "created": "Customer created",
       "updated": "Customer updated",
-      "error": "Something went wrong"
+      "error": "Something went wrong",
+      "deleted": "Customer deleted"
     },
     "empty": {
       "title": "No customers yet",
       "description": "Create your first customer to get started"
+    },
+    "filters": {
+      "all": "All",
+      "nominated": "Nominated",
+      "walkin": "Walk-in",
+      "sort": "Sort"
     }
   },
   "karute": {
@@ -120,6 +140,8 @@
     "saving": "Saving...",
     "selectCustomerFirst": "Please select a customer before saving",
     "noDraftFound": "No draft data found. Please go back and complete the AI review step before saving.",
+    "deleted": "Karute deleted",
+    "deleteConfirm": "Delete this karute? This cannot be undone.",
     "categories": {
       "symptom": "Symptom",
       "treatment": "Treatment",
@@ -131,13 +153,39 @@
       "other": "Other"
     }
   },
+  "review": {
+    "saveKarute": "Save Karute",
+    "transcript": "Transcript",
+    "noTranscript": "No transcript available.",
+    "aiSummary": "AI Summary",
+    "aiSuggestions": "AI Suggestions",
+    "addEntry": "Add Entry",
+    "customer": "Customer:",
+    "processingTitle": "Processing recording",
+    "processingDescription": "Please wait while AI analyzes your session...",
+    "processingFailed": "Processing failed",
+    "transcribing": "Transcribing...",
+    "extracting": "Extracting entries...",
+    "summarizing": "Generating summary..."
+  },
   "dashboard": {
     "title": "Appointments",
     "today": "Today",
     "record": "Record",
     "customersServed": "Customers Served",
     "recordingsThisWeek": "Recordings This Week",
-    "karuteGenerated": "Karute Generated"
+    "karuteGenerated": "Karute Generated",
+    "newAppointment": "New Appointment",
+    "createAppointment": "Create Appointment",
+    "appointmentMoved": "Appointment moved",
+    "appointmentDeleted": "Appointment deleted",
+    "karuteDeleted": "Karute deleted",
+    "deleteAppointment": "Delete Appointment",
+    "deleteKarute": "Delete Karute",
+    "viewKarute": "View Karute",
+    "customer": "Customer",
+    "duration": "Duration",
+    "creating": "Creating..."
   },
   "settings": {
     "title": "Settings",
@@ -148,6 +196,44 @@
     "deleteConfirm": "Are you sure you want to delete this staff member?",
     "name": "Name",
     "active": "Active",
-    "noStaff": "No staff members yet"
+    "noStaff": "No staff members yet",
+    "organization": "Organization",
+    "organizationDescription": "View organization details",
+    "businessName": "Business Name",
+    "businessType": "Business Type",
+    "hoursOfOperation": "Hours of operation",
+    "hoursDescription": "Set open and close times for each day.",
+    "soloMode": "Solo Mode",
+    "soloDescription": "Enable if you are the only staff member. Hides staff switcher and simplifies the UI.",
+    "webhookUrl": "Webhook URL",
+    "webhookDescription": "POSTs to this URL when a karute is created.",
+    "aiSettings": "AI Settings",
+    "aiDescription": "Manage AI processing preferences",
+    "aiModel": "Preferred AI Model",
+    "confidenceThreshold": "Classification Confidence Threshold",
+    "recordingSettings": "Recording Settings",
+    "recordingDescription": "Configure recording quality and behavior",
+    "audioQuality": "Audio Quality",
+    "autoStop": "Auto-Stop Timer (minutes)",
+    "settingsSaved": "Settings saved",
+    "staffMembers": "Staff Members",
+    "addStaffMember": "Add Staff Member",
+    "editStaffMember": "Edit Staff Member",
+    "staffAdded": "Staff member added.",
+    "staffUpdated": "Staff member updated.",
+    "avatarUploaded": "Avatar uploaded",
+    "accountOwner": "Account Owner",
+    "position": "Position",
+    "manageStaff": "Manage Staff",
+    "selectPosition": "Select position..."
+  },
+  "staff": {
+    "switchStaff": "Switch Staff",
+    "addStaff": "Add Staff",
+    "noStaff": "No Staff",
+    "selectStaff": "Select Staff",
+    "logOut": "Log out",
+    "owner": "OWNER",
+    "stylist": "STYLIST"
   }
 }

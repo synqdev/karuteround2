@@ -14,7 +14,8 @@ type StepConfig = {
   label: string
 }
 
-const STEPS: StepConfig[] = [
+// Labels are passed as props or use defaults
+const DEFAULT_STEPS: StepConfig[] = [
   { key: 'transcribing', label: 'Transcribing...' },
   { key: 'extracting', label: 'Extracting entries...' },
   { key: 'summarizing', label: 'Generating summary...' },
@@ -124,7 +125,7 @@ export function ProcessingModal({ currentStep, error, onRetry, onCancel }: Proce
             </div>
 
             <div className="flex flex-col gap-4">
-              {STEPS.map(({ key, label }) => {
+              {DEFAULT_STEPS.map(({ key, label }) => {
                 const status = getStepStatus(key, currentStep)
                 return (
                   <div key={key} className="flex items-center gap-3">
