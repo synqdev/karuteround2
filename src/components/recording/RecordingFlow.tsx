@@ -5,11 +5,9 @@ import { useTranslations } from 'next-intl'
 import { useMediaRecorder } from '@/hooks/use-media-recorder'
 import { useWaveformBars } from '@/hooks/use-waveform-bars'
 import { PipelineContainer } from '@/components/review/PipelineContainer'
-import { ReviewConfirmStep } from '@/components/review/ReviewConfirmStep'
 import type { CustomerOption } from '@/components/karute/CustomerCombobox'
-import type { Entry } from '@/types/ai'
 
-type FlowPhase = 'idle' | 'recording' | 'recorded' | 'pipeline' | 'confirm'
+type FlowPhase = 'idle' | 'recording' | 'recorded' | 'pipeline'
 
 interface NextAppointment {
   id: string
@@ -27,17 +25,9 @@ interface RecordingFlowProps {
   nextAppointment?: NextAppointment | null
 }
 
-interface ConfirmData {
-  transcript: string
-  summary: string
-  entries: Entry[]
-  duration: number
-}
-
 export function RecordingFlow({ customers, locale, nextAppointment }: RecordingFlowProps) {
   const t = useTranslations('recording')
   const [phase, setPhase] = useState<FlowPhase>('idle')
-  const [confirmData, setConfirmData] = useState<ConfirmData | null>(null)
   const [showNoBookingPrompt, setShowNoBookingPrompt] = useState(false)
   const [recordingDuration, setRecordingDuration] = useState(0)
 
@@ -91,58 +81,24 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
     setPhase('pipeline')
   }
 
-  function handlePipelineConfirm(data: { entries: Entry[]; summary: string; transcript: string }) {
-    setConfirmData({
-      transcript: data.transcript,
-      summary: data.summary,
-      entries: data.entries,
-      duration: result ? Math.round(result.durationMs / 1000) : 0,
-    })
-    setPhase('confirm')
-  }
-
   function handleNewSession() {
     discardRecording()
-    setConfirmData(null)
     setPhase('idle')
   }
 
-  // --- Pipeline phase: hand off to PipelineContainer ---
+  // --- Pipeline phase: processes audio then shows review+save in one screen ---
   if (phase === 'pipeline' && result) {
     return (
       <PipelineContainer
         audioBlob={result.blob}
         locale={locale}
-        onConfirm={handlePipelineConfirm}
+        customers={customers}
+        duration={result ? Math.round(result.durationMs / 1000) : 0}
+        appointmentId={nextAppointment?.id}
+        appointmentCustomerId={nextAppointment?.customerId}
         onCancel={handleNewSession}
+        onSaved={handleNewSession}
       />
-    )
-  }
-
-  // --- Confirm phase: show save flow directly (no redundant "Review Complete" page) ---
-  if (phase === 'confirm' && confirmData) {
-    return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">Save Karute</h1>
-          <button
-            type="button"
-            onClick={handleNewSession}
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t('newSession')}
-          </button>
-        </div>
-        <ReviewConfirmStep
-          transcript={confirmData.transcript}
-          summary={confirmData.summary}
-          entries={confirmData.entries}
-          customers={customers}
-          duration={confirmData.duration}
-          appointmentId={nextAppointment?.id}
-          appointmentCustomerId={nextAppointment?.customerId}
-        />
-      </div>
     )
   }
 
