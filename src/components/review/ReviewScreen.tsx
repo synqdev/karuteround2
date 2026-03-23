@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -43,6 +43,33 @@ export function ReviewScreen({
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
     appointmentCustomerId ?? null
   )
+  const [suggestions, setSuggestions] = useState<{ text: string; type: string }[]>([])
+  const [suggestionsLoading, setSuggestionsLoading] = useState(true)
+
+  // Fetch AI suggestions based on transcript
+  useEffect(() => {
+    async function fetchSuggestions() {
+      try {
+        const res = await fetch('/api/ai/suggestions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transcript,
+            summary,
+            entries: entries.map((e) => ({ category: e.category, title: e.title })),
+            locale: typeof window !== 'undefined' ? (document.documentElement.lang || 'en') : 'en',
+          }),
+        })
+        const data = await res.json()
+        setSuggestions(data.suggestions ?? [])
+      } catch {
+        setSuggestions([])
+      } finally {
+        setSuggestionsLoading(false)
+      }
+    }
+    fetchSuggestions()
+  }, [transcript, summary, entries])
 
   const { control, handleSubmit } = useForm<ReviewFormValues>({
     resolver: zodResolver(ReviewFormSchema),
@@ -104,8 +131,43 @@ export function ReviewScreen({
     ? customers.find((c) => c.id === appointmentCustomerId)?.name
     : null
 
+  const typeIcon: Record<string, string> = {
+    'follow-up': '📋',
+    recommendation: '💡',
+    note: '📝',
+    concern: '⚠️',
+  }
+
   return (
     <div className="flex flex-col h-full min-h-0 gap-4">
+      {/* AI Suggestions */}
+      {(suggestionsLoading || suggestions.length > 0) && (
+        <div className="rounded-xl border border-border/30 bg-gradient-to-r from-blue-500/5 to-transparent p-4">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+            AI Suggestions
+          </h3>
+          {suggestionsLoading ? (
+            <div className="flex gap-3">
+              <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-1/4 animate-pulse rounded bg-muted" />
+              <div className="h-4 w-1/3 animate-pulse rounded bg-muted" />
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {suggestions.map((s, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-1.5 rounded-lg bg-card border border-border/50 px-3 py-1.5 text-xs text-foreground"
+                >
+                  <span>{typeIcon[s.type] ?? '💡'}</span>
+                  <span>{s.text}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Two-column layout: transcript left, entries right */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0">
         {/* Left column: Transcript (read-only) */}
