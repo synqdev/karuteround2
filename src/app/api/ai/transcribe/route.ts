@@ -2,49 +2,57 @@ import { NextResponse } from 'next/server'
 import { toFile } from 'openai'
 import { openai } from '@/lib/openai'
 
-/**
- * Maximum request duration — Vercel Pro timeout.
- * Whisper transcription for 1–5 minute recordings typically completes in 5–15 seconds,
- * but we allow 60 seconds for slow uploads or longer recordings.
- */
 export const maxDuration = 60
 
 /**
  * POST /api/ai/transcribe
  *
- * Accepts FormData with:
- * - audio (File): the recorded audio blob (audio/webm or audio/mp4)
- * - locale (string, optional): 'ja' or 'en', defaults to 'ja'
+ * Accepts either:
+ * - FormData with audio file (legacy, small files)
+ * - JSON with { audioUrl, locale } (for large files via Storage signed URL)
  *
  * Returns: { transcript: string }
- *
- * Privacy: audio is held in memory as a Buffer and goes out of scope
- * after the response — never written to disk or Supabase Storage (AI-05).
  */
 export async function POST(request: Request) {
   try {
-    const formData = await request.formData()
+    const contentType = request.headers.get('content-type') ?? ''
 
-    const audioFile = formData.get('audio') as File | null
-    const locale = (formData.get('locale') as string | null) ?? 'ja'
+    let buffer: Buffer
+    let mimeType = 'audio/webm'
+    let locale = 'ja'
 
-    // Validate audio presence
-    if (!audioFile) {
-      return NextResponse.json({ error: 'No audio provided' }, { status: 400 })
+    if (contentType.includes('application/json')) {
+      // New path: download from signed URL
+      const { audioUrl, locale: loc } = await request.json()
+      locale = loc ?? 'ja'
+
+      if (!audioUrl) {
+        return NextResponse.json({ error: 'No audioUrl provided' }, { status: 400 })
+      }
+
+      const audioRes = await fetch(audioUrl)
+      if (!audioRes.ok) {
+        return NextResponse.json({ error: `Failed to download audio: ${audioRes.status}` }, { status: 400 })
+      }
+
+      buffer = Buffer.from(await audioRes.arrayBuffer())
+      mimeType = audioRes.headers.get('content-type') ?? 'audio/webm'
+    } else {
+      // Legacy path: FormData upload
+      const formData = await request.formData()
+      const audioFile = formData.get('audio') as File | null
+      locale = (formData.get('locale') as string | null) ?? 'ja'
+
+      if (!audioFile) {
+        return NextResponse.json({ error: 'No audio provided' }, { status: 400 })
+      }
+
+      buffer = Buffer.from(await audioFile.arrayBuffer())
+      mimeType = audioFile.type || 'audio/webm'
     }
 
-    // Convert File to Buffer — stays in memory, never persisted
-    const buffer = Buffer.from(await audioFile.arrayBuffer())
-
-    // Determine MIME type — default to audio/webm if empty (Chrome default)
-    const mimeType = audioFile.type || 'audio/webm'
-
-    // Determine file extension from MIME type
-    // iOS Safari records audio/mp4; Chrome records audio/webm
     const extension = mimeType.includes('mp4') ? 'audio.mp4' : 'audio.webm'
 
-    // Call Whisper transcription
-    // gpt-4o-mini-transcribe: cost-efficient, high quality, supports Japanese
     const transcription = await openai.audio.transcriptions.create({
       file: await toFile(buffer, extension, { type: mimeType }),
       model: 'gpt-4o-mini-transcribe',
@@ -52,7 +60,6 @@ export async function POST(request: Request) {
       response_format: 'text',
     })
 
-    // buffer goes out of scope here — no persistent reference (AI-05 compliance)
     return NextResponse.json({ transcript: transcription })
   } catch (error) {
     console.error('[/api/ai/transcribe] Error:', error)

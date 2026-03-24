@@ -13,7 +13,15 @@ export async function GET(request: NextRequest) {
   if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-  return runSync()
+  const syncResult = await runSync()
+
+  // Also run cleanup on cron
+  try {
+    const cleanupRes = await fetch(new URL('/api/cleanup', request.url))
+    console.log('[Cron] Cleanup:', await cleanupRes.json())
+  } catch {}
+
+  return syncResult
 }
 
 export async function POST() {

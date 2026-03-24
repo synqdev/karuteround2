@@ -1,4 +1,5 @@
 import { Entry } from '@/types/ai'
+import { createClient } from '@/lib/supabase/client'
 
 /**
  * Represents each step of the AI processing pipeline.
@@ -59,18 +60,39 @@ export async function runAIPipeline(
   // Step 1: Transcription
   onProgress('transcribing')
 
-  const formData = new FormData()
-  formData.append('audio', audioBlob)
-  formData.append('locale', locale)
+  // Upload audio to Supabase Storage to bypass Vercel payload limits
+  const supabase = createClient()
+  const fileName = `rec_${Date.now()}.webm`
+
+  const { error: uploadError } = await supabase.storage
+    .from('recordings')
+    .upload(fileName, audioBlob, { upsert: true })
+
+  if (uploadError) {
+    throw new Error(`Upload failed: ${uploadError.message}`)
+  }
+
+  // Get a signed URL (valid 10 min) for the server to download
+  const { data: signedData, error: signError } = await supabase.storage
+    .from('recordings')
+    .createSignedUrl(fileName, 600)
+
+  if (signError || !signedData?.signedUrl) {
+    throw new Error(`Failed to get signed URL: ${signError?.message}`)
+  }
 
   const transcribeRes = await fetchWithRetry(() =>
     fetch('/api/ai/transcribe', {
       method: 'POST',
-      body: formData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audioUrl: signedData.signedUrl, locale }),
     }),
   ).catch((err) => {
     throw new Error(`Transcription failed: ${err instanceof Error ? err.message : String(err)}`)
   })
+
+  // Clean up storage after transcription
+  supabase.storage.from('recordings').remove([fileName]).catch(() => {})
 
   const transcribeData = await transcribeRes.json()
   const transcript: string = transcribeData.transcript
