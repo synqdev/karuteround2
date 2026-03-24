@@ -60,40 +60,25 @@ interface QRSession {
  * Log into Quick Reserve console and get session.
  */
 export async function qrLogin(username: string, password: string): Promise<QRSession> {
-  // Try JSON login first
-  const res = await fetch(`${QR_API_BASE}/login`, {
+  const res = await fetch(`${QR_API_BASE}/la-estro/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ login_id: username, password }),
-    redirect: 'manual',
   })
 
+  if (!res.ok) {
+    throw new Error(`QR login failed: ${res.status} ${res.statusText}`)
+  }
+
+  // Session is cookie-based
   const cookies = res.headers.get('set-cookie') ?? ''
   let token = ''
 
   try {
     const data = await res.json()
-    token = data.token ?? data.access_token ?? ''
+    token = data.token ?? data.access_token ?? data.jwt ?? ''
   } catch {
-    // Some APIs return token in cookie only
-  }
-
-  if (!res.ok && res.status !== 302) {
-    // Try form-encoded
-    const res2 = await fetch(`${QR_API_BASE}/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ login_id: username, password }),
-      redirect: 'manual',
-    })
-
-    const cookies2 = res2.headers.get('set-cookie') ?? ''
-    try {
-      const data2 = await res2.json()
-      token = data2.token ?? data2.access_token ?? ''
-    } catch {}
-
-    return { token, cookies: cookies2 }
+    // Token might be in cookies only
   }
 
   return { token, cookies }
@@ -118,20 +103,25 @@ export async function qrGetReservations(
 ): Promise<QRReservation[]> {
   const headers = qrHeaders(session)
 
-  // Try GET with query params
-  const url = `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations?date=${date}`
-  const res = await fetch(url, { headers })
-
-  if (res.ok) {
-    const data = await res.json()
-    return Array.isArray(data) ? data : []
-  }
-
-  // Try POST
-  const res2 = await fetch(`${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations`, {
+  // Try get-customer-reservations first (full data with nested objects)
+  const url1 = `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations`
+  const res1 = await fetch(url1, {
     method: 'POST',
     headers,
     body: JSON.stringify({ date }),
+  })
+
+  if (res1.ok) {
+    const data = await res1.json()
+    return Array.isArray(data) ? data : []
+  }
+
+  // Fallback: get-shallow-reservations-by-range
+  const url2 = `${QR_API_BASE}/${storeSlug}/${storeId}/get-shallow-reservations-by-range`
+  const res2 = await fetch(url2, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ start_date: date, end_date: date }),
   })
 
   if (res2.ok) {
@@ -139,7 +129,7 @@ export async function qrGetReservations(
     return Array.isArray(data) ? data : []
   }
 
-  throw new Error(`QR get-reservations failed: ${res2.status}`)
+  throw new Error(`QR get-reservations failed: ${res1.status} / ${res2.status}`)
 }
 
 /**
