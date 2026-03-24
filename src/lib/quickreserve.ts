@@ -107,58 +107,38 @@ export async function qrGetReservations(
   const dayStart = new Date(`${date}T00:00:00+09:00`).getTime()
   const dayEnd = new Date(`${date}T23:59:59+09:00`).getTime()
 
-  // Try multiple endpoint/payload combinations
-  const attempts = [
-    {
-      url: `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations-by-range`,
-      body: { start_at: dayStart, end_at: dayEnd },
-    },
-    {
-      url: `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations`,
-      body: { date },
-    },
-    {
-      url: `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations`,
-      body: { date, store_id: storeId },
-    },
-    {
-      url: `${QR_API_BASE}/${storeSlug}/${storeId}/get-shallow-reservations-by-range`,
-      body: { start_at: dayStart, end_at: dayEnd },
-    },
-    {
-      url: `${QR_API_BASE}/${storeSlug}/${storeId}/get-shallow-reservations-by-range`,
-      body: { start_date: date, end_date: date },
-    },
-  ]
+  const url = `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations-by-date`
 
-  for (const attempt of attempts) {
-    try {
-      const res = await fetch(attempt.url, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(attempt.body),
-      })
-      console.log(`[QR] ${attempt.url} → ${res.status}`)
-      if (res.ok) {
-        const data = await res.json()
-        if (Array.isArray(data) && data.length > 0) return data
-        if (Array.isArray(data)) continue // empty array, try next
-      }
-    } catch (err) {
-      console.log(`[QR] ${attempt.url} error:`, err)
-    }
-  }
+  // Try with date string
+  const res = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ date }),
+  })
 
-  // Last resort: try GET
-  const getUrl = `${QR_API_BASE}/${storeSlug}/${storeId}/get-customer-reservations?date=${date}`
-  const getRes = await fetch(getUrl, { headers })
-  console.log(`[QR] GET ${getUrl} → ${getRes.status}`)
-  if (getRes.ok) {
-    const data = await getRes.json()
+  console.log(`[QR] ${url} (date=${date}) → ${res.status}`)
+
+  if (res.ok) {
+    const data = await res.json()
     return Array.isArray(data) ? data : []
   }
 
-  throw new Error(`QR: all reservation endpoints failed for ${date}`)
+  // Try with unix timestamp
+  const res2 = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ date: dayStart }),
+  })
+
+  console.log(`[QR] ${url} (date=${dayStart}) → ${res2.status}`)
+
+  if (res2.ok) {
+    const data = await res2.json()
+    return Array.isArray(data) ? data : []
+  }
+
+  const body = await res2.text().catch(() => '')
+  throw new Error(`QR get-reservations-by-date failed: ${res.status} / ${res2.status} — ${body}`)
 }
 
 /**
