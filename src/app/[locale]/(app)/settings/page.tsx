@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server'
+import { createClient } from '@/lib/supabase/server'
 import { getStaffList, getActiveStaffId } from '@/lib/staff'
 import { getOrgSettings } from '@/actions/org-settings'
 import { SettingsTabs } from '@/components/settings/SettingsTabs'
@@ -9,6 +10,9 @@ export default async function SettingsPage({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   const [staffList, activeStaffId, t, orgSettings] = await Promise.all([
     getStaffList(),
     getActiveStaffId(),
@@ -25,6 +29,7 @@ export default async function SettingsPage({
         staffList={staffList}
         activeStaffId={activeStaffId}
         locale={locale}
+        authProfileId={user?.id ?? null}
       />
     </div>
   )

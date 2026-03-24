@@ -20,6 +20,7 @@ interface SettingsTabsProps {
   staffList: StaffMember[]
   activeStaffId: string | null
   locale: string
+  authProfileId?: string | null
 }
 
 const BUSINESS_TYPES = [
@@ -78,7 +79,7 @@ const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'staff', label: 'Staff Management', icon: '👥' },
 ]
 
-export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale }: SettingsTabsProps) {
+export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, authProfileId }: SettingsTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>('organization')
   const initialOperatingHours = normalizeOperatingHours(orgSettings?.operating_hours ?? DEFAULT_OPERATING_HOURS)
   const [settings, setSettings] = useState({
@@ -377,7 +378,12 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale }: 
         {/* Staff Management */}
         {activeTab === 'staff' && (
           <div className="space-y-4">
-            <StaffList staffList={staffList} activeStaffId={activeStaffId} />
+            <StaffList
+              staffList={staffList}
+              activeStaffId={activeStaffId}
+              currentUserId={authProfileId}
+              isOwner={staffList.some((s) => s.id === authProfileId && (s as { display_role?: string }).display_role === 'owner')}
+            />
           </div>
         )}
 

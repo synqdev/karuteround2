@@ -168,9 +168,9 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
         )}
       </div>
 
-      {/* Action buttons — always in the same vertical position */}
-      <div className="flex items-center justify-center gap-4 h-16">
-        {/* IDLE: single record button */}
+      {/* Action buttons — stop replaces record in same position */}
+      <div className="relative flex items-center justify-center h-16">
+        {/* Center button: Record (idle) or Stop (recording) */}
         {phase === 'idle' && (
           <button
             type="button"
@@ -182,9 +182,20 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
           </button>
         )}
 
-        {/* RECORDING: stop replaces record in center, pause beside it */}
         {phase === 'recording' && (
-          <>
+          <button
+            type="button"
+            onClick={stopRecording}
+            className="flex items-center justify-center w-16 h-16 rounded-full bg-red-500 hover:bg-red-400 transition-colors shadow-lg shadow-red-500/25"
+            aria-label={t('stop')}
+          >
+            <StopIcon />
+          </button>
+        )}
+
+        {/* Pause/Resume button — appears to the right when recording */}
+        {phase === 'recording' && (
+          <div className="absolute left-[calc(50%+48px)]">
             {recState === 'paused' ? (
               <button
                 type="button"
@@ -204,15 +215,7 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
                 <PauseIcon />
               </button>
             )}
-            <button
-              type="button"
-              onClick={stopRecording}
-              className="flex items-center justify-center w-16 h-16 rounded-full bg-red-500 hover:bg-red-400 transition-colors shadow-lg shadow-red-500/25"
-              aria-label={t('stop')}
-            >
-              <StopIcon />
-            </button>
-          </>
+          </div>
         )}
 
         {/* RECORDED: discard / use recording */}

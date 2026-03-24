@@ -20,6 +20,10 @@ interface StaffMember {
 interface StaffListProps {
   staffList: StaffMember[]
   activeStaffId: string | null
+  /** The currently logged-in user's staff profile ID */
+  currentUserId?: string | null
+  /** Whether the current user is the account owner */
+  isOwner?: boolean
 }
 
 function formatAddedDate(dateString: string): string {
@@ -31,7 +35,7 @@ function formatAddedDate(dateString: string): string {
   })}`
 }
 
-export function StaffList({ staffList, activeStaffId }: StaffListProps) {
+export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = false }: StaffListProps) {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null)
 
@@ -72,9 +76,11 @@ export function StaffList({ staffList, activeStaffId }: StaffListProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-medium">Staff Members</h2>
-        <Button size="sm" onClick={() => setShowCreateForm(true)} className="min-h-[44px]">
-          Add Staff
-        </Button>
+        {isOwner && (
+          <Button size="sm" onClick={() => setShowCreateForm(true)} className="min-h-[44px]">
+            Add Staff
+          </Button>
+        )}
       </div>
 
       <ul className="space-y-2">
@@ -147,22 +153,26 @@ export function StaffList({ staffList, activeStaffId }: StaffListProps) {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditingStaff(staff)}
-                  className="min-h-[44px]"
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleDelete(staff)}
-                  className="min-h-[44px]"
-                >
-                  Delete
-                </Button>
+                {(isOwner || staff.id === currentUserId) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditingStaff(staff)}
+                    className="min-h-[44px]"
+                  >
+                    Edit
+                  </Button>
+                )}
+                {isOwner && staff.display_role !== 'owner' && (
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(staff)}
+                    className="min-h-[44px]"
+                  >
+                    Delete
+                  </Button>
+                )}
               </div>
             </li>
           )
@@ -185,6 +195,7 @@ export function StaffList({ staffList, activeStaffId }: StaffListProps) {
             position: (editingStaff as { position?: string }).position ?? '',
             email: (editingStaff as { email?: string }).email ?? '',
             phone: (editingStaff as { phone?: string }).phone ?? '',
+            avatarUrl: editingStaff.avatar_url ?? undefined,
           }}
           onClose={() => setEditingStaff(null)}
         />
