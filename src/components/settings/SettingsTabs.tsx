@@ -70,13 +70,14 @@ const DAY_LABELS: Record<WeekdayKey, { en: string; ja: string }> = {
 
 const TIME_OPTIONS = Array.from({ length: 49 }, (_, idx) => idx * 30)
 
-type TabId = 'organization' | 'ai' | 'recording' | 'staff'
+type TabId = 'organization' | 'ai' | 'recording' | 'staff' | 'sync'
 
 const TABS: { id: TabId; label: string; icon: string }[] = [
   { id: 'organization', label: 'Organization', icon: '🏢' },
   { id: 'ai', label: 'AI Settings', icon: '🧠' },
   { id: 'recording', label: 'Recording Settings', icon: '🎙️' },
   { id: 'staff', label: 'Staff Management', icon: '👥' },
+  { id: 'sync', label: 'Booking Sync', icon: '🔄' },
 ]
 
 export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, authProfileId }: SettingsTabsProps) {
@@ -387,11 +388,154 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
           </div>
         )}
 
+        {/* Booking Sync */}
+        {activeTab === 'sync' && (
+          <SyncSettings />
+        )}
+
       </div>
 
       {saving && (
         <div className="fixed top-4 right-4 z-50 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-200">
           Saving...
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SyncSettings() {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [enabled, setEnabled] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+  const [lastResult, setLastResult] = useState<string | null>(null)
+  const [loaded, setLoaded] = useState(false)
+
+  // Load existing config
+  useState(() => {
+    fetch('/api/sync/quickreserve/config')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.username) setUsername(data.username)
+        if (data.enabled !== undefined) setEnabled(data.enabled)
+        if (data.lastStatus) setLastResult(data.lastStatus)
+        setLoaded(true)
+      })
+      .catch(() => setLoaded(true))
+  })
+
+  async function handleSaveConfig() {
+    setSyncing(true)
+    try {
+      const res = await fetch('/api/sync/quickreserve/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, enabled }),
+      })
+      const data = await res.json()
+      if (data.error) {
+        setLastResult(`Error: ${data.error}`)
+      } else {
+        setLastResult('Config saved')
+      }
+    } catch {
+      setLastResult('Failed to save')
+    }
+    setSyncing(false)
+  }
+
+  async function handleSyncNow() {
+    setSyncing(true)
+    setLastResult('Syncing...')
+    try {
+      const res = await fetch('/api/sync/quickreserve', { method: 'POST' })
+      const data = await res.json()
+      if (data.error) {
+        setLastResult(`Error: ${data.error}`)
+      } else {
+        setLastResult(`Synced: ${data.created} created, ${data.updated} updated, ${data.skipped} skipped`)
+      }
+    } catch (err) {
+      setLastResult(`Failed: ${err instanceof Error ? err.message : 'Unknown'}`)
+    }
+    setSyncing(false)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h3 className="text-lg font-semibold">Booking Sync</h3>
+        <p className="text-sm text-muted-foreground">Sync appointments from Quick Reserve into your booking calendar</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Login ID</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            placeholder="Quick Reserve login ID"
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium mb-1.5 block">Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
+            placeholder="••••••••"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div>
+          <h4 className="text-sm font-medium">Auto-sync every 15 minutes</h4>
+          <p className="text-xs text-muted-foreground mt-0.5">Automatically pull new bookings from Quick Reserve</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setEnabled(!enabled)}
+          className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            enabled ? 'bg-primary' : 'bg-muted'
+          }`}
+        >
+          <span className={`inline-block h-4 w-4 rounded-full bg-white transition-transform ${
+            enabled ? 'translate-x-6' : 'translate-x-1'
+          }`} />
+        </button>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={handleSaveConfig}
+          disabled={syncing}
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+        >
+          Save Config
+        </button>
+        <button
+          type="button"
+          onClick={handleSyncNow}
+          disabled={syncing}
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50 transition-colors"
+        >
+          {syncing ? 'Syncing...' : 'Sync Now'}
+        </button>
+      </div>
+
+      {lastResult && (
+        <div className={`rounded-lg px-4 py-3 text-sm ${
+          lastResult.startsWith('Error') || lastResult.startsWith('Failed')
+            ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
+            : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+        }`}>
+          {lastResult}
         </div>
       )}
     </div>
