@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
 import { createClient } from '@/lib/supabase/server'
+import { getCachedAI, setCachedAI } from '@/lib/ai-cache'
 
 export const maxDuration = 60
 
@@ -36,6 +37,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ insights: [] })
     }
 
+    // Cache key based on record IDs + locale
+    const cacheInput = {
+      ids: records.map((r: { id: string }) => r.id),
+      locale,
+    }
+    const cached = await getCachedAI('insights', cacheInput)
+    if (cached) {
+      return NextResponse.json(cached)
+    }
+
     const context = records.map((r: { summary: string; created_at: string; customers: { name: string } | null; entries: { category: string; content: string }[] }) => {
       const customer = r.customers as { name: string } | null
       const entries = (r.entries || []).map((e: { category: string; content: string }) => `[${e.category}] ${e.content}`).join('\n')
@@ -63,8 +74,11 @@ export async function POST(request: Request) {
 
     const parsed = JSON.parse(content)
     const insights = Array.isArray(parsed) ? parsed : parsed.insights ?? []
+    const result = { insights }
 
-    return NextResponse.json({ insights })
+    await setCachedAI('insights', cacheInput, result, 1) // 1 day TTL for insights
+
+    return NextResponse.json(result)
   } catch (error) {
     console.error('[/api/ai/insights]', error)
     return NextResponse.json({ insights: [], error: 'Failed to generate insights' }, { status: 500 })

@@ -34,7 +34,22 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
   const [loading, setLoading] = useState(false)
   const [dismissed, setDismissed] = useState<Set<number>>(new Set())
 
+  const cacheKey = `ai_insights_${locale}`
+
   const fetchInsights = useCallback(async () => {
+    // Check localStorage first
+    try {
+      const cached = localStorage.getItem(cacheKey)
+      if (cached) {
+        const { insights: cachedInsights, ts } = JSON.parse(cached)
+        if (Date.now() - ts < 24 * 60 * 60 * 1000) {
+          setInsights(cachedInsights)
+          setLoading(false)
+          return
+        }
+      }
+    } catch {}
+
     setLoading(true)
     try {
       const res = await fetch('/api/ai/insights', {
@@ -43,13 +58,18 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
         body: JSON.stringify({ locale }),
       })
       const data = await res.json()
-      setInsights(data.insights ?? [])
+      const newInsights = data.insights ?? []
+      setInsights(newInsights)
+
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({ insights: newInsights, ts: Date.now() }))
+      } catch {}
     } catch {
       // silent
     } finally {
       setLoading(false)
     }
-  }, [locale])
+  }, [locale, cacheKey])
 
   useEffect(() => {
     fetchInsights()
