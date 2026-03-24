@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useMediaRecorder } from '@/hooks/use-media-recorder'
 import { useWaveformBars } from '@/hooks/use-waveform-bars'
 import { PipelineContainer } from '@/components/review/PipelineContainer'
+import { useGlobalRecording } from '@/stores/recording-store'
 import type { CustomerOption } from '@/components/karute/CustomerCombobox'
 
 type FlowPhase = 'idle' | 'recording' | 'recorded' | 'pipeline'
@@ -50,14 +51,23 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
     lastBarsRef.current = bars
   }
 
+  const globalRec = useGlobalRecording()
+
   useEffect(() => {
     if (recState === 'recording' || recState === 'paused') {
       setPhase('recording')
+      globalRec.setRecording(recState)
+      if (recState === 'recording' && !globalRec.startedAt) {
+        globalRec.setStartedAt(Date.now())
+      }
     } else if (recState === 'recorded' && result) {
       setRecordingDuration(Math.round(result.durationMs / 1000))
       setPhase('recorded')
+      globalRec.reset()
+    } else if (recState === 'idle') {
+      globalRec.reset()
     }
-  }, [recState, result])
+  }, [recState, result]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function handleStartRecording() {
     if (!nextAppointment) {

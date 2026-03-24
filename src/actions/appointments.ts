@@ -64,6 +64,37 @@ export async function createAppointment(input: AppointmentInput) {
 
   const supabase = await createClient()
 
+  // Check for overlapping appointments on the same staff
+  const startTime = new Date(input.startTime)
+  const endTime = new Date(startTime.getTime() + input.durationMinutes * 60000)
+
+  const { data: overlapping } = await (supabase as SupabaseAny)
+    .from('appointments')
+    .select('id')
+    .eq('staff_profile_id', input.staffProfileId)
+    .lt('start_time', endTime.toISOString())
+    .gte('start_time', new Date(startTime.getTime() - 24 * 60 * 60 * 1000).toISOString())
+
+  if (overlapping && overlapping.length > 0) {
+    // Check actual overlap (start_time + duration overlaps with new appointment)
+    for (const existing of overlapping) {
+      const { data: full } = await (supabase as SupabaseAny)
+        .from('appointments')
+        .select('start_time, duration_minutes')
+        .eq('id', existing.id)
+        .single()
+      if (full) {
+        const existStart = new Date(full.start_time).getTime()
+        const existEnd = existStart + full.duration_minutes * 60000
+        const newStart = startTime.getTime()
+        const newEnd = endTime.getTime()
+        if (newStart < existEnd && newEnd > existStart) {
+          return { error: 'This time slot overlaps with an existing booking.' }
+        }
+      }
+    }
+  }
+
   const { data, error } = await (supabase as SupabaseAny)
     .from('appointments')
     .insert({

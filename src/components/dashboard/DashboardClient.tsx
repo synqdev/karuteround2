@@ -194,20 +194,25 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
     refreshBars()
   }
 
-  // Drag and drop — update appointment time/staff in DB
+  // Drag and drop — only allow time changes within same staff row
   const handleBarDragEnd = useCallback(
     async (payload: { bar: TimelineBarItem; previousRowId: string; previousStartMinute: number }) => {
-      const { bar } = payload
-      // Only handle appointment bars (appt_*) and saved karute bars
+      const { bar, previousRowId } = payload
       const isAppt = bar.id.startsWith('appt_')
       if (!isAppt) return
+
+      // Block dragging to a different staff row
+      if (bar.rowId !== previousRowId) {
+        toast.error('Cannot move appointments between staff')
+        refreshBars()
+        return
+      }
 
       const appointmentId = bar.id.replace('appt_', '')
       const newDate = new Date(selectedDate)
       newDate.setHours(Math.floor(bar.startMinute / 60), bar.startMinute % 60, 0, 0)
 
       const result = await updateAppointment(appointmentId, {
-        staffProfileId: bar.rowId,
         startTime: newDate.toISOString(),
       })
 

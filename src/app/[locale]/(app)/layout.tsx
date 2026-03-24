@@ -2,6 +2,7 @@ import { Sidebar } from '@/components/layout/sidebar'
 import { TopBar } from '@/components/layout/top-bar'
 import { StaffSwitcher } from '@/components/staff/StaffSwitcher'
 import { AIChatFAB } from '@/components/ai/AIChatFAB'
+import { MiniRecorder } from '@/components/recording/MiniRecorder'
 import { getStaffList, getActiveStaffId } from '@/lib/staff'
 
 import { createClient } from '@/lib/supabase/server'
@@ -61,6 +62,7 @@ export default async function DashboardLayout({
           </div>
         </main>
       </div>
+      <MiniRecorder />
       <AIChatFAB locale={locale} />
     </div>
   )
