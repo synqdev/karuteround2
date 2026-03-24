@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { getCachedAI, setCachedAI } from '@/lib/ai-cache'
 
 export const maxDuration = 60
 
@@ -9,6 +10,14 @@ export async function POST(request: NextRequest) {
 
     if (!transcript && !summary) {
       return NextResponse.json({ suggestions: [] })
+    }
+
+    const cacheInput = { transcript: transcript?.slice(0, 500), summary, entries, locale }
+
+    // Check cache
+    const cached = await getCachedAI('suggestions', cacheInput)
+    if (cached) {
+      return NextResponse.json(cached)
     }
 
     const langInstruction = locale === 'ja'
@@ -51,7 +60,12 @@ ${langInstruction}`,
     try {
       const parsed = JSON.parse(raw)
       const suggestions = Array.isArray(parsed.suggestions) ? parsed.suggestions : Array.isArray(parsed) ? parsed : []
-      return NextResponse.json({ suggestions })
+      const result = { suggestions }
+
+      // Cache for 7 days
+      await setCachedAI('suggestions', cacheInput, result)
+
+      return NextResponse.json(result)
     } catch {
       return NextResponse.json({ suggestions: [] })
     }

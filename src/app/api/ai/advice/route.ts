@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { getCachedAI, setCachedAI } from '@/lib/ai-cache'
 
 export const maxDuration = 60
 
@@ -9,6 +10,14 @@ export async function POST(request: NextRequest) {
 
     if (!summary && (!entries || entries.length === 0)) {
       return NextResponse.json({ advice: '' })
+    }
+
+    const cacheInput = { summary, entries, locale }
+
+    // Check cache first
+    const cached = await getCachedAI('advice', cacheInput)
+    if (cached) {
+      return NextResponse.json(cached)
     }
 
     const langInstruction = locale === 'ja'
@@ -38,7 +47,12 @@ export async function POST(request: NextRequest) {
     })
 
     const advice = completion.choices[0]?.message?.content ?? ''
-    return NextResponse.json({ advice })
+    const result = { advice }
+
+    // Cache for 7 days
+    await setCachedAI('advice', cacheInput, result)
+
+    return NextResponse.json(result)
   } catch (error) {
     console.error('[/api/ai/advice]', error)
     return NextResponse.json({ advice: '', error: 'Failed to generate advice' }, { status: 500 })
