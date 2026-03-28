@@ -3,6 +3,33 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { EmployeeTimelineBar, type EmployeeTimelineBarData } from './employee-timeline-bar'
 
+/** Fixed-position popover anchored below a bar element */
+function BarPopover({ parentSelector, children, ...props }: { parentSelector: string; children: ReactNode } & React.HTMLAttributes<HTMLDivElement>) {
+  const [pos, setPos] = useState<{ top: number; left: number } | null>(null)
+
+  useEffect(() => {
+    const el = document.querySelector(parentSelector) as HTMLElement | null
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    setPos({
+      top: rect.bottom + 8,
+      left: rect.left + rect.width / 2 - 128,
+    })
+  }, [parentSelector])
+
+  if (!pos) return null
+
+  return (
+    <div
+      className="fixed z-[60] w-64 rounded-xl border border-gray-200 bg-white dark:bg-card dark:border-border p-3 shadow-xl"
+      style={{ top: `${pos.top}px`, left: `${Math.max(8, pos.left)}px` }}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
 export interface TimetableTab {
   id: string
   label: string
@@ -389,6 +416,7 @@ export function Timetable({
                       <div
                         key={item.id}
                         data-booking-segment="true"
+                        data-bar-id={item.id}
                         className={`absolute inset-y-0 ${isPopoverOpen ? 'z-50' : 'z-30'} ${
                           isBeingDragged ? 'opacity-30' : ''
                         }`}
@@ -403,13 +431,9 @@ export function Timetable({
                           className="cursor-pointer"
                         />
                         {renderBarPopover && (item.type === 'booking' || item.type === 'open' || item.type === 'completed') && isPopoverOpen ? (
-                          <div
-                            className="absolute left-1/2 top-full z-[60] mt-2 w-64 -translate-x-1/2 rounded-xl border border-gray-200 bg-white p-3 shadow-xl"
-                            onMouseDown={(e) => e.stopPropagation()}
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <BarPopover parentSelector={`[data-bar-id="${item.id}"]`} onMouseDown={(e) => e.stopPropagation()} onClick={(e) => e.stopPropagation()}>
                             {renderBarPopover(item)}
-                          </div>
+                          </BarPopover>
                         ) : null}
                       </div>
                     )

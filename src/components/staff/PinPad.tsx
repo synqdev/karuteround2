@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 interface PinPadProps {
   /** Title shown above the dots */
@@ -16,13 +16,13 @@ interface PinPadProps {
 
 export function PinPad({ title, onSubmit, onCancel, error, loading }: PinPadProps) {
   const [digits, setDigits] = useState<string[]>([])
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const handleDigit = useCallback((d: string) => {
     setDigits((prev) => {
       if (prev.length >= 4) return prev
       const next = [...prev, d]
       if (next.length === 4) {
-        // Auto-submit when 4 digits entered
         setTimeout(() => onSubmit(next.join('')), 100)
       }
       return next
@@ -37,10 +37,40 @@ export function PinPad({ title, onSubmit, onCancel, error, loading }: PinPadProp
     setDigits([])
   }, [])
 
+  // Keyboard support — listen for number keys, backspace, escape
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (loading) return
+      if (e.key >= '0' && e.key <= '9') {
+        handleDigit(e.key)
+      } else if (e.key === 'Backspace') {
+        handleBackspace()
+      } else if (e.key === 'Escape') {
+        onCancel()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [loading, handleDigit, handleBackspace, onCancel])
+
+  // Auto-focus container on mount
+  useEffect(() => {
+    containerRef.current?.focus()
+  }, [])
+
+  // Reset digits when error changes (wrong PIN retry)
+  useEffect(() => {
+    if (error) setDigits([])
+  }, [error])
+
   const buttons = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'clear', '0', 'back']
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div
+      ref={containerRef}
+      tabIndex={-1}
+      className="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm outline-none"
+    >
       <div className="w-[320px] rounded-2xl border border-border bg-card p-6 shadow-2xl">
         {/* Title */}
         <p className="text-center text-sm font-semibold text-foreground mb-4">{title}</p>

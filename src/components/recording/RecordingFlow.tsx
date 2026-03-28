@@ -158,7 +158,7 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
               ))}
             </div>
             <div className="mt-2">
-              <RecordingTimer paused={recState === 'paused'} />
+              <RecordingTimer paused={recState === 'paused'} startedAt={startedAt} />
             </div>
             {recState === 'paused' && (
               <p className="text-sm text-muted-foreground mt-1">{t('paused')}</p>
@@ -321,8 +321,12 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
 
 // --- Sub-components ---
 
-function RecordingTimer({ paused }: { paused: boolean }) {
-  const [seconds, setSeconds] = useState(0)
+function RecordingTimer({ paused, startedAt }: { paused: boolean; startedAt: number | null }) {
+  const [seconds, setSeconds] = useState(() => {
+    // Initialize from global recorder's startedAt so timer survives navigation
+    if (startedAt) return Math.floor((Date.now() - startedAt) / 1000)
+    return 0
+  })
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {

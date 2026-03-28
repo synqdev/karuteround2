@@ -9,7 +9,7 @@ export function MiniRecorder() {
   const { state, startedAt, pauseRecording, resumeRecording, stopRecording } = useGlobalRecorder()
   const pathname = usePathname()
   const router = useRouter()
-  const [elapsed, setElapsed] = useState(0)
+  const [elapsed, setElapsed] = useState(() => startedAt ? Math.floor((Date.now() - startedAt) / 1000) : 0)
 
   const isOnSessionsPage = pathname.includes('/sessions')
   const isActive = state === 'recording' || state === 'paused'
