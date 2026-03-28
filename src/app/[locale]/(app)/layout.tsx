@@ -18,12 +18,14 @@ export default async function DashboardLayout({
   const { locale } = await params
 
   const supabase = await createClient()
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const [{ data: { user }, error }, staffList, activeStaffId] = await Promise.all([
+    supabase.auth.getUser(),
+    getStaffList(),
+    getActiveStaffId(),
+  ])
   if (!user || error) {
     redirect(`/${locale}/login`)
   }
-
-  const staffList = await getStaffList()
 
   // Normalize to simple name-keyed shape for the switcher
   const staffItems = staffList.map((s) => ({
@@ -35,7 +37,6 @@ export default async function DashboardLayout({
   }))
 
   // Resolve active staff from cookie, falling back to the auth user's own profile
-  const activeStaffId = await getActiveStaffId()
   let activeStaff = staffItems.find((s) => s.id === activeStaffId) ?? null
 
   if (!activeStaff && staffItems.length > 0) {
