@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { Plus, LogOut, ChevronDown, Settings } from 'lucide-react'
 import {
   DropdownMenu,
@@ -111,7 +111,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
   async function handleLogout() {
     const supabase = createClient()
     await supabase.auth.signOut()
-    router.push('/login')
+    router.push('/login' as Parameters<typeof router.push>[0])
     router.refresh()
   }
 
@@ -229,7 +229,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
 
           {/* Manage staff in settings */}
           <DropdownMenuItem
-            onClick={() => router.push('/settings')}
+            onClick={() => router.push('/settings' as Parameters<typeof router.push>[0])}
             className="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-muted-foreground"
           >
             <Settings className="h-4 w-4" />

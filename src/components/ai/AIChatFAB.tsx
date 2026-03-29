@@ -20,6 +20,11 @@ export function AIChatFAB({ locale }: { locale: string }) {
         </button>
       )}
 
+      {/* Click-outside backdrop */}
+      {open && (
+        <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
+      )}
+
       {/* Chat panel */}
       {open && <AIChatPanel locale={locale} onClose={() => setOpen(false)} />}
     </>
