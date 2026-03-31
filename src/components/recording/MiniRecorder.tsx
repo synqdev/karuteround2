@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { usePathname } from 'next/navigation'
 import { useGlobalRecorder } from '@/hooks/use-global-recorder'
 import { useRouter } from '@/i18n/navigation'
 
 export function MiniRecorder() {
+  const t = useTranslations('miniRecorder')
   const { state, startedAt, pauseRecording, resumeRecording, stopRecording } = useGlobalRecorder()
   const pathname = usePathname()
   const router = useRouter()
@@ -45,7 +47,7 @@ export function MiniRecorder() {
 
         {/* State */}
         <span className="text-xs font-medium opacity-80">
-          {state === 'paused' ? 'Paused' : 'Recording'}
+          {state === 'paused' ? t('paused') : t('recording')}
         </span>
 
         {/* Pause/Resume */}
@@ -76,7 +78,7 @@ export function MiniRecorder() {
           onClick={() => router.push('/sessions' as Parameters<typeof router.push>[0])}
           className="text-[10px] font-medium opacity-70 hover:opacity-100 transition-opacity ml-1 pr-2"
         >
-          Open
+          {t('open')}
         </button>
       </div>
     </div>

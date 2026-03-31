@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import {
   FileText,
@@ -66,9 +66,9 @@ interface CustomerDetailTabsProps {
 // ---------------------------------------------------------------------------
 
 const TABS = [
-  { key: 'ai-history', label: 'AI History', icon: Sparkles },
-  { key: 'karute', label: 'Karute', icon: FileText },
-  { key: 'photos', label: 'Photos', icon: Camera },
+  { key: 'ai-history', labelKey: 'aiHistory', icon: Sparkles },
+  { key: 'karute', labelKey: 'karute', icon: FileText },
+  { key: 'photos', labelKey: 'photos', icon: Camera },
 ] as const
 
 type TabKey = (typeof TABS)[number]['key']
@@ -186,6 +186,7 @@ export function CustomerDetailTabs({
   totalVisitCount,
 }: CustomerDetailTabsProps) {
   const locale = useLocale()
+  const t = useTranslations('customerDetail')
   const [activeTab, setActiveTab] = useState<TabKey>('ai-history')
 
   return (
@@ -216,7 +217,7 @@ export function CustomerDetailTabs({
                 }`}
               >
                 <Icon className="size-4" />
-                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="hidden sm:inline">{t(tab.labelKey)}</span>
               </button>
             )
           })}
@@ -251,18 +252,19 @@ function KaruteTab({
   karuteRecords: KaruteRecordWithEntries[]
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
   if (karuteRecords.length === 0) {
     return (
       <div className="space-y-4">
-        <h2 className="text-lg font-semibold">Karute History</h2>
+        <h2 className="text-lg font-semibold">{t('karuteHistory')}</h2>
         <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <FileText className="size-10 text-muted-foreground/50 mb-3" />
             <p className="text-sm text-muted-foreground">
-              No karute records yet
+              {t('noKaruteYet')}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Records will appear here after recording a session
+              {t('recordsAppearAfterSession')}
             </p>
           </div>
         </div>
@@ -272,7 +274,7 @@ function KaruteTab({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Karute History</h2>
+      <h2 className="text-lg font-semibold">{t('karuteHistory')}</h2>
 
       {/* Karute Records */}
       <div className="space-y-4">
@@ -291,6 +293,7 @@ function KaruteRecordCard({
   record: KaruteRecordWithEntries
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
   const { professional, personal } = groupEntriesByType(record.entries)
 
   return (
@@ -302,10 +305,10 @@ function KaruteRecordCard({
             {formatDateTime(record.session_date, locale)}
           </span>
           <span className="rounded-full border border-blue-500/30 bg-blue-500/10 px-2 py-0.5 text-[10px] font-medium text-blue-400">
-            Salon
+            {t('salon')}
           </span>
           <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-[10px] font-medium text-green-400">
-            Approved
+            {t('approved')}
           </span>
         </div>
         {record.profiles?.full_name && (
@@ -328,7 +331,7 @@ function KaruteRecordCard({
           {professional.length > 0 && (
             <div>
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                Professional
+                {t('professional')}
               </h4>
               <div className="flex flex-wrap gap-1.5">
                 {professional.map((entry) => (
@@ -348,7 +351,7 @@ function KaruteRecordCard({
           {personal.length > 0 && (
             <div>
               <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-                Personal
+                {t('personal')}
               </h4>
               <div className="flex flex-wrap gap-1.5">
                 {personal.map((entry) => (
@@ -373,7 +376,7 @@ function KaruteRecordCard({
         href={`/karute/${record.id}`}
         className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
       >
-        View Details
+        {t('viewDetails')}
         <ChevronRight className="size-3.5" />
       </Link>
     </div>
@@ -387,6 +390,7 @@ function AdviceCard({
   karuteRecords: KaruteRecordWithEntries[]
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
   const [advice, setAdvice] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [fetched, setFetched] = useState(false)
@@ -470,7 +474,7 @@ function AdviceCard({
     <div className="rounded-2xl border border-border/30 bg-gradient-to-r from-amber-500/5 to-transparent p-6">
       <div className="flex items-center gap-2 mb-3">
         <Gift className="h-4 w-4 text-amber-500" />
-        <h3 className="text-sm font-semibold">Advice for Next Visit</h3>
+        <h3 className="text-sm font-semibold">{t('adviceForNextVisit')}</h3>
       </div>
       {loading && !fetched ? (
         <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
@@ -480,7 +484,7 @@ function AdviceCard({
         </p>
       ) : (
         <p className="text-sm text-muted-foreground italic">
-          No advice available yet
+          {t('noAdviceYet')}
         </p>
       )}
     </div>
@@ -492,6 +496,7 @@ function RecommendedActionsCard({
 }: {
   karuteRecords: KaruteRecordWithEntries[]
 }) {
+  const t = useTranslations('customerDetail')
   const [dismissed, setDismissed] = useState<Set<number>>(new Set())
 
   // Generate simple recommended actions from entry data
@@ -504,8 +509,8 @@ function RecommendedActionsCard({
         .map((e) => ({
           title:
             e.category === 'next_visit'
-              ? 'Follow Up'
-              : 'Treatment Recommendation',
+              ? t('followUp')
+              : t('treatmentRecommendation'),
           body: e.content,
           type: e.category,
         })),
@@ -520,10 +525,10 @@ function RecommendedActionsCard({
       <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Lightbulb className="h-4 w-4 text-amber-500" />
-          <h3 className="text-sm font-semibold">AI Recommended Actions</h3>
+          <h3 className="text-sm font-semibold">{t('aiRecommendedActions')}</h3>
         </div>
         <p className="text-sm text-muted-foreground text-center py-4">
-          All actions handled
+          {t('allActionsHandled')}
         </p>
       </div>
     )
@@ -563,7 +568,7 @@ function RecommendedActionsCard({
                     setDismissed((s) => new Set(s).add(realIdx))
                   }
                   className="p-1.5 rounded-md text-green-500 hover:bg-green-500/10 transition-colors"
-                  title="Mark as done"
+                  title={t('markAsDone')}
                 >
                   <Check className="h-4 w-4" />
                 </button>
@@ -573,7 +578,7 @@ function RecommendedActionsCard({
                     setDismissed((s) => new Set(s).add(realIdx))
                   }
                   className="p-1.5 rounded-md text-muted-foreground hover:bg-muted/50 transition-colors"
-                  title="Dismiss"
+                  title={t('dismiss')}
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -599,6 +604,7 @@ function TimelineTab({
   totalVisitCount: number
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
   const [activeFilters, setActiveFilters] = useState<Set<string>>(
     new Set(['Visit']),
   )
@@ -624,17 +630,17 @@ function TimelineTab({
       <div className="grid grid-cols-3 gap-3">
         <div className="rounded-2xl border border-border/30 bg-card/50 p-4 text-center">
           <p className="text-2xl font-bold">{totalVisitCount}</p>
-          <p className="text-xs text-muted-foreground mt-1">Visits</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('visits')}</p>
         </div>
         <div className="rounded-2xl border border-border/30 bg-card/50 p-4 text-center">
           <p className="text-2xl font-bold">{karuteRecords.length}</p>
-          <p className="text-xs text-muted-foreground mt-1">Records</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('records')}</p>
         </div>
         <div className="rounded-2xl border border-border/30 bg-card/50 p-4 text-center">
           <p className="text-2xl font-bold">
             {daysSinceLastVisit !== null ? daysSinceLastVisit : '--'}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">Days Since Last</p>
+          <p className="text-xs text-muted-foreground mt-1">{t('daysSinceLast')}</p>
         </div>
       </div>
 
@@ -663,7 +669,7 @@ function TimelineTab({
           <div className="rounded-2xl border border-border/30 bg-card/50 p-6 text-center">
             <Clock className="size-8 text-muted-foreground/50 mx-auto mb-2" />
             <p className="text-sm text-muted-foreground">
-              No timeline events yet
+              {t('noTimelineEvents')}
             </p>
           </div>
         ) : (
@@ -678,7 +684,7 @@ function TimelineTab({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm font-medium">Karute Session</span>
+                    <span className="text-sm font-medium">{t('karuteSession')}</span>
                     <span className="text-xs text-muted-foreground">
                       {formatDate(record.session_date, locale)}
                     </span>
@@ -690,14 +696,14 @@ function TimelineTab({
                   )}
                   <div className="flex items-center gap-3 mt-2">
                     <span className="text-xs text-muted-foreground">
-                      {record.entries.length} entries
+                      {t('entries', { count: record.entries.length })}
                     </span>
                     <span className="rounded-full border border-green-500/30 bg-green-500/10 px-2 py-0.5 text-[10px] font-medium text-green-400">
-                      Has karute record
+                      {t('hasKaruteRecord')}
                     </span>
                     {record.profiles?.full_name && (
                       <span className="text-xs text-muted-foreground">
-                        by {record.profiles.full_name}
+                        {t('by', { name: record.profiles.full_name })}
                       </span>
                     )}
                   </div>
@@ -716,18 +722,19 @@ function TimelineTab({
 // ===========================================================================
 
 function PhotosTab() {
+  const t = useTranslations('customerDetail')
   const [categoryFilter, setCategoryFilter] = useState('all')
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold">Photo Gallery</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">0 photos</p>
+          <h2 className="text-lg font-semibold">{t('photoGallery')}</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('photoCount', { count: 0 })}</p>
         </div>
         <Button variant="outline" size="sm">
           <Upload className="size-3.5 mr-1.5" />
-          Add Photo
+          {t('addPhoto')}
         </Button>
       </div>
 
@@ -738,10 +745,10 @@ function PhotosTab() {
           onChange={(e) => setCategoryFilter(e.target.value)}
           className="rounded-lg border border-border bg-background px-3 py-1.5 text-sm text-foreground"
         >
-          <option value="all">All Categories</option>
-          <option value="general">General</option>
-          <option value="before">Before</option>
-          <option value="after">After</option>
+          <option value="all">{t('allCategories')}</option>
+          <option value="general">{t('general')}</option>
+          <option value="before">{t('before')}</option>
+          <option value="after">{t('after')}</option>
         </select>
       </div>
 
@@ -752,14 +759,14 @@ function PhotosTab() {
             <ImageIcon className="size-8 text-muted-foreground/50" />
           </div>
           <p className="text-sm font-medium text-muted-foreground mb-1">
-            No photos yet
+            {t('noPhotosYet')}
           </p>
           <p className="text-xs text-muted-foreground mb-4">
-            Upload photos to track visual progress over time
+            {t('uploadPhotosDescription')}
           </p>
           <Button variant="outline" size="sm">
             <Upload className="size-3.5 mr-1.5" />
-            Upload First Photo
+            {t('uploadFirstPhoto')}
           </Button>
         </div>
       </div>
@@ -782,6 +789,8 @@ function DetailsTab({
   totalVisitCount: number
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
+  const tc = useTranslations('common')
   const [staffNotes, setStaffNotes] = useState(customer.notes ?? '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -833,27 +842,27 @@ function DetailsTab({
     <div className="space-y-4">
       {/* Customer Details */}
       <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
-        <h3 className="text-sm font-semibold mb-4">Customer Details</h3>
+        <h3 className="text-sm font-semibold mb-4">{t('customerDetails')}</h3>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-xs text-muted-foreground">Registered</p>
+            <p className="text-xs text-muted-foreground">{t('registered')}</p>
             <p className="text-sm font-medium mt-0.5">
               {formatDate(customer.created_at, locale)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-muted-foreground">Total Visits</p>
+            <p className="text-xs text-muted-foreground">{t('totalVisits')}</p>
             <p className="text-sm font-medium mt-0.5">{totalVisitCount}</p>
           </div>
           {customer.phone && (
             <div>
-              <p className="text-xs text-muted-foreground">Phone</p>
+              <p className="text-xs text-muted-foreground">{tc('phone')}</p>
               <p className="text-sm font-medium mt-0.5">{customer.phone}</p>
             </div>
           )}
           {customer.email && (
             <div>
-              <p className="text-xs text-muted-foreground">Email</p>
+              <p className="text-xs text-muted-foreground">{tc('email')}</p>
               <p className="text-sm font-medium mt-0.5">{customer.email}</p>
             </div>
           )}
@@ -863,7 +872,7 @@ function DetailsTab({
       {/* Staff Notes */}
       <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold">Staff Notes</h3>
+          <h3 className="text-sm font-semibold">{t('staffNotes')}</h3>
           <Button
             variant="outline"
             size="sm"
@@ -875,13 +884,13 @@ function DetailsTab({
             ) : (
               <Save className="size-3.5 mr-1.5" />
             )}
-            {saved ? 'Saved' : 'Save'}
+            {saved ? tc('saved') : tc('save')}
           </Button>
         </div>
         <textarea
           value={staffNotes}
           onChange={(e) => setStaffNotes(e.target.value)}
-          placeholder="Add notes about this customer..."
+          placeholder={t('staffNotesPlaceholder')}
           className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50 resize-y min-h-[100px]"
           rows={4}
         />
@@ -891,14 +900,14 @@ function DetailsTab({
       <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold">Customer Insights</h3>
+            <h3 className="text-sm font-semibold">{t('customerInsights')}</h3>
             <p className="text-xs text-muted-foreground mt-0.5">
-              Analytics from karute data
+              {t('insightsDescription')}
             </p>
           </div>
           <Button variant="outline" size="sm">
             <RefreshCw className="size-3.5 mr-1.5" />
-            Recalculate
+            {t('recalculate')}
           </Button>
         </div>
 
@@ -906,15 +915,15 @@ function DetailsTab({
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="rounded-xl border border-border/20 bg-muted/30 p-3 text-center">
             <p className="text-lg font-bold">{totalVisitCount}</p>
-            <p className="text-[10px] text-muted-foreground">Visits</p>
+            <p className="text-[10px] text-muted-foreground">{t('visits')}</p>
           </div>
           <div className="rounded-xl border border-border/20 bg-muted/30 p-3 text-center">
             <p className="text-lg font-bold">--</p>
-            <p className="text-[10px] text-muted-foreground">Total Revenue</p>
+            <p className="text-[10px] text-muted-foreground">{t('totalRevenue')}</p>
           </div>
           <div className="rounded-xl border border-border/20 bg-muted/30 p-3 text-center">
             <p className="text-lg font-bold">--</p>
-            <p className="text-[10px] text-muted-foreground">LTV</p>
+            <p className="text-[10px] text-muted-foreground">{t('ltv')}</p>
           </div>
         </div>
 
@@ -922,7 +931,7 @@ function DetailsTab({
         {topProfessional.length > 0 && (
           <div className="mb-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              Top Professional Topics
+              {t('topProfessionalTopics')}
             </h4>
             <div className="flex flex-wrap gap-1.5">
               {topProfessional.map(({ category, count }) => (
@@ -944,7 +953,7 @@ function DetailsTab({
         {topPersonal.length > 0 && (
           <div className="mb-4">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              Top Personal Topics
+              {t('topPersonalTopics')}
             </h4>
             <div className="flex flex-wrap gap-1.5">
               {topPersonal.map(({ category, count }) => (
@@ -966,7 +975,7 @@ function DetailsTab({
         {emergingTopics.length > 0 && (
           <div>
             <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">
-              Emerging Topics
+              {t('emergingTopics')}
             </h4>
             <div className="flex flex-wrap gap-1.5">
               {emergingTopics.map((category) => (
@@ -986,10 +995,10 @@ function DetailsTab({
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <BarChart3 className="size-8 text-muted-foreground/50 mb-2" />
             <p className="text-sm text-muted-foreground">
-              No data to analyze yet
+              {t('noDataToAnalyze')}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Insights will appear after recording sessions
+              {t('insightsAppearAfterSessions')}
             </p>
           </div>
         )}
@@ -1009,6 +1018,7 @@ function AIHistoryTab({
   karuteRecords: KaruteRecordWithEntries[]
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
   const recordsWithSummary = karuteRecords.filter(
     (r) => r.summary,
   )
@@ -1016,9 +1026,9 @@ function AIHistoryTab({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-lg font-semibold">AI History</h2>
+        <h2 className="text-lg font-semibold">{t('aiHistory')}</h2>
         <p className="text-xs text-muted-foreground mt-0.5">
-          Past AI summaries and advice
+          {t('aiHistoryDescription')}
         </p>
       </div>
 
@@ -1027,10 +1037,10 @@ function AIHistoryTab({
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <Sparkles className="size-10 text-muted-foreground/50 mb-3" />
             <p className="text-sm text-muted-foreground">
-              No AI history yet
+              {t('noAiHistoryYet')}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              AI summaries will appear here after recording sessions
+              {t('aiSummariesAppearAfterSessions')}
             </p>
           </div>
         </div>
@@ -1052,6 +1062,7 @@ function AIHistoryCard({
   record: KaruteRecordWithEntries
   locale: string
 }) {
+  const t = useTranslations('customerDetail')
   const [advice, setAdvice] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -1131,7 +1142,7 @@ function AIHistoryCard({
       <div className="mb-4">
         <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
           <MessageSquare className="size-3" />
-          AI Summary
+          {t('aiSummary')}
         </h4>
         <p className="text-sm text-muted-foreground leading-relaxed">
           {record.summary}
@@ -1142,7 +1153,7 @@ function AIHistoryCard({
       <div>
         <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-1.5">
           <Gift className="size-3 text-amber-500" />
-          Advice for Next Visit
+          {t('adviceForNextVisit')}
         </h4>
         {loading ? (
           <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
@@ -1152,7 +1163,7 @@ function AIHistoryCard({
           </p>
         ) : (
           <p className="text-sm text-muted-foreground italic">
-            No advice generated
+            {t('noAdviceGenerated')}
           </p>
         )}
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import { Mic, Users, FileText, Clock, ArrowRight } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { AIRecommendedActions } from './AIRecommendedActions'
@@ -45,6 +46,7 @@ function formatDate(iso: string) {
 }
 
 export function NewDashboard({ staffName, activeStaffId, stats, todayAppointments, recentKarute, locale }: NewDashboardProps) {
+  const t = useTranslations('dashboard')
   const [showAll, setShowAll] = useState(false)
 
   const filteredAppointments = useMemo(() => {
@@ -62,16 +64,41 @@ export function NewDashboard({ staffName, activeStaffId, stats, todayAppointment
       {/* Welcome + toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
-          <p className="text-sm text-muted-foreground mt-1">Welcome back, {staffName}</p>
+          <h1 className="text-2xl font-semibold tracking-tight">{t('dashboardTitle')}</h1>
+          <p className="text-sm text-muted-foreground mt-1">{t('welcomeBack', { name: staffName })}</p>
         </div>
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
           className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          {showAll ? 'My View' : 'All Staff'}
+          {showAll ? t('myView') : t('allStaff')}
         </button>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="flex flex-wrap gap-3">
+        <Link
+          href={'/sessions' as Parameters<typeof Link>[0]['href']}
+          className="flex items-center gap-2 rounded-xl bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-red-600 transition-colors"
+        >
+          <Mic className="h-4 w-4" />
+          {t('startRecording')}
+        </Link>
+        <Link
+          href={'/customers' as Parameters<typeof Link>[0]['href']}
+          className="flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
+        >
+          <Users className="h-4 w-4" />
+          {t('addCustomer')}
+        </Link>
+        <Link
+          href={'/karute' as Parameters<typeof Link>[0]['href']}
+          className="flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
+        >
+          <FileText className="h-4 w-4" />
+          {t('viewKarute')}
+        </Link>
       </div>
 
       {/* Stats */}
@@ -79,19 +106,22 @@ export function NewDashboard({ staffName, activeStaffId, stats, todayAppointment
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500/10 to-orange-500/10 border border-rose-500/20 p-5">
           <Mic className="absolute top-4 right-4 h-8 w-8 text-rose-500/20" />
           <div className="text-3xl font-bold text-rose-600 dark:text-rose-400">{stats.recordingsThisWeek}</div>
-          <div className="text-sm text-muted-foreground mt-1">Recordings This Week</div>
+          <div className="text-sm text-muted-foreground mt-1">{t('recordingsThisWeek')}</div>
         </div>
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 p-5">
           <Users className="absolute top-4 right-4 h-8 w-8 text-blue-500/20" />
           <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{filteredAppointments.length}</div>
-          <div className="text-sm text-muted-foreground mt-1">Customers Today</div>
+          <div className="text-sm text-muted-foreground mt-1">{t('customersToday')}</div>
         </div>
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 p-5">
           <FileText className="absolute top-4 right-4 h-8 w-8 text-emerald-500/20" />
           <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{stats.karuteGenerated}</div>
-          <div className="text-sm text-muted-foreground mt-1">Karute Generated</div>
+          <div className="text-sm text-muted-foreground mt-1">{t('karuteGenerated')}</div>
         </div>
       </div>
+
+      {/* AI Recommended Actions */}
+      <AIRecommendedActions locale={locale} />
 
       {/* Two column grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -100,14 +130,14 @@ export function NewDashboard({ staffName, activeStaffId, stats, todayAppointment
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
-              <h3 className="text-sm font-semibold">Today&apos;s Appointments</h3>
+              <h3 className="text-sm font-semibold">{t('todaysAppointments')}</h3>
             </div>
             <Link href={'/appointments' as Parameters<typeof Link>[0]['href']} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
-              View all <ArrowRight className="h-3 w-3" />
+              {t('viewAll')} <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           {filteredAppointments.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">No appointments today</p>
+            <p className="text-sm text-muted-foreground text-center py-8">{t('noAppointmentsToday')}</p>
           ) : (
             <div className="space-y-2">
               {filteredAppointments.map((a) => (
@@ -137,14 +167,14 @@ export function NewDashboard({ staffName, activeStaffId, stats, todayAppointment
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-muted-foreground" />
-              <h3 className="text-sm font-semibold">Recent Karute</h3>
+              <h3 className="text-sm font-semibold">{t('recentKarute')}</h3>
             </div>
             <Link href={'/karute' as Parameters<typeof Link>[0]['href']} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1">
-              View all <ArrowRight className="h-3 w-3" />
+              {t('viewAll')} <ArrowRight className="h-3 w-3" />
             </Link>
           </div>
           {filteredKarute.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-8">No karute records yet</p>
+            <p className="text-sm text-muted-foreground text-center py-8">{t('noKaruteYet')}</p>
           ) : (
             <div className="space-y-2">
               {filteredKarute.map((r) => (
@@ -165,36 +195,6 @@ export function NewDashboard({ staffName, activeStaffId, stats, todayAppointment
         </div>
       </div>
 
-      {/* AI Recommended Actions */}
-      <AIRecommendedActions locale={locale} />
-
-      {/* Quick Actions */}
-      <div className="rounded-2xl border border-border/30 bg-card/50 p-5">
-        <h3 className="text-sm font-semibold mb-4">Quick Actions</h3>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            href={'/sessions' as Parameters<typeof Link>[0]['href']}
-            className="flex items-center gap-2 rounded-xl bg-red-500 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-red-600 transition-colors"
-          >
-            <Mic className="h-4 w-4" />
-            Start Recording
-          </Link>
-          <Link
-            href={'/customers' as Parameters<typeof Link>[0]['href']}
-            className="flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
-          >
-            <Users className="h-4 w-4" />
-            Add Customer
-          </Link>
-          <Link
-            href={'/karute' as Parameters<typeof Link>[0]['href']}
-            className="flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
-          >
-            <FileText className="h-4 w-4" />
-            View Karute
-          </Link>
-        </div>
-      </div>
     </div>
   )
 }

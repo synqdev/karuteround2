@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { useRouter } from '@/i18n/navigation'
 import { Plus, LogOut, ChevronDown, Settings } from 'lucide-react'
 import {
@@ -35,6 +36,9 @@ function getInitials(name: string) {
 }
 
 export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSwitcherProps) {
+  const t = useTranslations('staff')
+  const tc = useTranslations('common')
+  const tSettings = useTranslations('settings')
   const router = useRouter()
   const [adding, setAdding] = useState(false)
   const [newName, setNewName] = useState('')
@@ -83,7 +87,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
     }
 
     if (!result.valid) {
-      setPinError('Wrong PIN')
+      setPinError(t('wrongPin'))
       setPinLoading(false)
       return
     }
@@ -118,7 +122,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
   if (staffList.length === 0) {
     return (
       <button type="button" disabled className="text-sm font-medium text-muted-foreground px-2 py-1">
-        No Staff
+        {t('noStaff')}
       </button>
     )
   }
@@ -137,14 +141,14 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
               {activeInitials}
             </div>
           )}
-          <span className="text-sm font-medium">{activeStaff?.name ?? 'Select Staff'}</span>
+          <span className="text-sm font-medium">{activeStaff?.name ?? t('selectStaff')}</span>
           <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-64 p-0">
           {/* Header */}
           <div className="px-4 py-2.5 border-b border-border/30">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Switch Staff</p>
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">{t('switchStaff')}</p>
           </div>
 
           {/* Staff list */}
@@ -152,7 +156,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
             {staffList.map((staff) => {
               const isActive = activeStaff?.id === staff.id
               const initials = getInitials(staff.name)
-              const role = (staff.displayRole === 'owner' ? 'OWNER' : 'STYLIST')
+              const role = (staff.displayRole === 'owner' ? t('owner') : t('stylist'))
 
               return (
                 <DropdownMenuItem
@@ -195,7 +199,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
                 autoFocus
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="Staff name..."
+                placeholder={t('staffNamePlaceholder')}
                 disabled={saving}
                 className="w-full rounded-md border border-border bg-background px-2.5 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               />
@@ -205,7 +209,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
                   onClick={() => { setAdding(false); setNewName('') }}
                   className="flex-1 rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:bg-muted transition-colors"
                 >
-                  Cancel
+                  {tc('cancel')}
                 </button>
                 <button
                   type="button"
@@ -213,7 +217,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
                   disabled={saving || !newName.trim()}
                   className="flex-1 rounded-md bg-primary px-2 py-1.5 text-xs text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
                 >
-                  {saving ? '...' : 'Add'}
+                  {saving ? '...' : tc('add')}
                 </button>
               </div>
             </div>
@@ -223,7 +227,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
               className="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-muted-foreground"
             >
               <Plus className="h-4 w-4" />
-              <span className="text-sm">Add Staff</span>
+              <span className="text-sm">{t('addStaff')}</span>
             </DropdownMenuItem>
           )}
 
@@ -233,7 +237,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
             className="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-muted-foreground"
           >
             <Settings className="h-4 w-4" />
-            <span className="text-sm">Manage Staff</span>
+            <span className="text-sm">{tSettings('manageStaff')}</span>
           </DropdownMenuItem>
 
           <DropdownMenuSeparator className="my-0" />
@@ -244,7 +248,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
             className="flex items-center gap-3 px-4 py-2.5 cursor-pointer text-red-400 hover:text-red-300"
           >
             <LogOut className="h-4 w-4" />
-            <span className="text-sm">Log out</span>
+            <span className="text-sm">{t('logOut')}</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -252,7 +256,7 @@ export function StaffSwitcher({ staffList, activeStaff, authProfileId }: StaffSw
       {/* PIN pad modal */}
       {pinTarget && (
         <PinPad
-          title={`Enter PIN for ${pinTarget.name}`}
+          title={t('enterPinFor', { name: pinTarget.name })}
           onSubmit={handlePinSubmit}
           onCancel={() => { setPinTarget(null); setPinError(null) }}
           error={pinError}

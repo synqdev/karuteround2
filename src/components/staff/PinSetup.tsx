@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { setStaffPin, removeStaffPin } from '@/actions/staff-pin'
 import { PinPad } from './PinPad'
@@ -15,6 +16,7 @@ interface PinSetupProps {
 type Phase = 'enter' | 'confirm'
 
 export function PinSetup({ staffId, staffName, hasPin, onClose }: PinSetupProps) {
+  const t = useTranslations('pin')
   const [phase, setPhase] = useState<Phase>('enter')
   const [firstPin, setFirstPin] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -30,7 +32,7 @@ export function PinSetup({ staffId, staffName, hasPin, onClose }: PinSetupProps)
 
     // Confirm phase
     if (pin !== firstPin) {
-      setError('PINs do not match. Try again.')
+      setError(t('pinsDoNotMatch'))
       setPhase('enter')
       setFirstPin('')
       return
@@ -45,7 +47,7 @@ export function PinSetup({ staffId, staffName, hasPin, onClose }: PinSetupProps)
       return
     }
 
-    toast.success(`PIN ${hasPin ? 'updated' : 'set'} for ${staffName}`)
+    toast.success(hasPin ? t('pinUpdated', { name: staffName }) : t('pinSet', { name: staffName }))
     onClose()
   }
 
@@ -59,13 +61,13 @@ export function PinSetup({ staffId, staffName, hasPin, onClose }: PinSetupProps)
       return
     }
 
-    toast.success(`PIN removed for ${staffName}`)
+    toast.success(t('pinRemoved', { name: staffName }))
     onClose()
   }
 
   const title = phase === 'enter'
-    ? `Set new PIN for ${staffName}`
-    : 'Confirm PIN'
+    ? t('setNewPin', { name: staffName })
+    : t('confirmPin')
 
   return (
     <>
@@ -85,7 +87,7 @@ export function PinSetup({ staffId, staffName, hasPin, onClose }: PinSetupProps)
             disabled={loading}
             className="rounded-lg bg-red-500/10 px-4 py-2 text-xs font-medium text-red-500 hover:bg-red-500/20 transition-colors"
           >
-            Remove PIN
+            {t('removePin')}
           </button>
         </div>
       )}

@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
 export function LoginForm({ locale }: { locale: string }) {
+  const t = useTranslations('auth')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -31,7 +33,7 @@ export function LoginForm({ locale }: { locale: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+        <label htmlFor="email" className="block text-sm font-medium mb-1">{t('email')}</label>
         <input
           id="email"
           name="email"
@@ -41,7 +43,7 @@ export function LoginForm({ locale }: { locale: string }) {
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+        <label htmlFor="password" className="block text-sm font-medium mb-1">{t('password')}</label>
         <input
           id="password"
           name="password"
@@ -52,12 +54,12 @@ export function LoginForm({ locale }: { locale: string }) {
       </div>
       {error && <p className="text-sm text-red-400">{error}</p>}
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'Signing in...' : 'Sign in'}
+        {loading ? t('submitting') : t('submit')}
       </Button>
       <p className="text-sm text-center text-muted-foreground">
-        No account?{' '}
+        {t('noAccount')}{' '}
         <a href={`/${locale}/signup`} className="text-foreground underline underline-offset-4 hover:text-primary">
-          Sign up
+          {t('signupLink')}
         </a>
       </p>
     </form>

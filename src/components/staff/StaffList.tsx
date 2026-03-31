@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { deleteStaff, uploadStaffAvatar } from '@/actions/staff'
@@ -28,16 +29,20 @@ interface StaffListProps {
   isOwner?: boolean
 }
 
-function formatAddedDate(dateString: string): string {
+function formatDate(dateString: string): string {
   const date = new Date(dateString)
-  return `Added ${date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  })}`
+  })
 }
 
 export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = false }: StaffListProps) {
+  const ts = useTranslations('settings')
+  const tc = useTranslations('common')
+  const tStaff = useTranslations('staff')
+  const tPin = useTranslations('pin')
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [editingStaff, setEditingStaff] = useState<StaffMember | null>(null)
   const [pinSetupStaff, setPinSetupStaff] = useState<StaffMember | null>(null)
@@ -59,11 +64,11 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-medium">Staff Members</h2>
+          <h2 className="text-lg font-medium">{ts('staffMembers')}</h2>
         </div>
         <div className="flex flex-col items-center gap-4 rounded-xl border border-dashed py-12 text-center">
-          <p className="text-sm text-muted-foreground">No staff members yet</p>
-          <Button onClick={() => setShowCreateForm(true)} className="min-h-[44px]">Add Staff Member</Button>
+          <p className="text-sm text-muted-foreground">{ts('noStaff')}</p>
+          <Button onClick={() => setShowCreateForm(true)} className="min-h-[44px]">{ts('addStaffMember')}</Button>
         </div>
         {showCreateForm && (
           <StaffForm
@@ -78,10 +83,10 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium">Staff Members</h2>
+        <h2 className="text-lg font-medium">{ts('staffMembers')}</h2>
         {isOwner && (
           <Button size="sm" onClick={() => setShowCreateForm(true)} className="min-h-[44px]">
-            Add Staff
+            {tStaff('addStaff')}
           </Button>
         )}
       </div>
@@ -122,7 +127,7 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
                       fd.append('file', file)
                       const result = await uploadStaffAvatar(staff.id, fd)
                       if ('error' in result) toast.error(result.error)
-                      else toast.success('Avatar uploaded')
+                      else toast.success(ts('avatarUploaded'))
                     }}
                   />
                 </label>
@@ -132,13 +137,13 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
                       {staff.full_name ?? '(No name)'}
                     </span>
                     {staff.display_role === 'owner' && (
-                      <span title="Account Owner" className="text-amber-500">
+                      <span title={ts('accountOwner')} className="text-amber-500">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 18.5l2-8 4.5 3 3-5 3 5 4.5-3 2 8z"/><circle cx="12" cy="4" r="2"/><circle cx="4" cy="9" r="1.5"/><circle cx="20" cy="9" r="1.5"/></svg>
                       </span>
                     )}
                     {isActive && (
                       <span className="rounded-full bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-600 dark:text-green-400">
-                        Active
+                        {ts('active')}
                       </span>
                     )}
                   </div>
@@ -149,7 +154,7 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
                     {(staff as { email?: string }).email && <span>{(staff as { email: string }).email}</span>}
                     {(staff as { phone?: string }).phone && <span>{(staff as { phone: string }).phone}</span>}
                     {!(staff as { email?: string }).email && !(staff as { phone?: string }).phone && (
-                      <span>{formatAddedDate(staff.created_at)}</span>
+                      <span>{tStaff('added', { date: formatDate(staff.created_at) })}</span>
                     )}
                   </div>
                 </div>
@@ -163,7 +168,7 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
                     onClick={() => setPinSetupStaff(staff)}
                     className="min-h-[44px]"
                   >
-                    {staff.pin_hash ? 'PIN' : 'Set PIN'}
+                    {staff.pin_hash ? tPin('pin') : tPin('setPin')}
                   </Button>
                 )}
                 {(isOwner || staff.id === currentUserId) && (
@@ -173,7 +178,7 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
                     onClick={() => setEditingStaff(staff)}
                     className="min-h-[44px]"
                   >
-                    Edit
+                    {tc('edit')}
                   </Button>
                 )}
                 {isOwner && staff.display_role !== 'owner' && (
@@ -183,7 +188,7 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
                     onClick={() => handleDelete(staff)}
                     className="min-h-[44px]"
                   >
-                    Delete
+                    {tc('delete')}
                   </Button>
                 )}
               </div>

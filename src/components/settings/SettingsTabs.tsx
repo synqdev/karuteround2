@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { upsertOrgSettings, type OrgSettings } from '@/actions/org-settings'
 import { type ThemeColors, DEFAULT_THEME_COLORS } from '@/lib/theme'
@@ -73,16 +74,18 @@ const TIME_OPTIONS = Array.from({ length: 49 }, (_, idx) => idx * 30)
 
 type TabId = 'organization' | 'theme' | 'ai' | 'recording' | 'staff' | 'sync'
 
-const TABS: { id: TabId; label: string; icon: string }[] = [
-  { id: 'organization', label: 'Organization', icon: '🏢' },
-  { id: 'theme', label: 'Theme', icon: '🎨' },
-  { id: 'ai', label: 'AI Settings', icon: '🧠' },
-  { id: 'recording', label: 'Recording Settings', icon: '🎙️' },
-  { id: 'staff', label: 'Staff Management', icon: '👥' },
-  { id: 'sync', label: 'Booking Sync', icon: '🔄' },
+const TAB_IDS: { id: TabId; labelKey: string; icon: string }[] = [
+  { id: 'organization', labelKey: 'organization', icon: '🏢' },
+  { id: 'theme', labelKey: 'theme', icon: '🎨' },
+  { id: 'ai', labelKey: 'aiSettings', icon: '🧠' },
+  { id: 'recording', labelKey: 'recordingSettings', icon: '🎙️' },
+  { id: 'staff', labelKey: 'staffManagement', icon: '👥' },
+  { id: 'sync', labelKey: 'bookingSync', icon: '🔄' },
 ]
 
 export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, authProfileId }: SettingsTabsProps) {
+  const t = useTranslations('settings')
+  const tc = useTranslations('common')
   const [activeTab, setActiveTab] = useState<TabId>('organization')
   const initialOperatingHours = normalizeOperatingHours(orgSettings?.operating_hours ?? DEFAULT_OPERATING_HOURS)
   const [settings, setSettings] = useState({
@@ -107,7 +110,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
     if ('error' in result) {
       toast.error(result.error)
     } else if (!quiet) {
-      toast.success('Settings saved')
+      toast.success(t('settingsSaved'))
     }
     setSaving(false)
   }, [settings])
@@ -146,7 +149,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
     <div className="space-y-6">
       {/* Tabs */}
       <div className="flex gap-0 rounded-xl border border-border/30 bg-muted/30 p-1 overflow-x-auto">
-        {TABS.map((tab) => (
+        {TAB_IDS.map((tab) => (
           <button
             key={tab.id}
             type="button"
@@ -157,7 +160,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            {tab.icon} {tab.label}
+            {tab.icon} {t(tab.labelKey)}
           </button>
         ))}
       </div>
@@ -169,24 +172,24 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
         {activeTab === 'organization' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold">Organization</h3>
-              <p className="text-sm text-muted-foreground">View organization details</p>
+              <h3 className="text-lg font-semibold">{t('organization')}</h3>
+              <p className="text-sm text-muted-foreground">{t('organizationDescription')}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Business Name</label>
+                <label className="text-sm font-medium mb-1.5 block">{t('businessName')}</label>
                 <input
                   type="text"
                   value={settings.salon_name}
                   onChange={(e) => setSettings((s) => ({ ...s, salon_name: e.target.value }))}
                   onBlur={() => handleSave({ salon_name: settings.salon_name })}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-                  placeholder="Your salon name..."
+                  placeholder={t('salonNamePlaceholder')}
                 />
               </div>
               <div>
-                <label className="text-sm font-medium mb-1.5 block">Business Type</label>
+                <label className="text-sm font-medium mb-1.5 block">{t('businessType')}</label>
                 <select
                   value={settings.business_type}
                   onChange={(e) => handleSave({ business_type: e.target.value })}
@@ -203,8 +206,8 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
 
             <div className="border-t border-border/30 pt-6">
               <div>
-                <h4 className="text-sm font-semibold">Hours of operation</h4>
-                <p className="text-xs text-muted-foreground mt-1">Set open and close times for each day.</p>
+                <h4 className="text-sm font-semibold">{t('hoursOfOperation')}</h4>
+                <p className="text-xs text-muted-foreground mt-1">{t('hoursDescription')}</p>
               </div>
               <div className="mt-4 space-y-2">
                 {WEEKDAY_KEYS.map((dayKey) => {
@@ -255,8 +258,8 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
             <div className="border-t border-border/30 pt-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-medium">Solo Mode</h4>
-                  <p className="text-xs text-muted-foreground mt-0.5">Enable if you are the only staff member. Hides staff switcher and simplifies the UI.</p>
+                  <h4 className="text-sm font-medium">{t('soloMode')}</h4>
+                  <p className="text-xs text-muted-foreground mt-0.5">{t('soloDescription')}</p>
                 </div>
                 <button
                   type="button"
@@ -276,7 +279,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
             </div>
 
             <div className="border-t border-border/30 pt-6">
-              <label className="text-sm font-medium mb-1.5 block">Webhook URL</label>
+              <label className="text-sm font-medium mb-1.5 block">{t('webhookUrl')}</label>
               <input
                 type="url"
                 value={settings.webhook_url}
@@ -285,11 +288,11 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                 placeholder="https://..."
               />
-              <p className="text-xs text-muted-foreground mt-1.5">POSTs to this URL when a karute is created.</p>
+              <p className="text-xs text-muted-foreground mt-1.5">{t('webhookDescription')}</p>
             </div>
 
             <p className="text-xs text-muted-foreground border-t border-border/30 pt-4">
-              AI classification categories will automatically adjust based on the business type.
+              {t('businessTypeAutoNote')}
             </p>
           </div>
         )}
@@ -311,12 +314,12 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
         {activeTab === 'ai' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold">AI Settings</h3>
-              <p className="text-sm text-muted-foreground">Manage AI processing preferences</p>
+              <h3 className="text-lg font-semibold">{t('aiSettings')}</h3>
+              <p className="text-sm text-muted-foreground">{t('aiDescription')}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Preferred AI Model</label>
+              <label className="text-sm font-medium mb-1.5 block">{t('aiModel')}</label>
               <select
                 value={settings.ai_model}
                 onChange={(e) => handleSave({ ai_model: e.target.value })}
@@ -330,7 +333,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
 
             <div className="border-t border-border/30 pt-6">
               <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium">Classification Confidence Threshold</label>
+                <label className="text-sm font-medium">{t('confidenceThreshold')}</label>
                 <span className="text-sm font-mono text-muted-foreground">{settings.confidence_threshold.toFixed(1)}</span>
               </div>
               <input
@@ -360,12 +363,12 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
         {activeTab === 'recording' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold">Recording Settings</h3>
-              <p className="text-sm text-muted-foreground">Configure recording quality and behavior</p>
+              <h3 className="text-lg font-semibold">{t('recordingSettings')}</h3>
+              <p className="text-sm text-muted-foreground">{t('recordingDescription')}</p>
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1.5 block">Audio Quality</label>
+              <label className="text-sm font-medium mb-1.5 block">{t('audioQuality')}</label>
               <select
                 value={settings.audio_quality}
                 onChange={(e) => handleSave({ audio_quality: e.target.value })}
@@ -378,7 +381,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
             </div>
 
             <div className="border-t border-border/30 pt-6">
-              <label className="text-sm font-medium mb-1.5 block">Auto-Stop Timer (minutes)</label>
+              <label className="text-sm font-medium mb-1.5 block">{t('autoStop')}</label>
               <select
                 value={settings.auto_stop_minutes}
                 onChange={(e) => handleSave({ auto_stop_minutes: parseInt(e.target.value) })}
@@ -413,7 +416,7 @@ export function SettingsTabs({ orgSettings, staffList, activeStaffId, locale, au
 
       {saving && (
         <div className="fixed bottom-4 right-4 z-50 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground shadow-lg">
-          Saving...
+          {tc('saving')}
         </div>
       )}
     </div>
@@ -463,6 +466,7 @@ function ColorPicker({ value, onChange, onCommit }: { value: string; onChange: (
 }
 
 function ThemeSettings({ colors, onChange, onSave }: { colors: ThemeColors; onChange: (c: ThemeColors) => void; onSave: (c: ThemeColors) => void }) {
+  const t = useTranslations('settings')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const latestColors = useRef(colors)
   latestColors.current = colors
@@ -494,15 +498,15 @@ function ThemeSettings({ colors, onChange, onSave }: { colors: ThemeColors; onCh
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Theme</h3>
-          <p className="text-sm text-muted-foreground">Customize timeline bar colors</p>
+          <h3 className="text-lg font-semibold">{t('theme')}</h3>
+          <p className="text-sm text-muted-foreground">{t('themeDescription')}</p>
         </div>
         <button
           type="button"
           onClick={handleReset}
           className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
-          Reset to Defaults
+          {t('resetToDefaults')}
         </button>
       </div>
 
@@ -525,7 +529,7 @@ function ThemeSettings({ colors, onChange, onSave }: { colors: ThemeColors; onCh
 
       {/* Preview */}
       <div>
-        <h4 className="text-sm font-semibold mb-3">Preview</h4>
+        <h4 className="text-sm font-semibold mb-3">{t('preview')}</h4>
         <div className="flex flex-wrap gap-2">
           {BAR_COLOR_FIELDS.map(({ key, label }) => (
             <div
@@ -541,7 +545,7 @@ function ThemeSettings({ colors, onChange, onSave }: { colors: ThemeColors; onCh
 
       {/* Table Colors */}
       <div className="border-t border-border/30 pt-6">
-        <h4 className="text-sm font-semibold mb-3">Table Colors</h4>
+        <h4 className="text-sm font-semibold mb-3">{t('tableColors')}</h4>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {TABLE_COLOR_FIELDS.map(({ key, label, description }) => (
             <div key={key} className="flex items-center gap-3 rounded-lg border border-border/30 p-3">
@@ -563,6 +567,8 @@ function ThemeSettings({ colors, onChange, onSave }: { colors: ThemeColors; onCh
 }
 
 function SyncSettings() {
+  const t = useTranslations('settings')
+  const tAuth = useTranslations('auth')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [enabled, setEnabled] = useState(false)
@@ -623,23 +629,23 @@ function SyncSettings() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold">Booking Sync</h3>
-        <p className="text-sm text-muted-foreground">Sync appointments from Quick Reserve into your booking calendar</p>
+        <h3 className="text-lg font-semibold">{t('bookingSync')}</h3>
+        <p className="text-sm text-muted-foreground">{t('bookingSyncDescription')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium mb-1.5 block">Login ID</label>
+          <label className="text-sm font-medium mb-1.5 block">{t('loginId')}</label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
-            placeholder="Quick Reserve login ID"
+            placeholder={t('loginIdPlaceholder')}
           />
         </div>
         <div>
-          <label className="text-sm font-medium mb-1.5 block">Password</label>
+          <label className="text-sm font-medium mb-1.5 block">{tAuth('password')}</label>
           <input
             type="password"
             value={password}
@@ -652,8 +658,8 @@ function SyncSettings() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h4 className="text-sm font-medium">Auto-sync every 15 minutes</h4>
-          <p className="text-xs text-muted-foreground mt-0.5">Automatically pull new bookings from Quick Reserve</p>
+          <h4 className="text-sm font-medium">{t('autoSyncTitle')}</h4>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('autoSyncDescription')}</p>
         </div>
         <button
           type="button"
@@ -675,7 +681,7 @@ function SyncSettings() {
           disabled={syncing}
           className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
         >
-          Save Config
+          {t('saveConfig')}
         </button>
         <button
           type="button"
@@ -683,7 +689,7 @@ function SyncSettings() {
           disabled={syncing}
           className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50 transition-colors"
         >
-          {syncing ? 'Syncing...' : 'Sync Now'}
+          {syncing ? t('syncing') : t('syncNow')}
         </button>
       </div>
 

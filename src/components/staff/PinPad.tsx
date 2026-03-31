@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 
 interface PinPadProps {
   /** Title shown above the dots */
@@ -15,6 +16,7 @@ interface PinPadProps {
 }
 
 export function PinPad({ title, onSubmit, onCancel, error, loading }: PinPadProps) {
+  const t = useTranslations('pin')
   const [digits, setDigits] = useState<string[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -96,7 +98,7 @@ export function PinPad({ title, onSubmit, onCancel, error, loading }: PinPadProp
 
         {/* Loading */}
         {loading && (
-          <p className="text-center text-xs text-muted-foreground mt-1 mb-1">Verifying...</p>
+          <p className="text-center text-xs text-muted-foreground mt-1 mb-1">{t('verifying')}</p>
         )}
 
         {/* Numpad */}
@@ -111,7 +113,7 @@ export function PinPad({ title, onSubmit, onCancel, error, loading }: PinPadProp
                   disabled={loading}
                   className="flex h-14 items-center justify-center rounded-xl text-xs font-medium text-muted-foreground hover:bg-muted transition-colors"
                 >
-                  Clear
+                  {t('clear')}
                 </button>
               )
             }
@@ -148,7 +150,7 @@ export function PinPad({ title, onSubmit, onCancel, error, loading }: PinPadProp
           onClick={onCancel}
           className="mt-4 w-full rounded-xl py-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          Cancel
+          {t('cancel')}
         </button>
       </div>
     </div>

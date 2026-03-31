@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 
 export function SignupForm({ locale }: { locale: string }) {
+  const t = useTranslations('auth')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
@@ -20,7 +22,7 @@ export function SignupForm({ locale }: { locale: string }) {
     const confirmPassword = formData.get('confirmPassword') as string
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError(t('passwordsDoNotMatch'))
       setLoading(false)
       return
     }
@@ -39,7 +41,7 @@ export function SignupForm({ locale }: { locale: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-sm">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+        <label htmlFor="email" className="block text-sm font-medium mb-1">{t('email')}</label>
         <input
           id="email"
           name="email"
@@ -49,7 +51,7 @@ export function SignupForm({ locale }: { locale: string }) {
         />
       </div>
       <div>
-        <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
+        <label htmlFor="password" className="block text-sm font-medium mb-1">{t('password')}</label>
         <input
           id="password"
           name="password"
@@ -60,7 +62,7 @@ export function SignupForm({ locale }: { locale: string }) {
         />
       </div>
       <div>
-        <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">Confirm Password</label>
+        <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1">{t('confirmPassword')}</label>
         <input
           id="confirmPassword"
           name="confirmPassword"
@@ -71,12 +73,12 @@ export function SignupForm({ locale }: { locale: string }) {
       </div>
       {error && <p className="text-sm text-red-400">{error}</p>}
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? 'Creating account...' : 'Create account'}
+        {loading ? t('signingUp') : t('signup')}
       </Button>
       <p className="text-sm text-center text-muted-foreground">
-        Already have an account?{' '}
+        {t('hasAccount')}{' '}
         <a href={`/${locale}/login`} className="text-foreground underline underline-offset-4 hover:text-primary">
-          Sign in
+          {t('signinLink')}
         </a>
       </p>
     </form>

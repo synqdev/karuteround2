@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -39,6 +40,8 @@ export function ReviewScreen({
   appointmentCustomerId,
   onSaved,
 }: ReviewScreenProps) {
+  const t = useTranslations('review')
+  const tc = useTranslations('common')
   const [saving, setSaving] = useState(false)
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(
     appointmentCustomerId ?? null
@@ -92,7 +95,7 @@ export function ReviewScreen({
 
   async function handleSave(data: ReviewFormValues) {
     if (!appointmentCustomerId && !selectedCustomerId) {
-      toast.error('Please select a customer')
+      toast.error(t('selectCustomer'))
       return
     }
 
@@ -140,7 +143,7 @@ export function ReviewScreen({
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              AI Suggestions
+              {t('aiSuggestions')}
             </h3>
           </div>
           <div className="p-4">
@@ -188,12 +191,12 @@ export function ReviewScreen({
         <div className="flex flex-col min-h-0 rounded-xl border border-border bg-card overflow-hidden">
           <div className="px-4 py-3 border-b border-border">
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              Transcript
+              {t('transcript')}
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto p-4">
             <pre className="text-sm text-foreground/80 whitespace-pre-wrap font-sans leading-relaxed">
-              {transcript || <span className="text-muted-foreground italic">No transcript available.</span>}
+              {transcript || <span className="text-muted-foreground italic">{t('noTranscript')}</span>}
             </pre>
           </div>
         </div>
@@ -225,7 +228,7 @@ export function ReviewScreen({
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-            Add Entry
+            {t('addEntry')}
           </button>
         </div>
       </div>
@@ -233,7 +236,7 @@ export function ReviewScreen({
       {/* Save bar — customer selector + save button */}
       <div className="flex items-center justify-between gap-4 pt-2 border-t border-border">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <span className="text-sm text-muted-foreground shrink-0">Customer:</span>
+          <span className="text-sm text-muted-foreground shrink-0">{t('customer')}</span>
           {appointmentCustomerId ? (
             <span className="text-sm font-medium text-foreground">{customerName}</span>
           ) : (
@@ -254,7 +257,7 @@ export function ReviewScreen({
           disabled={saving || (!appointmentCustomerId && !selectedCustomerId)}
           className="px-6 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
-          {saving ? 'Saving...' : 'Save'}
+          {saving ? tc('saving') : tc('save')}
         </button>
       </div>
     </div>
