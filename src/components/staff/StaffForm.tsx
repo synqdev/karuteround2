@@ -83,15 +83,15 @@ export function StaffForm({ mode, staff, onClose }: StaffFormProps) {
 
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-      <DialogContent className="max-w-2xl">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex gap-6 pt-2">
-          {/* Avatar upload — left side in edit mode */}
+      <DialogContent className="max-w-lg">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-2">
+          {/* Avatar upload — centered on top in edit mode */}
           {mode === 'edit' && staff && (
-            <label className="relative shrink-0 cursor-pointer group self-stretch w-40 min-h-[200px]">
+            <label className="relative mx-auto cursor-pointer group w-24 h-24 shrink-0">
               {avatarPreview ? (
                 <img src={avatarPreview} alt="" className="h-full w-full rounded-2xl object-cover" />
               ) : (
-                <div className="h-full w-full rounded-2xl bg-muted flex items-center justify-center text-3xl font-bold text-muted-foreground">
+                <div className="h-full w-full rounded-2xl bg-muted flex items-center justify-center text-2xl font-bold text-muted-foreground">
                   {(staff.name ?? '?').slice(0, 2).toUpperCase()}
                 </div>
               )}
@@ -108,7 +108,7 @@ export function StaffForm({ mode, staff, onClose }: StaffFormProps) {
           )}
 
           {/* Form fields */}
-          <div className="flex-1 flex flex-col gap-4">
+          <div className="flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium">
