@@ -25,7 +25,7 @@ export function LoginForm({ locale }: { locale: string }) {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push(`/${locale}/sessions`)
+      router.push(`/${locale}/dashboard`)
       router.refresh()
     }
   }
@@ -56,12 +56,6 @@ export function LoginForm({ locale }: { locale: string }) {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? t('submitting') : t('submit')}
       </Button>
-      <p className="text-sm text-center text-muted-foreground">
-        {t('noAccount')}{' '}
-        <a href={`/${locale}/signup`} className="text-foreground underline underline-offset-4 hover:text-primary">
-          {t('signupLink')}
-        </a>
-      </p>
     </form>
   )
 }
