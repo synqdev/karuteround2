@@ -12,14 +12,16 @@ import { updateCustomer } from '@/actions/customers'
 import type { Customer } from '@/types/database'
 
 // Same schema as customers.ts — imported pattern kept DRY inline
-const CustomerFormSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100),
-  furigana: z.string().max(100).optional().or(z.literal('')),
-  phone: z.string().max(20).optional().or(z.literal('')),
-  email: z.string().email('Invalid email address').optional().or(z.literal('')),
-})
+function createCustomerFormSchema(messages: { nameRequired: string; invalidEmail: string }) {
+  return z.object({
+    name: z.string().min(1, messages.nameRequired).max(100),
+    furigana: z.string().max(100).optional().or(z.literal('')),
+    phone: z.string().max(20).optional().or(z.literal('')),
+    email: z.string().email(messages.invalidEmail).optional().or(z.literal('')),
+  })
+}
 
-type CustomerFormValues = z.infer<typeof CustomerFormSchema>
+type CustomerFormValues = z.infer<ReturnType<typeof createCustomerFormSchema>>
 
 interface CustomerInlineEditProps {
   customer: Customer
@@ -31,13 +33,18 @@ export function CustomerInlineEdit({ customer, onSave, onCancel }: CustomerInlin
   const t = useTranslations('customers')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const schema = createCustomerFormSchema({
+    nameRequired: t('form.nameRequired'),
+    invalidEmail: t('form.invalidEmail'),
+  })
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
   } = useForm<CustomerFormValues>({
-    resolver: zodResolver(CustomerFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: customer.name ?? '',
       furigana: customer.furigana ?? '',
@@ -133,7 +140,7 @@ export function CustomerInlineEdit({ customer, onSave, onCancel }: CustomerInlin
       {/* Customer type + Notes */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1">
-          <label className="text-sm font-medium" htmlFor="edit-type">Type</label>
+          <label className="text-sm font-medium" htmlFor="edit-type">{t('profile.type')}</label>
           <select
             id="edit-type"
             defaultValue={(customer as { customer_type?: string }).customer_type ?? ''}
@@ -142,16 +149,16 @@ export function CustomerInlineEdit({ customer, onSave, onCancel }: CustomerInlin
             }}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
           >
-            <option value="">None</option>
-            <option value="nominated">Nominated</option>
-            <option value="walkin">Walk-in</option>
+            <option value="">{t('profile.none')}</option>
+            <option value="nominated">{t('filters.nominated')}</option>
+            <option value="walkin">{t('filters.walkin')}</option>
           </select>
         </div>
         <div className="space-y-1">
-          <label className="text-sm font-medium" htmlFor="edit-notes">Notes</label>
+          <label className="text-sm font-medium" htmlFor="edit-notes">{t('profile.notes')}</label>
           <Input
             id="edit-notes"
-            placeholder="Internal notes..."
+            placeholder={t('profile.internalNotesPlaceholder')}
             defaultValue={(customer as { notes?: string }).notes ?? ''}
             onBlur={async (e) => {
               await updateCustomer(customer.id, { notes: e.target.value } as Record<string, unknown>)

@@ -29,7 +29,9 @@
   },
   "auth": {
     "title": "カルテにサインイン",
+    "subtitle": "サインインして続行",
     "signupTitle": "カルテアカウントを作成",
+    "signupSubtitle": "ビジネスアカウントを作成",
     "email": "メールアドレス",
     "emailPlaceholder": "you@example.com",
     "password": "パスワード",
@@ -95,7 +97,9 @@
       "cancel": "キャンセル",
       "create": "顧客を作成",
       "saving": "保存中...",
-      "duplicateWarning": "「{name}」という名前の顧客が既に存在します"
+      "duplicateWarning": "「{name}」という名前の顧客が既に存在します",
+      "nameRequired": "名前は必須です",
+      "invalidEmail": "メールアドレスが無効です"
     },
     "table": {
       "name": "名前",
@@ -118,6 +122,8 @@
       "registered": "{date}に登録",
       "notes": "メモ",
       "type": "タイプ",
+      "none": "なし",
+      "internalNotesPlaceholder": "内部メモ...",
       "churnAlert": "最終来店から{days}日経過"
     },
     "toast": {
@@ -134,7 +140,16 @@
       "all": "すべて",
       "nominated": "指名",
       "walkin": "フリー",
-      "sort": "並び替え"
+      "sort": "並び替え",
+      "sortName": "名前順",
+      "sortRecent": "最近",
+      "sortNewest": "新しい順",
+      "sortOldest": "古い順"
+    },
+    "cards": {
+      "deleteConfirm": "{name}を削除しますか？元に戻せません。",
+      "deleted": "{name}を削除しました",
+      "added": "{date}に追加"
     }
   },
   "karute": {
@@ -184,7 +199,12 @@
     "processingFailed": "処理に失敗しました",
     "transcribing": "文字起こし中...",
     "extracting": "エントリー抽出中...",
-    "summarizing": "サマリー生成中..."
+    "summarizing": "サマリー生成中...",
+    "aiSummaryPlaceholder": "AIが生成したセッションサマリー...",
+    "entryTitlePlaceholder": "エントリータイトル...",
+    "sourceQuotePlaceholder": "トランスクリプトからの引用...",
+    "entriesConfirmed": "{count, plural, other {#件のエントリー}}確認済み",
+    "selectCustomerAndSave": "顧客を選択して保存"
   },
   "dashboard": {
     "title": "予約",
@@ -216,7 +236,20 @@
     "deleteKarute": "カルテを削除",
     "customer": "顧客",
     "duration": "期間",
-    "creating": "作成中..."
+    "creating": "作成中...",
+    "recordKarute": "カルテを録音",
+    "mySchedule": "自分の予定",
+    "alreadyRecording": "録音中です。現在の録音を停止してください",
+    "cannotMoveBetweenStaff": "スタッフ間で予約を移動できません",
+    "searchCustomers": "顧客を検索...",
+    "noCustomersFound": "顧客が見つかりません",
+    "selected": "選択中:",
+    "customerNamePlaceholder": "顧客名...",
+    "create": "作成",
+    "failedToCreateAppointment": "予約の作成に失敗しました",
+    "failedToCreateCustomer": "顧客の作成に失敗しました",
+    "operatingHoursError": "予約は営業時間内（{open}〜{close}）で設定してください。",
+    "noDurationFits": "営業時間内（{open}〜{close}）に収まる時間がありません。"
   },
   "settings": {
     "title": "設定",
@@ -276,6 +309,33 @@
     "fullName": "氏名",
     "enterPosition": "役職を入力..."
   },
+  "aiActions": {
+    "title": "AIおすすめアクション",
+    "subtitle": "顧客のタイムラインとカルテデータに基づくAIおすすめアクション",
+    "allActionsHandled": "すべてのアクション対応済み",
+    "markAsDone": "完了にする",
+    "dismiss": "非表示",
+    "photoRequest": "写真リクエスト",
+    "upsell": "アップセル",
+    "nextTreatment": "次回施術",
+    "followUp": "フォローアップ",
+    "talkingPoint": "話題",
+    "general": "一般"
+  },
+  "dataImport": {
+    "title": "データインポート",
+    "description": "CSV・Excelファイルから顧客や予約をインポート",
+    "dropOrClick": "ファイルをドロップまたはクリックしてアップロード",
+    "supportedTypes": "CSV、Excel（.xlsx）、JSONファイルに対応",
+    "chooseFile": "ファイルを選択",
+    "supportedFormats": "対応フォーマット",
+    "csvTitle": "CSV",
+    "csvDescription": "UTF-8またはShift-JISエンコード。カラムマッピングを自動検出。",
+    "excelTitle": "Excel（.xlsx）",
+    "excelDescription": "最初のシートを使用。1行目がヘッダー。",
+    "jsonTitle": "JSON",
+    "jsonDescription": "name、phone、emailフィールドを持つ顧客オブジェクトの配列。"
+  },
   "staff": {
     "switchStaff": "スタッフ切替",
     "addStaff": "スタッフを追加",
@@ -287,7 +347,9 @@
     "staffNamePlaceholder": "スタッフ名...",
     "wrongPin": "PINが違います",
     "enterPinFor": "{name}のPINを入力",
-    "added": "{date}に追加"
+    "added": "{date}に追加",
+    "deleteConfirm": "{name}を削除しますか？元に戻せません。",
+    "failedToDelete": "スタッフの削除に失敗しました。"
   },
   "pin": {
     "clear": "クリア",

@@ -13,14 +13,18 @@ import { createCustomer, updateCustomer } from '@/actions/customers'
 // Schema (mirrors server-side schema — kept local for client-side validation)
 // ---------------------------------------------------------------------------
 
-const CustomerFormSchema = z.object({
-  name: z.string().min(1, 'Name is required').max(100),
-  furigana: z.string().max(100).optional().or(z.literal('')),
-  phone: z.string().max(20).optional().or(z.literal('')),
-  email: z.string().email('Invalid email').optional().or(z.literal('')),
-})
+function createCustomerFormSchema(messages: { nameRequired: string; invalidEmail: string }) {
+  return z.object({
+    name: z.string().min(1, messages.nameRequired).max(100),
+    furigana: z.string().max(100).optional().or(z.literal('')),
+    phone: z.string().max(20).optional().or(z.literal('')),
+    email: z.string().email(messages.invalidEmail).optional().or(z.literal('')),
+  })
+}
 
-export type CustomerFormValues = z.infer<typeof CustomerFormSchema>
+type CustomerFormSchema = ReturnType<typeof createCustomerFormSchema>
+
+export type CustomerFormValues = z.infer<CustomerFormSchema>
 
 // ---------------------------------------------------------------------------
 // Props
@@ -45,13 +49,18 @@ export function CustomerForm({
 }: CustomerFormProps) {
   const t = useTranslations('customers')
 
+  const schema = createCustomerFormSchema({
+    nameRequired: t('form.nameRequired'),
+    invalidEmail: t('form.invalidEmail'),
+  })
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CustomerFormValues>({
-    resolver: zodResolver(CustomerFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: '',
       furigana: '',

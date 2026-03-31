@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Camera, TrendingUp, Calendar, MessageCircle, Lightbulb, Check, X } from 'lucide-react'
 
 interface Insight {
@@ -20,16 +21,18 @@ const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
   GENERAL: Lightbulb,
 }
 
-const TYPE_LABELS: Record<string, string> = {
-  PHOTO_REQUEST: 'Photo Request',
-  UPSELL: 'Upsell',
-  NEXT_TREATMENT: 'Next Treatment',
-  FOLLOW_UP: 'Follow Up',
-  TALKING_POINT: 'Talking Point',
-  GENERAL: 'General',
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  PHOTO_REQUEST: 'photoRequest',
+  UPSELL: 'upsell',
+  NEXT_TREATMENT: 'nextTreatment',
+  FOLLOW_UP: 'followUp',
+  TALKING_POINT: 'talkingPoint',
+  GENERAL: 'general',
 }
 
 export function AIRecommendedActions({ locale }: { locale: string }) {
+  const t = useTranslations('aiActions')
+
   const [insights, setInsights] = useState<Insight[]>([])
   const [loading, setLoading] = useState(false)
   const [dismissed, setDismissed] = useState<Set<number>>(new Set())
@@ -82,7 +85,7 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
       <div className="rounded-2xl border border-border/30 bg-card/50 p-6">
         <div className="flex items-center gap-2 mb-4">
           <Lightbulb className="h-4 w-4 text-amber-500" />
-          <h3 className="text-sm font-semibold">AI Recommended Actions</h3>
+          <h3 className="text-sm font-semibold">{t('title')}</h3>
         </div>
         <div className="flex items-center justify-center py-8">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-muted border-t-foreground" />
@@ -99,19 +102,20 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
         <div>
           <div className="flex items-center gap-2">
             <Lightbulb className="h-4 w-4 text-amber-500" />
-            <h3 className="text-sm font-semibold">AI Recommended Actions</h3>
+            <h3 className="text-sm font-semibold">{t('title')}</h3>
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">AI-recommended actions from customer timeline and karute data</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('subtitle')}</p>
         </div>
       </div>
 
       {visibleInsights.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-4">All actions handled</p>
+        <p className="text-sm text-muted-foreground text-center py-4">{t('allActionsHandled')}</p>
       ) : (
         <div className="space-y-4">
           {visibleInsights.map((insight, idx) => {
             const realIdx = insights.indexOf(insight)
             const Icon = TYPE_ICONS[insight.type] ?? Lightbulb
+            const labelKey = TYPE_LABEL_KEYS[insight.type]
             return (
               <div key={realIdx} className="flex items-start gap-3 py-3 border-b border-border/20 last:border-0">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/50">
@@ -121,7 +125,7 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-sm font-medium">{insight.title}</span>
                     <span className="rounded-full border border-border/50 px-2 py-0.5 text-[10px] text-muted-foreground">
-                      {TYPE_LABELS[insight.type] ?? insight.type}
+                      {labelKey ? t(labelKey as Parameters<typeof t>[0]) : insight.type}
                     </span>
                   </div>
                   {insight.customerName && (
@@ -134,7 +138,7 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
                     type="button"
                     onClick={() => setDismissed((s) => new Set(s).add(realIdx))}
                     className="p-1.5 rounded-md text-green-500 hover:bg-green-500/10 transition-colors"
-                    title="Mark as done"
+                    title={t('markAsDone')}
                   >
                     <Check className="h-4 w-4" />
                   </button>
@@ -142,7 +146,7 @@ export function AIRecommendedActions({ locale }: { locale: string }) {
                     type="button"
                     onClick={() => setDismissed((s) => new Set(s).add(realIdx))}
                     className="p-1.5 rounded-md text-muted-foreground hover:bg-muted/50 transition-colors"
-                    title="Dismiss"
+                    title={t('dismiss')}
                   >
                     <X className="h-4 w-4" />
                   </button>

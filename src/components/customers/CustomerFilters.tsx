@@ -2,25 +2,27 @@
 
 import { useRouter, usePathname } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 
 const SORT_OPTIONS = [
-  { value: 'name', label: 'Name' },
-  { value: 'updated_at', label: 'Recent' },
-  { value: 'created_at', label: 'Newest' },
-  { value: 'created_at_asc', label: 'Oldest' },
-]
+  { value: 'name', labelKey: 'sortName' },
+  { value: 'updated_at', labelKey: 'sortRecent' },
+  { value: 'created_at', labelKey: 'sortNewest' },
+  { value: 'created_at_asc', labelKey: 'sortOldest' },
+] as const
 
 const TYPE_FILTERS = [
-  { value: 'all', label: 'All' },
-  { value: 'nominated', label: 'Nominated' },
-  { value: 'walkin', label: 'Walk-in' },
-]
+  { value: 'all', labelKey: 'all' },
+  { value: 'nominated', labelKey: 'nominated' },
+  { value: 'walkin', labelKey: 'walkin' },
+] as const
 
 interface CustomerFiltersProps {
   staffList?: { id: string; name: string }[]
 }
 
 export function CustomerFilters({ staffList }: CustomerFiltersProps) {
+  const t = useTranslations('customers.filters')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -60,7 +62,7 @@ export function CustomerFilters({ staffList }: CustomerFiltersProps) {
             onChange={(e) => updateParams({ staff: e.target.value })}
             className="bg-transparent text-sm text-foreground focus:outline-none appearance-none cursor-pointer pr-4"
           >
-            <option value="all">all</option>
+            <option value="all">{t('all')}</option>
             {staffList.map((s) => (
               <option key={s.id} value={s.id}>{s.name}</option>
             ))}
@@ -77,7 +79,7 @@ export function CustomerFilters({ staffList }: CustomerFiltersProps) {
           className="bg-transparent text-sm text-foreground focus:outline-none appearance-none cursor-pointer pr-4"
         >
           {SORT_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>{t(opt.labelKey)}</option>
           ))}
         </select>
       </div>
@@ -95,7 +97,7 @@ export function CustomerFilters({ staffList }: CustomerFiltersProps) {
                 : 'bg-background text-foreground border-border hover:bg-muted'
             }`}
           >
-            {f.label}
+            {t(f.labelKey)}
           </button>
         ))}
       </div>

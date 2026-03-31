@@ -238,7 +238,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
 
       // Block dragging to a different staff row
       if (bar.rowId !== previousRowId) {
-        toast.error('Cannot move appointments between staff')
+        toast.error(t('cannotMoveBetweenStaff'))
         refreshBars()
         return
       }
@@ -254,7 +254,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
       if ('error' in result) {
         toast.error(result.error)
       } else {
-        toast.success('Appointment moved')
+        toast.success(t('appointmentMoved'))
       }
       refreshBars()
     },
@@ -272,7 +272,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
       if ('error' in result) {
         toast.error(result.error)
       } else {
-        toast.success('Appointment deleted')
+        toast.success(t('appointmentDeleted'))
       }
       refreshBars()
     },
@@ -285,7 +285,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
       if ('error' in result) {
         toast.error(result.error)
       } else {
-        toast.success('Karute deleted')
+        toast.success(t('karuteDeleted'))
       }
       refreshBars()
     },
@@ -315,7 +315,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 type="button"
                 onClick={() => {
                   if (recorderState === 'recording' || recorderState === 'paused') {
-                    toast.error('Already recording — stop current recording first')
+                    toast.error(t('alreadyRecording'))
                     return
                   }
                   const apptId = bar.id.replace('appt_', '')
@@ -324,7 +324,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 }}
                 className="w-full rounded-lg bg-[#eab308] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#ca8a04]"
               >
-                Record Karute
+                {t('recordKarute')}
               </button>
             )}
             {/* View Karute — for completed appointments or standalone karute bars */}
@@ -334,7 +334,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 onClick={() => router.push(`/karute/${karuteId}` as Parameters<typeof router.push>[0])}
                 className="w-full rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
               >
-                View Karute
+                {t('viewKarute')}
               </button>
             )}
             {!isAppt && (
@@ -343,7 +343,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 onClick={() => router.push(`/karute/${bar.id}` as Parameters<typeof router.push>[0])}
                 className="w-full rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
               >
-                View Karute
+                {t('viewKarute')}
               </button>
             )}
             {/* Delete karute — for standalone karute bars or completed appointments */}
@@ -353,7 +353,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 onClick={() => handleDeleteKarute(karuteId)}
                 className="w-full rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
               >
-                Delete Karute
+                {t('deleteKarute')}
               </button>
             )}
             {!isAppt && (
@@ -362,7 +362,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 onClick={() => handleDeleteKarute(bar.id)}
                 className="w-full rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
               >
-                Delete Karute
+                {t('deleteKarute')}
               </button>
             )}
             {/* Delete appointment */}
@@ -372,7 +372,7 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
                 onClick={() => handleDeleteAppointment(bar.id)}
                 className="w-full rounded-lg bg-red-500 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-600"
               >
-                Delete Appointment
+                {t('deleteAppointment')}
               </button>
             )}
           </div>
@@ -419,12 +419,12 @@ export function DashboardClient({ staff, activeStaffId, authProfileId, customers
             onClick={() => setShowAllStaff((v) => !v)}
             className="ml-3 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           >
-            {showAllStaff ? 'My Schedule' : 'All Staff'}
+            {showAllStaff ? t('mySchedule') : t('allStaff')}
           </button>
         )}
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
           <button type="button" onClick={handlePrevDay} className="rounded-md px-2 py-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">&larr;</button>
-          <span className="text-sm font-medium text-foreground">{formatDate(selectedDate, 'en')}</span>
+          <span className="text-sm font-medium text-foreground">{formatDate(selectedDate, locale)}</span>
           <button type="button" onClick={handleNextDay} className="rounded-md px-2 py-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">&rarr;</button>
           <label className="relative rounded-md px-1.5 py-1 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>

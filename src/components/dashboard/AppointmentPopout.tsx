@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { createAppointment } from '@/actions/appointments'
 import { createCustomer } from '@/actions/customers'
 import type { CustomerOption } from '@/components/karute/CustomerCombobox'
@@ -33,6 +34,10 @@ export function AppointmentPopout({
   onCreated,
   onClose,
 }: AppointmentPopoutProps) {
+  const t = useTranslations('dashboard')
+  const tc = useTranslations('common')
+  const tCust = useTranslations('customers')
+
   const [selectedCustomerId, setSelectedCustomerId] = useState<string>('')
   const [searchQuery, setSearchQuery] = useState('')
   const [duration, setDuration] = useState(60)
@@ -68,7 +73,7 @@ export function AppointmentPopout({
     startDate.setHours(Math.floor(startMinute / 60), startMinute % 60, 0, 0)
 
     if (startMinute < operatingHours.openMinute || !isDurationValid) {
-      setError(`Appointment must be within operating hours (${formatMinuteOfDay(operatingHours.openMinute)}-${formatMinuteOfDay(operatingHours.closeMinute)}).`)
+      setError(t('operatingHoursError', { open: formatMinuteOfDay(operatingHours.openMinute), close: formatMinuteOfDay(operatingHours.closeMinute) }))
       setSaving(false)
       return
     }
@@ -82,7 +87,7 @@ export function AppointmentPopout({
     })
 
     if (result && 'error' in result) {
-      setError(String(result.error) || 'Failed to create appointment')
+      setError(String(result.error) || t('failedToCreateAppointment'))
       setSaving(false)
       return
     }
@@ -103,7 +108,7 @@ export function AppointmentPopout({
         setNewCustomerName('')
       }
     } catch {
-      setError('Failed to create customer')
+      setError(t('failedToCreateCustomer'))
     } finally {
       setSaving(false)
     }
@@ -114,7 +119,7 @@ export function AppointmentPopout({
   return (
     <div className="w-80 rounded-xl border border-border/50 bg-card shadow-2xl backdrop-blur-md animate-in fade-in-0 zoom-in-95 duration-200">
       <div className="border-b border-border/30 px-4 py-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">New Appointment</h3>
+        <h3 className="text-sm font-semibold">{t('newAppointment')}</h3>
         <button type="button" onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
         </button>
@@ -143,13 +148,13 @@ export function AppointmentPopout({
         </div>
         {allowedDurations.length === 0 ? (
           <p className="text-xs text-destructive">
-            No valid duration fits within operating hours ({formatMinuteOfDay(operatingHours.openMinute)}-{formatMinuteOfDay(operatingHours.closeMinute)}).
+            {t('noDurationFits', { open: formatMinuteOfDay(operatingHours.openMinute), close: formatMinuteOfDay(operatingHours.closeMinute) })}
           </p>
         ) : null}
 
         {/* Customer */}
         <div>
-          <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Customer</label>
+          <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{t('customer')}</label>
 
           {creatingCustomer ? (
             <div className="space-y-2">
@@ -159,15 +164,15 @@ export function AppointmentPopout({
                 value={newCustomerName}
                 onChange={(e) => setNewCustomerName(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter') handleCreateCustomer() }}
-                placeholder="Customer name..."
+                placeholder={t('customerNamePlaceholder')}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <div className="flex gap-2">
                 <button type="button" onClick={() => { setCreatingCustomer(false); setNewCustomerName('') }}
-                  className="flex-1 rounded-lg border border-border py-1.5 text-xs text-muted-foreground hover:bg-muted">Cancel</button>
+                  className="flex-1 rounded-lg border border-border py-1.5 text-xs text-muted-foreground hover:bg-muted">{tc('cancel')}</button>
                 <button type="button" onClick={handleCreateCustomer} disabled={!newCustomerName.trim() || saving}
                   className="flex-1 rounded-lg bg-primary py-1.5 text-xs text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-                  {saving ? '...' : 'Create'}
+                  {saving ? '...' : t('create')}
                 </button>
               </div>
             </div>
@@ -177,12 +182,12 @@ export function AppointmentPopout({
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search customers..."
+                placeholder={t('searchCustomers')}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-ring"
               />
               <div className="mt-1.5 max-h-28 overflow-y-auto rounded-lg border border-border/50">
                 {filteredCustomers.length === 0 ? (
-                  <div className="px-3 py-2 text-xs text-muted-foreground">No customers found</div>
+                  <div className="px-3 py-2 text-xs text-muted-foreground">{t('noCustomersFound')}</div>
                 ) : (
                   filteredCustomers.slice(0, 5).map((c) => (
                     <button key={c.id} type="button"
@@ -194,14 +199,14 @@ export function AppointmentPopout({
               </div>
               <button type="button" onClick={() => setCreatingCustomer(true)}
                 className="mt-1.5 w-full rounded-lg border border-dashed border-border/50 py-1.5 text-xs text-muted-foreground hover:bg-muted/30 transition-colors">
-                + New Customer
+                {tCust('newCustomer')}
               </button>
             </>
           )}
 
           {selectedCustomer && !creatingCustomer && (
             <div className="mt-1.5 flex items-center gap-2 rounded-lg bg-primary/10 px-3 py-1.5 text-sm">
-              <span className="text-xs text-muted-foreground">Selected:</span>
+              <span className="text-xs text-muted-foreground">{t('selected')}</span>
               <span className="text-xs font-medium">{selectedCustomer.name}</span>
             </div>
           )}
@@ -212,7 +217,7 @@ export function AppointmentPopout({
         {!creatingCustomer && (
           <button type="button" onClick={handleCreate} disabled={saving || !selectedCustomerId || !isDurationValid || allowedDurations.length === 0}
             className="w-full rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed">
-            {saving ? 'Creating...' : 'Create Appointment'}
+            {saving ? t('creating') : t('createAppointment')}
           </button>
         )}
       </div>

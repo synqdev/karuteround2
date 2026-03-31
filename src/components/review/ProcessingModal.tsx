@@ -1,5 +1,6 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { PipelineStep } from '@/lib/ai-pipeline'
 
 interface ProcessingModalProps {
@@ -9,16 +10,10 @@ interface ProcessingModalProps {
   onCancel?: () => void
 }
 
-type StepConfig = {
-  key: PipelineStep
-  label: string
-}
-
-// Labels are passed as props or use defaults
-const DEFAULT_STEPS: StepConfig[] = [
-  { key: 'transcribing', label: 'Transcribing...' },
-  { key: 'extracting', label: 'Extracting entries...' },
-  { key: 'summarizing', label: 'Generating summary...' },
+const STEP_KEYS: { key: PipelineStep; labelKey: 'transcribing' | 'extracting' | 'summarizing' }[] = [
+  { key: 'transcribing', labelKey: 'transcribing' },
+  { key: 'extracting', labelKey: 'extracting' },
+  { key: 'summarizing', labelKey: 'summarizing' },
 ]
 
 const STEP_ORDER: PipelineStep[] = ['transcribing', 'extracting', 'summarizing', 'complete']
@@ -73,6 +68,9 @@ function CheckIcon() {
 }
 
 export function ProcessingModal({ currentStep, error, onRetry, onCancel }: ProcessingModalProps) {
+  const t = useTranslations('review')
+  const tc = useTranslations('common')
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/80 backdrop-blur-sm">
       <div className="w-full max-w-sm rounded-2xl bg-card border border-border shadow-2xl p-8">
@@ -95,7 +93,7 @@ export function ProcessingModal({ currentStep, error, onRetry, onCancel }: Proce
               </svg>
             </div>
             <div>
-              <h2 className="text-base font-semibold text-foreground mb-1">Processing failed</h2>
+              <h2 className="text-base font-semibold text-foreground mb-1">{t('processingFailed')}</h2>
               <p className="text-sm text-muted-foreground leading-relaxed">{error}</p>
             </div>
             <div className="flex gap-3">
@@ -105,7 +103,7 @@ export function ProcessingModal({ currentStep, error, onRetry, onCancel }: Proce
                   onClick={onCancel}
                   className="px-5 py-2 rounded-lg border border-border text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  Cancel
+                  {tc('cancel')}
                 </button>
               )}
               <button
@@ -113,20 +111,21 @@ export function ProcessingModal({ currentStep, error, onRetry, onCancel }: Proce
                 onClick={onRetry}
                 className="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
               >
-                Retry
+                {tc('retry')}
               </button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col gap-6">
             <div>
-              <h2 className="text-base font-semibold text-foreground mb-1">Processing recording</h2>
-              <p className="text-sm text-muted-foreground">Please wait while AI analyzes your session...</p>
+              <h2 className="text-base font-semibold text-foreground mb-1">{t('processingTitle')}</h2>
+              <p className="text-sm text-muted-foreground">{t('processingDescription')}</p>
             </div>
 
             <div className="flex flex-col gap-4">
-              {DEFAULT_STEPS.map(({ key, label }) => {
+              {STEP_KEYS.map(({ key, labelKey }) => {
                 const status = getStepStatus(key, currentStep)
+                const label = t(labelKey)
                 return (
                   <div key={key} className="flex items-center gap-3">
                     <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
@@ -158,7 +157,7 @@ export function ProcessingModal({ currentStep, error, onRetry, onCancel }: Proce
                 onClick={onCancel}
                 className="w-full rounded-lg border border-border py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Cancel
+                {tc('cancel')}
               </button>
             )}
           </div>

@@ -28,6 +28,7 @@ interface RecordingFlowProps {
 
 export function RecordingFlow({ customers, locale, nextAppointment }: RecordingFlowProps) {
   const t = useTranslations('recording')
+  const tc = useTranslations('common')
   // Appointment ID set when recording was started from dashboard appointment click
   const recordingAppointmentId = useTimetableStore((s) => s.recordingAppointmentId)
 
@@ -302,7 +303,7 @@ export function RecordingFlow({ customers, locale, nextAppointment }: RecordingF
                 onClick={() => setShowNoBookingPrompt(false)}
                 className="flex-1 rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Cancel
+                {tc('cancel')}
               </button>
               <button
                 type="button"

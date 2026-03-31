@@ -1,6 +1,7 @@
 'use client'
 
 import { Control, useController } from 'react-hook-form'
+import { useTranslations } from 'next-intl'
 import { ENTRY_CATEGORIES, EntryCategory } from '@/types/ai'
 
 const CATEGORY_COLORS: Record<EntryCategory, string> = {
@@ -20,6 +21,8 @@ interface EntryCardProps {
 }
 
 export function EntryCard({ index, control, onRemove }: EntryCardProps) {
+  const t = useTranslations('review')
+
   const { field: categoryField } = useController({
     control,
     name: `entries.${index}.category`,
@@ -88,7 +91,7 @@ export function EntryCard({ index, control, onRemove }: EntryCardProps) {
       <input
         {...titleField}
         type="text"
-        placeholder="Entry title..."
+        placeholder={t('entryTitlePlaceholder')}
         className="w-full bg-transparent text-foreground font-medium text-sm placeholder-muted-foreground border-b border-transparent hover:border-border focus:border-ring focus:outline-none py-0.5 transition-colors"
       />
 
@@ -96,7 +99,7 @@ export function EntryCard({ index, control, onRemove }: EntryCardProps) {
       <input
         {...sourceQuoteField}
         type="text"
-        placeholder="Source quote from transcript..."
+        placeholder={t('sourceQuotePlaceholder')}
         className="w-full bg-transparent text-muted-foreground text-xs italic placeholder-muted-foreground/50 border-b border-transparent hover:border-border focus:border-ring focus:outline-none py-0.5 transition-colors"
       />
     </div>

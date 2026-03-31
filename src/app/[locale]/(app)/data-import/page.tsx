@@ -1,9 +1,13 @@
-export default function DataImportPage() {
+import { getTranslations } from 'next-intl/server'
+
+export default async function DataImportPage() {
+  const t = await getTranslations('dataImport')
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Data Import</h1>
-        <p className="text-sm text-muted-foreground mt-1">Import customers and appointments from CSV or Excel files</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t('description')}</p>
       </div>
 
       <div className="rounded-2xl border border-dashed border-border/50 bg-card/50 p-12 text-center">
@@ -15,30 +19,30 @@ export default function DataImportPage() {
             </svg>
           </div>
           <div>
-            <p className="text-sm font-medium">Drop a file here or click to upload</p>
-            <p className="text-xs text-muted-foreground mt-1">Supports CSV, Excel (.xlsx), and JSON files</p>
+            <p className="text-sm font-medium">{t('dropOrClick')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('supportedTypes')}</p>
           </div>
           <label className="cursor-pointer rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors">
-            Choose File
+            {t('chooseFile')}
             <input type="file" accept=".csv,.xlsx,.json" className="hidden" />
           </label>
         </div>
       </div>
 
       <div className="rounded-2xl border border-border/30 bg-card/50 p-5">
-        <h3 className="text-sm font-semibold mb-3">Supported Formats</h3>
+        <h3 className="text-sm font-semibold mb-3">{t('supportedFormats')}</h3>
         <div className="grid grid-cols-3 gap-4 text-sm">
           <div className="rounded-lg border border-border/20 p-3">
-            <p className="font-medium">CSV</p>
-            <p className="text-xs text-muted-foreground mt-1">UTF-8 or Shift-JIS encoded. Auto-detects column mapping.</p>
+            <p className="font-medium">{t('csvTitle')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('csvDescription')}</p>
           </div>
           <div className="rounded-lg border border-border/20 p-3">
-            <p className="font-medium">Excel (.xlsx)</p>
-            <p className="text-xs text-muted-foreground mt-1">First sheet is used. Headers in first row.</p>
+            <p className="font-medium">{t('excelTitle')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('excelDescription')}</p>
           </div>
           <div className="rounded-lg border border-border/20 p-3">
-            <p className="font-medium">JSON</p>
-            <p className="text-xs text-muted-foreground mt-1">Array of customer objects with name, phone, email fields.</p>
+            <p className="font-medium">{t('jsonTitle')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('jsonDescription')}</p>
           </div>
         </div>
       </div>

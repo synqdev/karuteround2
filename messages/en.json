@@ -29,7 +29,9 @@
   },
   "auth": {
     "title": "Sign in to Karute",
+    "subtitle": "Sign in to continue",
     "signupTitle": "Create your Karute account",
+    "signupSubtitle": "Create your business account",
     "email": "Email",
     "emailPlaceholder": "you@example.com",
     "password": "Password",
@@ -95,7 +97,9 @@
       "cancel": "Cancel",
       "create": "Create Customer",
       "saving": "Saving...",
-      "duplicateWarning": "A customer named \"{name}\" already exists"
+      "duplicateWarning": "A customer named \"{name}\" already exists",
+      "nameRequired": "Name is required",
+      "invalidEmail": "Invalid email"
     },
     "table": {
       "name": "Name",
@@ -118,6 +122,8 @@
       "registered": "Registered {date}",
       "notes": "Notes",
       "type": "Type",
+      "none": "None",
+      "internalNotesPlaceholder": "Internal notes...",
       "churnAlert": "Last visit was {days} days ago"
     },
     "toast": {
@@ -134,7 +140,16 @@
       "all": "All",
       "nominated": "Nominated",
       "walkin": "Walk-in",
-      "sort": "Sort"
+      "sort": "Sort",
+      "sortName": "Name",
+      "sortRecent": "Recent",
+      "sortNewest": "Newest",
+      "sortOldest": "Oldest"
+    },
+    "cards": {
+      "deleteConfirm": "Delete {name}? This cannot be undone.",
+      "deleted": "{name} deleted",
+      "added": "Added {date}"
     }
   },
   "karute": {
@@ -184,7 +199,12 @@
     "processingFailed": "Processing failed",
     "transcribing": "Transcribing...",
     "extracting": "Extracting entries...",
-    "summarizing": "Generating summary..."
+    "summarizing": "Generating summary...",
+    "aiSummaryPlaceholder": "AI-generated session summary...",
+    "entryTitlePlaceholder": "Entry title...",
+    "sourceQuotePlaceholder": "Source quote from transcript...",
+    "entriesConfirmed": "{count, plural, one {# entry} other {# entries}} confirmed",
+    "selectCustomerAndSave": "Select customer & save"
   },
   "dashboard": {
     "title": "Appointments",
@@ -216,7 +236,20 @@
     "deleteKarute": "Delete Karute",
     "customer": "Customer",
     "duration": "Duration",
-    "creating": "Creating..."
+    "creating": "Creating...",
+    "recordKarute": "Record Karute",
+    "mySchedule": "My Schedule",
+    "alreadyRecording": "Already recording — stop current recording first",
+    "cannotMoveBetweenStaff": "Cannot move appointments between staff",
+    "searchCustomers": "Search customers...",
+    "noCustomersFound": "No customers found",
+    "selected": "Selected:",
+    "customerNamePlaceholder": "Customer name...",
+    "create": "Create",
+    "failedToCreateAppointment": "Failed to create appointment",
+    "failedToCreateCustomer": "Failed to create customer",
+    "operatingHoursError": "Appointment must be within operating hours ({open}-{close}).",
+    "noDurationFits": "No valid duration fits within operating hours ({open}-{close})."
   },
   "settings": {
     "title": "Settings",
@@ -276,6 +309,33 @@
     "fullName": "Full name",
     "enterPosition": "Enter position..."
   },
+  "aiActions": {
+    "title": "AI Recommended Actions",
+    "subtitle": "AI-recommended actions from customer timeline and karute data",
+    "allActionsHandled": "All actions handled",
+    "markAsDone": "Mark as done",
+    "dismiss": "Dismiss",
+    "photoRequest": "Photo Request",
+    "upsell": "Upsell",
+    "nextTreatment": "Next Treatment",
+    "followUp": "Follow Up",
+    "talkingPoint": "Talking Point",
+    "general": "General"
+  },
+  "dataImport": {
+    "title": "Data Import",
+    "description": "Import customers and appointments from CSV or Excel files",
+    "dropOrClick": "Drop a file here or click to upload",
+    "supportedTypes": "Supports CSV, Excel (.xlsx), and JSON files",
+    "chooseFile": "Choose File",
+    "supportedFormats": "Supported Formats",
+    "csvTitle": "CSV",
+    "csvDescription": "UTF-8 or Shift-JIS encoded. Auto-detects column mapping.",
+    "excelTitle": "Excel (.xlsx)",
+    "excelDescription": "First sheet is used. Headers in first row.",
+    "jsonTitle": "JSON",
+    "jsonDescription": "Array of customer objects with name, phone, email fields."
+  },
   "staff": {
     "switchStaff": "Switch Staff",
     "addStaff": "Add Staff",
@@ -287,7 +347,9 @@
     "staffNamePlaceholder": "Staff name...",
     "wrongPin": "Wrong PIN",
     "enterPinFor": "Enter PIN for {name}",
-    "added": "Added {date}"
+    "added": "Added {date}",
+    "deleteConfirm": "Delete {name}? This action cannot be undone.",
+    "failedToDelete": "Failed to delete staff member."
   },
   "pin": {
     "clear": "Clear",

@@ -49,14 +49,14 @@ export function StaffList({ staffList, activeStaffId, currentUserId, isOwner = f
 
   async function handleDelete(staff: StaffMember) {
     const confirmed = window.confirm(
-      `Delete ${staff.full_name ?? 'this staff member'}? This action cannot be undone.`
+      tStaff('deleteConfirm', { name: staff.full_name ?? '' })
     )
     if (!confirmed) return
 
     try {
       await deleteStaff(staff.id)
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Failed to delete staff member.')
+      toast.error(err instanceof Error ? err.message : tStaff('failedToDelete'))
     }
   }
 

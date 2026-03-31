@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { deleteCustomer } from '@/actions/customers'
 import type { Customer } from '@/types/database'
 
@@ -22,13 +23,14 @@ function formatDate(dateStr: string): string {
 
 export function CustomerCards({ customers: initialCustomers }: CustomerCardsProps) {
   const [customers, setCustomers] = useState(initialCustomers)
+  const t = useTranslations('customers')
 
   async function handleDelete(id: string, name: string) {
-    if (!window.confirm(`Delete ${name}? This cannot be undone.`)) return
+    if (!window.confirm(t('cards.deleteConfirm', { name }))) return
     const result = await deleteCustomer(id)
     if (result.success) {
       setCustomers((prev) => prev.filter((c) => c.id !== id))
-      toast.success(`${name} deleted`)
+      toast.success(t('cards.deleted', { name }))
     } else {
       toast.error(result.error)
     }
@@ -36,7 +38,7 @@ export function CustomerCards({ customers: initialCustomers }: CustomerCardsProp
   if (customers.length === 0) {
     return (
       <div className="rounded-lg border border-border py-12 text-center text-sm text-muted-foreground">
-        No customers found
+        {t('table.noResults')}
       </div>
     )
   }
@@ -74,7 +76,7 @@ export function CustomerCards({ customers: initialCustomers }: CustomerCardsProp
               <p className="text-xs text-muted-foreground truncate">{c.email}</p>
             )}
             <p className="text-[10px] text-muted-foreground/60 mt-1.5">
-              Added {formatDate(c.created_at)}
+              {t('cards.added', { date: formatDate(c.created_at) })}
             </p>
           </div>
 
