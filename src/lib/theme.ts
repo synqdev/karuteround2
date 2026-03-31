@@ -10,10 +10,10 @@ export interface ThemeColors {
 }
 
 export const DEFAULT_THEME_COLORS: ThemeColors = {
-  barOpen: '#5ba8b5',
-  barBooking: '#c4897a',
+  barOpen: '#8fb5bc',
+  barBooking: '#8fb5bc',
   barRecording: '#e6a84d',
-  barCompleted: '#6bab8a',
+  barCompleted: '#7dab91',
   barBlocked: '#c4a0a6',
   barProcessing: '#8b5cf6',
   tableBg: '',

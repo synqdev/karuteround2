@@ -116,7 +116,7 @@ export function TimePassedOverlay({
 
   return (
     <div
-      className={`pointer-events-none absolute inset-y-0 left-0 bg-rose-300/20 ${className}`}
+      className={`pointer-events-none absolute inset-y-0 left-0 bg-rose-200/15 ${className}`}
       style={{ ...style, left: `${leftOffsetPx}px`, width: `calc(${usableWidth} * ${overlayWidth / 100})` }}
       aria-hidden
     />
