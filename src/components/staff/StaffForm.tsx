@@ -85,30 +85,31 @@ export function StaffForm({ mode, staff, onClose }: StaffFormProps) {
     <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent className="max-w-lg">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-2">
-          {/* Avatar upload — centered on top in edit mode */}
-          {mode === 'edit' && staff && (
-            <label className="relative mx-auto cursor-pointer group w-24 h-24 shrink-0">
-              {avatarPreview ? (
-                <img src={avatarPreview} alt="" className="h-full w-full rounded-2xl object-cover" />
-              ) : (
-                <div className="h-full w-full rounded-2xl bg-muted flex items-center justify-center text-2xl font-bold text-muted-foreground">
-                  {(staff.name ?? '?').slice(0, 2).toUpperCase()}
+          <div className={mode === 'edit' && staff ? 'flex gap-5' : ''}>
+            {/* Avatar upload — left-aligned, side by side with inputs */}
+            {mode === 'edit' && staff && (
+              <label className="relative cursor-pointer group w-32 h-32 shrink-0">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="" className="h-full w-full rounded-2xl object-cover" />
+                ) : (
+                  <div className="h-full w-full rounded-2xl bg-muted flex items-center justify-center text-3xl font-bold text-muted-foreground">
+                    {(staff.name ?? '?').slice(0, 2).toUpperCase()}
+                  </div>
+                )}
+                <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                 </div>
-              )}
-              <div className="absolute inset-0 rounded-2xl bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              </div>
-              {uploading && (
-                <div className="absolute inset-0 rounded-2xl bg-black/60 flex items-center justify-center">
-                  <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                </div>
-              )}
-              <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
-            </label>
-          )}
+                {uploading && (
+                  <div className="absolute inset-0 rounded-2xl bg-black/60 flex items-center justify-center">
+                    <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  </div>
+                )}
+                <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+              </label>
+            )}
 
           {/* Form fields */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-1 flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium">
@@ -139,6 +140,7 @@ export function StaffForm({ mode, staff, onClose }: StaffFormProps) {
               <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>{tc('cancel')}</Button>
               <Button type="submit" disabled={isSubmitting}>{isSubmitting ? tc('saving') : tc('save')}</Button>
             </DialogFooter>
+          </div>
           </div>
         </form>
       </DialogContent>
