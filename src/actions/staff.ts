@@ -23,28 +23,13 @@ export async function createStaff(data: StaffProfileInput): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  let customerIdValue: string | null = null
-
   const { data: ownerProfile } = await supabase
     .from('profiles')
     .select('customer_id')
     .eq('id', user.id)
     .single()
 
-  if (ownerProfile?.customer_id) {
-    customerIdValue = ownerProfile.customer_id
-  } else {
-    // Fallback: use any existing profile's customer_id
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { data: anyProfile } = await (supabase as any)
-      .from('profiles')
-      .select('customer_id')
-      .not('customer_id', 'is', null)
-      .limit(1)
-      .single()
-    customerIdValue = anyProfile?.customer_id ?? null
-  }
-
+  const customerIdValue = ownerProfile?.customer_id ?? null
   if (!customerIdValue) throw new Error('Business profile not found')
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
