@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { runAIPipeline, PipelineStep, PipelineResult } from '@/lib/ai-pipeline'
 import { ProcessingModal } from './ProcessingModal'
 import { ReviewScreen } from './ReviewScreen'
@@ -34,12 +34,15 @@ export function PipelineContainer({
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<PipelineResult | null>(null)
 
+  // Capture locale at mount time — changing language mid-pipeline should NOT re-trigger
+  const localeRef = useRef(locale)
+
   const runPipeline = useCallback(async () => {
     setError(null)
     setCurrentStep('transcribing')
 
     try {
-      const pipelineResult = await runAIPipeline(audioBlob, locale, (step) => {
+      const pipelineResult = await runAIPipeline(audioBlob, localeRef.current, (step) => {
         setCurrentStep(step)
       })
       setResult(pipelineResult)
@@ -52,7 +55,7 @@ export function PipelineContainer({
           : 'An unexpected error occurred. Please try again.',
       )
     }
-  }, [audioBlob, locale])
+  }, [audioBlob])
 
   useEffect(() => {
     runPipeline()

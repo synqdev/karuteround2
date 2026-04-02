@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -93,11 +93,15 @@ export function ReviewScreen({
     })
   }
 
+  const saveGuard = useRef(false)
+
   async function handleSave(data: ReviewFormValues) {
     if (!appointmentCustomerId && !selectedCustomerId) {
       toast.error(t('selectCustomer'))
       return
     }
+    if (saveGuard.current) return
+    saveGuard.current = true
 
     setSaving(true)
     try {
@@ -119,6 +123,7 @@ export function ReviewScreen({
       if (result && 'error' in result) {
         toast.error(result.error)
         setSaving(false)
+        saveGuard.current = false
       }
       // On success, saveKaruteRecord redirects
     } catch (err) {
@@ -127,6 +132,7 @@ export function ReviewScreen({
       }
       toast.error(err instanceof Error ? err.message : 'Failed to save')
       setSaving(false)
+      saveGuard.current = false
     }
   }
 

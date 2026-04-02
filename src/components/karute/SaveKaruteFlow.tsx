@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
@@ -54,12 +54,16 @@ export function SaveKaruteFlow({ customers, appointmentCustomerId, directDraft }
     setFlowState('combobox')
   }
 
+  const saveGuard = useRef(false)
+
   async function handleSave() {
     if (!draft) return
     if (!selectedCustomerId) {
       toast.error(t('selectCustomerFirst'))
       return
     }
+    if (saveGuard.current) return
+    saveGuard.current = true
 
     setIsSaving(true)
 
@@ -81,6 +85,7 @@ export function SaveKaruteFlow({ customers, appointmentCustomerId, directDraft }
       if (result && 'error' in result) {
         toast.error(result.error)
         setIsSaving(false)
+        saveGuard.current = false
       }
     } catch (err) {
       if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) {
@@ -88,6 +93,7 @@ export function SaveKaruteFlow({ customers, appointmentCustomerId, directDraft }
       }
       toast.error(err instanceof Error ? err.message : t('saving'))
       setIsSaving(false)
+      saveGuard.current = false
     }
   }
 
