@@ -83,7 +83,7 @@ export function StaffForm({ mode, staff, onClose }: StaffFormProps) {
 
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl min-h-[400px]">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-2">
           <div className={mode === 'edit' && staff ? 'flex gap-5' : ''}>
             {/* Avatar upload — left-aligned, side by side with inputs */}
