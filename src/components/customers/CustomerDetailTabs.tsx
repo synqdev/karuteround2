@@ -201,7 +201,7 @@ export function CustomerDetailTabs({
 
       {/* Sticky Tab Navigation */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm pb-4 pt-2">
-        <div className="flex items-center gap-1.5 rounded-xl bg-muted/50 p-1.5">
+        <div className="flex items-center gap-1.5 rounded-2xl border border-border/40 bg-muted/30 p-1.5">
           {TABS.map((tab) => {
             const Icon = tab.icon
             const isActive = activeTab === tab.key
